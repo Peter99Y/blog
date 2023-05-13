@@ -1,5 +1,5 @@
 ---
-title: js
+title: JS
 ---
 
 ### 函数

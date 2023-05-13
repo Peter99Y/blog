@@ -104,5 +104,6 @@ theme: keep
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
+  root: /
   repo: https://gitee.com/hesayshi/blog.git
   branch: master
