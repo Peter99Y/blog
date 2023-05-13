@@ -2,13 +2,140 @@
 title: js
 ---
 
+### 函数
+
+> 所有函数都是构造函数 new Function() 的实例对象;
+
+-   函数定义方式
+
 ```
+var f = new Function("a", "b", "console.log(a+b)");  // (罕见) 生成函数f
+
 // 函数声明 (命名函数)
 function fn() {}
 
-// 函数表达式 (匿名函数; 给变量赋值一个函数)
+// 函数表达式 (匿名函数)
 var fun = function () {};
+
+console.log(f instanceof Object);                   // true
+console.log(f.__proto__ === Function.prototype);    // true
 ```
+
+-   函数调用方式 & 内部的 this 指向
+
+```
+// 普通函数
+function fn2() {
+    console.log(this)       // window
+}
+// 对象方法
+var obj = {
+    say:function(){
+        console.log(this);  // obj
+    }
+}
+obj.say();
+
+// 构造函数
+function Start() {
+    console.log(this);      // 实例对象
+}
+new Start();
+
+// 事件函数(是异步函数哦)
+btn.onclick = function(){
+    console.log(this);      // btn元素
+}
+// 定时器函数
+setInterval(()=>{
+    console.log(this);      // window
+});
+
+// 立即执行函数
+(function(){
+    console.log(this);      // window
+})()
+```
+
+###### 函数方法 call, apply, bind 改变 this 指向
+
+-   call 调用函数并改变 this，主要作用于实现继承
+
+```
+function fn(a, b) {
+	console.log(this);        // obj
+	console.log(a+b);         // 3
+}
+
+let obj = { name: "c" };
+
+fn.call(obj, 1, 2);
+```
+
+```
+function Product(name, price) {
+    this.name = name;
+    this.price = price;
+}
+
+function Food(name, price, category) {
+    Product.call(this, name, price);
+    this.category = category;
+}
+
+let food = new Food("cheese", 5, "food");
+```
+
+-   apply 调用函数并改变 this，把数组解析成单数
+
+```
+function fn(val, val2, val3) {
+	console.log(this);            // obj
+    console.log(val,val2,val3);   // 1 2 3
+}
+
+let obj = { name: "c" };
+
+fn.apply(obj, [1, 2, 3]);
+```
+
+```
+// Math.max(1,2)只接受单个参数, 不接受数组; 利用apply把数组解析成单数
+let max = Math.max.apply(null, [1,2,3]); // = Math.max(1,2,3);
+console.log("max:", max);
+```
+
+-   bind 不调用函数，绑定并返回新的函数
+
+```
+function fn(a, b) {
+	console.log(this);
+	console.log(a + b || false);
+}
+
+var obj = { name: "c" };
+
+var f = fn.bind(obj, 1, 2);
+f();            // obj;     3
+fn();           // window;  false
+```
+
+```
+var btn = document.querySelector("button");
+btn.onclick = function () {
+	this.disabled = true;
+    let that = this;
+	setTimeout(
+		function () {
+            // that.disabled = false;
+			this.disabled = false;
+		}.bind(this),
+		3000
+	);
+};
+```
+
+---
 
 ### 函数预编译
 
@@ -316,3 +443,427 @@ for (var i = 0; i < lis.length; i++) {
 	})(i);
 }
 ```
+
+### 构造函数
+
+-   创建对象三种方式：
+
+    1.  var obj = { } 对象字面量 (特殊键名必加引号)
+    2.  var obj= new Object();
+    3.  构造函数;
+
+> 构造函数一种特殊的函数, 用来初始化对象, 即为对象成员变量赋初始值, 与 new 一起使用, 我们可以把对象中一些公共的属性和方法抽取出来, 然后封装到这个函数里面;
+
+-   new 一个新的对象执行的步骤：
+
+    1.创建新对象{ }; 2.赋值给 this, 将 this 指向这个对象; 3.给这个新对象添加属性和方法;
+    4.return 新对象;
+
+```
+function Animal(name) {
+    // 实例成员: 在构造函数内部通过this添加的属性or方法, 只能由实例化对象来访问.
+	this.name = name;
+	this.run = function (method) {
+		console.log(this.name, "is running", method);
+	};
+}
+
+// 静态成员: 在构造函数本身上添加的属性or方法, 只能由构造函数本身访问.
+Animal.bark = () => {
+	console.log("roar loudly");
+};
+
+var dog = new Animal("dog");
+var cat = new Animal('cat');
+
+dog.name;           // dog
+dog.run("fast");    // dog is running fast
+Animal.bark();      // roar loudly
+```
+
+###### prototype 原型对象
+
+-   构造函数的缺陷: 每 new 一个实例对象, 里面的方法(函数是引用类型)就会开辟一块内存(如果有一百个实例对象占据一百个空间，但却存储相同的属性和函数，浪费内存);
+
+-   在构造函数的原型对象中(如 Animal.prototype)添加公共的属性 or 方法;
+    实例对象.\_\_proto\_\_指向了原型对象，就能使用原型对象中的成员;
+
+-   原型对象中 this & 构造函数中 this 指向实例对象;
+
+```
+Animal.prototype.bite = function(){
+    console.log('chips');
+}
+
+console.log(dog.run === cat.run)    // false   构造函数里的方法
+console.log(dog.bite === cat.bite)  // true    原型对象上的方法
+console.log(dog.__proto__ === Animal.prototype);    // true
+```
+
+###### constructor
+
+是构造函数的原型对象中的属性，称为构造函数, 此属性指向了此对象引用于哪个构造函数;
+
+```
+// Animal.prototype.bite = function(){
+//    console.log('chips');
+// }
+
+Animal.prototype = {
+    // 当用对象的形式赋值给原型对象时，指向的对象没有constructor指向构造函数;
+    constructor: Animal,
+
+    bite: function(){
+        console.log('chips');
+    },
+    drink: function(){
+        console.log('beer')
+    }
+}
+```
+
+<!-- ![构造函数和prototype和__proto__关系图](https://upload-images.jianshu.io/upload_images/20409039-2c6289c2954a2816.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240) -->
+![构造函数和prototype和__proto__关系图](/images/prototype.png)
+
+##### 原型链
+
+实例对象.\_\_proto\_\_ 指向构造函数的原型对象，
+而构造函数的原型对象.\_\_proto\_\_ 指向了 Object 构造函数的原型对象，
+Object 构造函数的原型对象.\_\_proto\_\_ 指向 null;
+
+当访问对象的属性和方法时(就近原则), 首先查找对象自身是否有，如没有，就会根据原型链向上查找，直到最后 undefined;
+
+<!-- ![](https://upload-images.jianshu.io/upload_images/20409039-cceba16cd2a1f883.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240) -->
+
+![](/images/proto.png)
+##### 继承
+
+ES6 没有 extends 继承，而是利用函数继承父类型的属性，利用原型对象继承父类型的方法;
+
+```
+function Product(name, price) {
+	this.name = name;
+	this.price = price;
+}
+
+function Food(name, price, category) {
+	Product.call(this, name, price);
+	this.category = category;
+}
+
+let food = new Food("cheese", 5, "food");
+```
+
+```
+Product.prototype.sum = function (arr) {
+	return arr.reduce((prevValue, currentValue) => prevValue + currentValue, 0);
+};
+
+function Product(name, price) {
+	this.name = name;
+	this.price = price;
+}
+
+Food.prototype = new Product();
+Food.prototype.constructor = Food;
+
+Food.prototype.minus = function(a, b){
+    return a - b;
+}
+
+function Food(name, price, category) {
+	Product.call(this, name, price);
+	this.category = category;
+}
+
+let food = new Food("cheese", 5, "food");
+console.log(food.name, food.price, food.category);  // 继承属性
+console.log(food.sum([1, 2, 3]));                   // 继承方法
+console.log(food.minus(5,3));                       // Food构造函数独有方法
+```
+
+分析：
+son 实例对象 .\_\_proto\_\_ 查找 father 实例对象,
+father 实例对象.\_\_proto\_\_ 查找到 father.prototype 原型原型对象上的方法，就能调用了.
+
+---
+
+### 类
+
+是一个抽象性的模板，对于该类事物的综合描述，这些描述中分为两种内容，一是属性，二是方法；
+
+实例化: 使用 new 根据类创造出一个实例对象；
+
+consturctor：**是类的构造函数，用于传递参数，返回实例对象**，通过 new 命令生成对象实例时，自动调用该方法。如没有定义，类内部自动创建一个 constructor;
+
+> 注意： 1.类没有声明提升； 2.类中的方法都默认开启了严格模式
+
+```
+// 创建类
+class Animal {
+	constructor(name) {
+		// 实例对象共有属性
+		this.name = name;
+        this.init();         // 创建实例对象就立即调用;
+	}
+    init(){
+        console.log('initial finished');
+    }
+	// 实例对象共有方法
+	run(method) {
+		console.log(this.name, `is runing ${method}`);
+	},
+    // 静态方法
+    static eat(){
+        console.log('chips');
+    }
+}
+
+// 生成实例对象
+var dog = new Animal("dog");
+var cat = new Animal("cat");
+
+console.log(dog.name); // dog
+console.log(cat.name); // cat
+dog.run("fast");
+cat.run("slow");
+```
+
+等价于 ES5 构造函数
+
+```
+function Animal(name) {
+	this.name = name;
+}
+// 静态方法
+Animal.eat = function () {
+	console.log("chips");
+};
+// 原型方法
+Animal.prototype = {
+	constructor: Animal,
+	run(method) {
+		console.log(this.name, " is running", method);
+	},
+};
+
+var dog = new Animal("dog");
+Animal.eat();
+dog.run("fast");
+```
+
+---
+
+##### extends & super
+
+-   子类可以继承父类的方法和属性；
+-   继承后遵循就近原则，最后调用**父类普通函数**；
+-   super 关键字用于访问和调用父类上的函数。可以调用父类的构造函数和普通函数；
+
+```
+class Father {
+    run(){
+        console.log('run')
+    }
+	say() {
+        console.log('f')
+	}
+}
+
+class Son extends Father{
+    say(){
+        console.log('s')
+    }
+}
+
+var s = new Son(1, 2);
+s.run();    // run
+s.say();    // s
+```
+
+```
+class Father {
+	constructor(x, y) {
+		this.x = x;
+        this.y = y;
+	}
+	sum() {
+	    console.log(this.x + this.y);
+	}
+    say() {
+		console.log("fuck");
+	}
+}
+
+class Son extends Father{
+    constructor(x, y){
+        // 调用父类constructor构造函数; 等价于 Father.constructor(x,y);
+        super(x, y);
+    }
+    say() {
+		super.say();        // 调用父类普通函数;
+	}
+
+}
+
+var s = new Son(1, 2);
+s.sum();           // 3
+s.say();           // fuck
+```
+
+分析：
+
+1. new Son(1,2)传给的是 son.contrutor(x,y);
+2. s.sum()调用，是 father.sum 函数, 而 sum 函数里的 this.x 指是 father.constructor.x; 所以没访问到就报错；
+3. 利用 super(x,y)调用父类构造函数 等价于调用 father.constructor(x,y), 并传递形参;
+4. 最后 s.sum()调用，sum(){}函数中 this.x 就能访问到 father 自身上的 x 属性了；
+
+---
+
+```
+class Father {
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+	}
+	sum() {
+		console.log(this.x + this.y);
+	}
+}
+
+class Son extends Father {
+	constructor(x, y) {
+		super(x, y); // 必须在this前调用
+		this.a = x;
+		this.b = y;
+	}
+	minus() {
+		console.log(this.a - this.b);
+	}
+}
+
+var s = new Son(3, 2);
+s.sum();                 // 5
+s.minus();               // 1
+```
+
+###### 注意：
+
+```
+let that;
+
+class Animal {
+	constructor(name) {
+		this.name = name;
+        that = this;
+
+		this.btn = document.querySelector("button");
+		// btn元素点击调用执行，run函数this指向的是btn元素本身;
+        // 利用一个全局变量，将实例对象赋值其中，这样不管谁调用run函数，that都指向的是实例对象；
+		this.btn.onclick = this.run;
+	}
+	run() {
+		console.log(this);
+        console.log(that.name);
+	}
+}
+
+var dog = new Animal("dog");
+dog.run();     // 这里dog.run调用，run函数里的this, 指向dog实例对象;
+```
+
+##### example:
+
+```
+// let that;
+class Tab {
+	constructor(id) {
+		that = this;
+		this.el = document.querySelector(id);
+		this.addBtn = document.querySelector("button");
+		this.ul = this.el.querySelector("ul");
+		this.tabContent = this.el.querySelector(".tab-content");
+		this.init();
+	}
+	init() {
+		this.getNode();
+		this.addBtn.onclick = this.addTab.bind(this.addBtn, this);
+		for (var i = 0; i < this.lis.length; i++) {
+			// 给每个li标签添加属性index;
+			this.lis[i].index = i;
+            // bind(null, this)在严格模式中不可以，不改变switchTab函数的this指向;
+            this.lis[i].onclick = this.switchTab.bind(this.lis[i], this);
+			this.labels[i].ondblclick = this.editTab;
+			this.deleteIcon[i].onclick = this.removeTab.bind(this.deleteIcon[i], this);
+		}
+	}
+	getNode() {
+		this.lis = this.el.querySelectorAll("li");
+		this.labels = this.el.querySelectorAll(".label");
+		this.deleteIcon = this.el.querySelectorAll(".close");
+		this.sections = this.el.querySelectorAll("section");
+	}
+	switchTab(that) {
+		that.clearClass();
+		this.className = "active";
+		that.sections[this.index].className = "active";
+	}
+	clearClass() {
+		// 这里的this是that.clearClass调用，也就是实例对象下的this;
+		for (var i = 0; i < this.lis.length; i++) {
+			this.lis[i].className = "";
+			this.sections[i].className = "";
+		}
+	}
+	addTab(that) {
+		that.clearClass();
+		// 另外一种方式: createElement, and then innerHTML赋值, appendChild;
+		// 此方法可以直接把 字符串格式元素 添加到父元素中;
+		var li = `<li class='active'>new tab<span>x</span></li>`;
+		that.ul.insertAdjacentHTML("beforeend", li);
+
+		var section = `<section class='active'>new tab的内容</section>`;
+		that.tabContent.insertAdjacentHTML("beforeend", section);
+		that.init();
+	}
+	removeTab(that, e) {
+		// 阻止冒泡到li
+		e.stopPropagation();
+		var index = this.parentNode.index;
+		console.log("index:", index);
+		// ele.remove，把对象从所属的DOM树中删除;
+		that.lis[index].remove();
+		that.sections[index].remove();
+		that.init();
+
+		// 移除元素后，如li中仍然有选中状态的li，就不执行移动到前一个；
+		if (document.querySelector("li.active")) return;
+
+		// 移除元素后，移除的元素的是选中状态li，就将选中状态移到前一个；
+		index--;
+		that.lis[index] && that.lis[index].click();
+	}
+	editTab() {
+		var str = this.innerHTML;
+		this.innerHTML = `<input type="text">`;
+		// 获取input元素;
+		var input = this.children[0];
+		input.value = str;
+		// 选定状态;
+		input.select();
+		input.onblur = function () {
+			// this是input触发调用;
+			this.parentNode.innerHTML = this.value;
+		};
+		input.onkeyup = function (e) {
+			e.keyCode === 13 && this.blur();
+		};
+	}
+}
+
+new Tab("#tab");
+```
+
+<!-- ![](https://upload-images.jianshu.io/upload_images/20409039-823895cccf4a0f4b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240) -->
+
+![](/images/tabs.png);
