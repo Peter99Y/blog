@@ -79,10 +79,10 @@ onMounted(() => {
 存储在vuex中的数据都是响应式的，能够实时保持数据与页面的同步.
 只有组件之间共享的数据，才有必要存储到vuex中，对于组件中的私有数据，存储在组件自己的data中即可。
 install: npm install vuex --save
-######State: 提供唯一的公共数据源，所有共享的数据都要统一放在store.state对象中
-######Mutation: 变更Store中state的数据只能使用mustation, 不可以直接修改state的数据, 可以集中监控所有数据的变化
-######Actions: 通过在action中触发mutation里的方式进行异步操作数据. 必须通过action，异步操作不能直接在mutation中!
-######Getter: 不会修改state中的数据，只是包装数据的作用，类似computed&data的关系
+###### State: 提供唯一的公共数据源，所有共享的数据都要统一放在store.state对象中
+###### Mutation: 变更Store中state的数据只能使用mustation, 不可以直接修改state的数据, 可以集中监控所有数据的变化
+###### Actions: 通过在action中触发mutation里的方式进行异步操作数据. 必须通过action，异步操作不能直接在mutation中!
+###### Getter: 不会修改state中的数据，只是包装数据的作用，类似computed&data的关系
 ```
 import Vue from 'vue';
 import Vuex from 'vuex';
