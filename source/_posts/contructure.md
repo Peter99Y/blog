@@ -815,13 +815,10 @@ console.log(another.subset(set));
 在生活中描述规模使用大中小。在算法描述中，算法的效率是随着数据量变化而变化，通过时间复杂度（估算程序指令的执行次数，非执行时间）和空间复杂度（估算所需占用的存储空间）来对算法的分类，这种衡量算法的方法被称为“大 O“表示法；
 
 **O(f(n))：**O 表示正比例关系，f(n)表示代码执行的次数；
-
--   O(1): 常数
--   O(log(n)): 对数
--   O(n): 线性（随着数据量越大，算法的效率也是线性增长的）
--   O(nlog(n)): 线性和对数成积
--   O(n²): 平方
--   O(2^n): 指数
+**推导方式：**
+a.用常量 1 取代所有的加法常量（3n+1+1）=> 3n; （2n² + 3n + 1 + 1）=> (2n² + 3n);
+b.只保留最高项 (2n² + 3n) => O(2n²)
+c.如最高项存在常量且不为 1，则去除; O(3n) => O(n); O(2n²) => O(n²);
 
 ![](/images/bigO.jpg)
 
@@ -847,7 +844,7 @@ for(var i = 0; i < 3; i++){
 // i < 3; log; i++;
 // i < 3;           不满足停止;
 
-// 总数 1 + (3+1) + 3 + 3 = 11;
+// 总数 1 + (3+1) + 3 + 3 => 11 => O(1);
 不管有多少数据项，算法执行不会随着数据项的数量变化而变化；
 ```
 
@@ -897,7 +894,7 @@ for(var i = 0; i < n; i++){
 N在无限大的时候，常数项1和倍数项3影响不大省略；
 ```
 
-###### O(nlog(n))
+###### O(nlog(n)) 线性和对数成积
 
 ```
 for(var i = 0; i <= n; i++){
@@ -940,33 +937,44 @@ for(var i = 0; i <= n; i++){
 	}
 }
 
-O(n + n²) => O(n²); 在n无限大时，n对于n²而言相当于常量，省略；
+O(n + n²) => O(n²); 在n无限大时，n对于n²而言相当于常量项，省略；
 ```
 
 ### 排序
 
+###### 冒泡排序 O(n²)
+
+比较次数大 O 表示法：
+双层循环下，if 需要比较次数，(n-1)+(n-2)...(n-6)
+=> n \* (n-1) / 2;
+=> n²/2 - n/2;
+=> 大 O 推导公式 b 只取最高项 n²/2;
+=> 大 O 推导公式 c 去除最高项常量 O(n²);
+
 ```
-function ArrayList() {
-	this.array = [];
+// [1,2,3,4,5]
+// i < length   等于 i < 5: i最后是4; this.array[4]==5; this.array[i+1]==null;
+// i < length-1 等于 i < 4: i最后是3; this.array[3]==4; this.array[i+1]==5;
 
-	ArrayList.prototype.insert = function (item) {
-		this.array.push(item);
-	};
+for (var i = 0; i < length - 1; i++) {
+	var current = this.array[i];
+	var next = this.array[i + 1];
 
-	ArrayList.prototype.toString = function () {
-		var str = this.array.join(",");
-		console.log(str);
-		return str;
-	};
+	if (current > next) {
+		this.array[i] = next;
+		this.array[i + 1] = current;
+	}
+}
+```
 
-	// 冒泡排序
-	ArrayList.prototype.bubbleSort = function () {
-		var length = this.array.length;
+```
+function bubbleList(){
+	for (var m = length - 1; m >= 1; m--) {
 
-		// [1,2,3,4,5]
-		// i < length   等于 i < 5: i最后是4; this.array[4]==5; this.array[i+1]==null;
-		// i < length-1 等于 i < 4: i最后是3; this.array[3]==4; this.array[i+1]==5;
-		for (var i = 0; i < length - 1; i++) {
+		// m等于1时，i<m 等于 0<1, for循环才会执行；
+		// this.arrary[0] 于 this.array[0+1]的最后比较
+		// 实际上 m>=0 也没关系，i=0 不小于0, for循环也就不会执行
+		for (var i = 0; i < m; i++) {
 			var current = this.array[i];
 			var next = this.array[i + 1];
 
@@ -975,35 +983,128 @@ function ArrayList() {
 				this.array[i + 1] = current;
 			}
 		}
+	}
+}
+```
 
+###### 选择排序
 
-		for (var m = length - 1; m >= 1; m--) {
+-   **比较次数**大 O 表示法：
+    如 5 项数据：[1,2,3,4,5]
 
-			// m等于1时，i<m 等于 0<1, for循环才会执行；
-			// this.arrary[0] 于 this.array[0+1]的最后比较
-			// 实际上 m>=0 也没关系，i=0 不小于0, for循环也就不会执行
-			for (var i = 0; i < m; i++) {
-				var current = this.array[i];
-				var next = this.array[i + 1];
+第 1 遍 5 项数据，需要比较 5-1，
+第 2 遍 4 项数据，需要比较 5-2，
+第 3 遍 3 项数据，需要比较 5-3，
+第 4 遍 2 项数据，需要比较 5-4，
+=> (n-1)+(n-2)+(n-3)+(n-4)...
+=> n \* (n-1)/2
+=> n²/2 - n/2;
+=> 大 O 推导公式 b 只取最高项 n²/2;
+=> 大 O 推导公式 c 去除最高项常量 O(n²);
 
-				if (current > next) {
-					this.array[i] = next;
-					this.array[i + 1] = current;
-				}
+-   **交换次数**大 O 表示法：
+    如 5 项数据：[1,2,3,4,5]
+
+第 1 遍，将找到的最小值交换位置 1 次，
+第 2 遍，将找到的最小值交换位置 1 次，
+第 3 遍，将找到的最小值交换位置 1 次，
+第 4 遍，将找到的最小值交换位置 1 次，
+=> 双层循环下，共需要交换 n-1
+=> (n-1);
+=> O(n);
+
+```
+	var length = this.array.length;
+
+	// 最小值的下标；
+	var minIndex = 0;
+
+	// 找出数组中最小值的下标并赋值；
+	for (var i = minIndex + 1; i < length; i++) {
+		var current = this.array[minIndex];
+		var next = this.array[i];
+
+		if (current > next) {
+			minIndex = i;
+		}
+	}
+
+	// 将找到最小值与默认下标0交换位置；
+	var temp = this.array[0]
+	this.array[0] = this.array[minIndex];
+	this.array[minIndex] = temp;
+```
+
+```
+function selectionSort(){
+	var length = this.array.length;
+
+	// 外层循环控制minIndex初始位置不同；
+	for (var j = 0; j < length - 1; j++) {
+		var minIndex = j;
+
+		// 内存循环找出此次循环最小值的下标并赋值；默认是从上一轮+1的位置开始；
+		for (var i = minIndex + 1; i < length; i++) {
+			var current = this.array[minIndex];
+			var next = this.array[i];
+
+			if (current > next) {
+				minIndex = i;
 			}
 		}
 
-		this.toString();
-	};
+		// 将找到最小值与默认下标交换到初始位置；
+		var temp = this.array[j];
+		this.array[j] = this.array[minIndex];
+		this.array[minIndex] = temp;
+	}
 }
+```
 
-var list = new ArrayList();
+###### 插入排序
 
-list.insert(99);
-list.insert(22);
-list.insert(88);
-list.insert(655);
-list.insert(8);
+比较次数大 O 表示法：
+1(外层 for1 遍) + 2(外层 for2 遍) + 3 + ... + n-1
+=> n \* (n-1)/2;
+=> n²/2 - n/2;
+=> O(n²);
 
-list.bubbleSort();
+交换次数大 O 表示法：
+1 + 2 + 3 + ... + n-1
+=> n \* (n-1)/2;
+=> n²/2 - n/2;
+=> O(n²);
+
+```
+// [5, 4, 3, 2, 1] 初始值;
+// [4, 5, 3, 2, 1] 外层第1遍完成[4, 5]的交换位置;
+
+// 外层第二遍开始:
+// index = i = 2;
+
+// 内一遍开始:
+// arr[2-1] 和 arr[2] => 5 和 3 比较并交换交换位置得到：[4, 3, 5]; index赋值交换后3的位置index=1;
+// 内二遍开始:
+// 由于第一遍的j--后为0;
+// arr[0] 和 arr[1] => 4 和 3比较并交换位置得到[3, 4, 5]; index赋值交换后3的位置0;
+
+function insertSort(arr) {
+	for (var i = 1; i < arr.length; i++) {
+		// 默认初始值下标1开始；
+		var index = i;
+
+		for (var prevIndex = i - 1; prevIndex >= 0; prevIndex--) {
+			// 如果前一个值比当前值大就调换位置；
+
+			if (arr[prevIndex] > arr[index]) {
+				var temp = arr[prevIndex];
+				arr[prevIndex] = arr[index];
+				arr[index] = temp;
+				index = prevIndex;
+			} else {
+				break;
+			}
+		}
+	}
+}
 ```
