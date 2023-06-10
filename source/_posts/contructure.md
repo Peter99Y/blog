@@ -90,7 +90,6 @@ console.log(s.toString());  // 1 2 3
 
 ![](/images/constructure/dec.png)
 
-
 ```
 function decToBin(dec) {
 	var stack = new Stack();
@@ -818,10 +817,18 @@ console.log(another.subset(set));
 在生活中描述规模使用大中小。在算法描述中，算法的效率是随着数据量变化而变化，通过时间复杂度（估算程序指令的执行次数，非执行时间）和空间复杂度（估算所需占用的存储空间）来对算法的分类，这种衡量算法的方法被称为“大 O“表示法；
 
 **O(f(n))：**O 表示正比例关系，f(n)表示代码执行的次数；
+
 **推导方式：**
-a.用常量 1 取代所有的加法常量（3n+1+1）=> 3n; （2n² + 3n + 1 + 1）=> (2n² + 3n);
-b.只保留最高项 (2n² + 3n) => O(2n²)
-c.如最高项存在常量且不为 1，则去除; O(3n) => O(n); O(2n²) => O(n²);
+a.用常量 1 取代所有的加法常量 (在 n 无限大时，常数项 1 和系数项(与未知数相乘的常数) 对于 n 而言相当于常量影响不大，省略);
+(3n+1+1) => O(3n);
+(2n² + 3n + 1 + 1) => (2n² + 3n);
+
+b.只保留最高项;
+(2n² + 3n) => O(2n²);
+
+c.如最高项存在常量且不为 1，则去除这相乘的常数;
+O(3n) => O(n);
+O(2n²) => O(n²);
 
 ![](/images/constructure/bigO.jpg)
 
@@ -847,7 +854,8 @@ for(var i = 0; i < 3; i++){
 // i < 3; log; i++;
 // i < 3;           不满足停止;
 
-// 总数 1 + (3+1) + 3 + 3 => 11 => O(1);
+// 总数 1 + (3+1) + 3 + 3 => 11
+=> O(1);
 不管有多少数据项，算法执行不会随着数据项的数量变化而变化；
 ```
 
@@ -864,7 +872,8 @@ function Ologn(n){
 // circle = 1; i = 2;
 // circle = 2; i = 4;
 // circle = 3; i = 8;
-O(log2^n)
+=> log2(8); 省略低阶;
+=> O(log2^n);
 ```
 
 ```
@@ -875,7 +884,10 @@ function Ologn(n){
 }
 
 // 假设n = 8; n = 8/2 再判断进行循环，共循环3次
-// 8有多少次除了2，也就是求幂，使用对数log进行求幂的逆运算，log2为底8的次方 = 3; log2(8) ;
+// 8有多少次除了2，也就是求幂，使用对数log进行求幂的逆运算;
+=> log2为底8的次方;
+=> log2(8); 省略低阶;
+=> O(log(n));
 ```
 
 ###### O(n) 线性
@@ -893,8 +905,10 @@ for(var i = 0; i < n; i++){
 // ...
 // i < n;
 
-// 总数：1 + (n+1) + n + n => 2 + 3*n => O(2+3n) => O(n);
-N在无限大的时候，常数项1和倍数项3影响不大省略；
+// 总数：1 + (n+1) + n + n
+2 + 3*n
+O(2+3n)
+O(n);
 ```
 
 ###### O(nlog(n)) 线性和对数成积
@@ -940,8 +954,11 @@ for(var i = 0; i <= n; i++){
 	}
 }
 
-O(n + n²) => O(n²); 在n无限大时，n对于n²而言相当于常量项，省略；
+O(n + n²)
+O(n²);
 ```
+
+---
 
 ### 排序
 
@@ -1109,5 +1126,28 @@ function insertSort(arr) {
 			}
 		}
 	}
+}
+```
+
+###### 快速排序
+
+```
+function quickSort(ary) {
+	//1.判断传入的数组长度，如果是一个就直接返回
+	if (ary.length <= 1) {
+		return ary;
+	}
+	//2.如果长度不为1，那么就取数组的中间值
+	let contentIndex = Math.floor(ary.length / 2);
+	let contentValue = ary.splice(contentIndex, 1)[0];
+	//3.先定义左右两个数组，然后让数组中剩余的数与中间数进行比较，比中间数小的放到左边的数组，比中间数大的放到右边的数组。
+	let leftArr = [];
+	let rightArr = [];
+	for (let i = 0; i < ary.length; i++) {
+		let item = ary[i];
+		item > contentValue ? rightArr.push(item) : leftArr.push(item);
+	}
+	//4.使用递归的方式让左右两边的数组持续这样处理，直至左右两边的数组都排好序，最后三者进行拼接
+	return quickSort(leftArr).concat(contentValue, quickSort(rightArr));
 }
 ```

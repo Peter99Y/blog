@@ -5,7 +5,8 @@ title: vue2/3
 ### MVVM
 M(model:指的是 data 中的数据) V(view: 视图) VM(ViewModel: 实现控制逻辑,将 M & V 结合在一起)
 
-![MVVM示意图](https://upload-images.jianshu.io/upload_images/20409039-569c660012312bc7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](/images/vue2&3/1.webp)
+
 
 ```
 <style type="text/css">
@@ -998,8 +999,6 @@ v-enter-active / v-leave-active: 进入/离开过度时的生效状态;
 </div>
 ```
 
-![](https://upload-images.jianshu.io/upload_images/20409039-703f458e5a7b1d61.gif?imageMogr2/auto-orient/strip)
-
 ```
 <style type="text/css">
 
@@ -1035,8 +1034,6 @@ v-enter-active / v-leave-active: 进入/离开过度时的生效状态;
   	</div>
 </div>
 ```
-
-![](https://upload-images.jianshu.io/upload_images/20409039-d4ae4a52cf9da7c6.gif?imageMogr2/auto-orient/strip)
 
 ---
 
@@ -1077,8 +1074,6 @@ v-enter-active / v-leave-active: 进入/离开过度时的生效状态;
 </div>
 ```
 
-![](https://upload-images.jianshu.io/upload_images/20409039-2f17b90b6f81740c.gif?imageMogr2/auto-orient/strip)
-
 ### 自定义过度类名 & animate.css 第三方动画插件结合使用
 
 ```
@@ -1095,8 +1090,6 @@ v-enter-active / v-leave-active: 进入/离开过度时的生效状态;
 	</transition>
 </div>
 ```
-
-![先引入animate.css](https://upload-images.jianshu.io/upload_images/20409039-d92c2b6c0299e49c.gif?imageMogr2/auto-orient/strip) ######多元素过度
 
 ```
 <style type="text/css">
@@ -1133,8 +1126,6 @@ v-enter-active / v-leave-active: 进入/离开过度时的生效状态;
   	</div>
 </div>
 ```
-
-![](https://upload-images.jianshu.io/upload_images/20409039-7d471fa14068209e.gif?imageMogr2/auto-orient/strip)
 
 ---
 
@@ -1187,8 +1178,6 @@ v-enter-active / v-leave-active: 进入/离开过度时的生效状态;
   	</div>
 </div>
 ```
-
-![](https://upload-images.jianshu.io/upload_images/20409039-fb9894750cb4b8ea.gif?imageMogr2/auto-orient/strip)
 
 ---
 
