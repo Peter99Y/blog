@@ -522,8 +522,7 @@ Animal.prototype = {
 }
 ```
 
-<!-- ![构造函数和prototype和__proto__关系图](https://upload-images.jianshu.io/upload_images/20409039-2c6289c2954a2816.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240) -->
-![构造函数和prototype和__proto__关系图](/images/prototype.png)
+![构造函数和prototype和__proto__关系图](/images/js/prototype.png)
 
 ##### 原型链
 
@@ -533,9 +532,7 @@ Object 构造函数的原型对象.\_\_proto\_\_ 指向 null;
 
 当访问对象的属性和方法时(就近原则), 首先查找对象自身是否有，如没有，就会根据原型链向上查找，直到最后 undefined;
 
-<!-- ![](https://upload-images.jianshu.io/upload_images/20409039-cceba16cd2a1f883.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240) -->
-
-![](/images/proto.png)
+![](/images/js/proto.png)
 ##### 继承
 
 ES6 没有 extends 继承，而是利用函数继承父类型的属性，利用原型对象继承父类型的方法;
@@ -864,6 +861,4 @@ class Tab {
 new Tab("#tab");
 ```
 
-<!-- ![](https://upload-images.jianshu.io/upload_images/20409039-823895cccf4a0f4b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240) -->
-
-![](/images/tabs.png);
+![](/images/js/tabs.png);

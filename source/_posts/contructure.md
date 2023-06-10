@@ -88,6 +88,9 @@ console.log(s.toString());  // 1 2 3
 
 ###### 利用栈结构将 10 进制转 2 进制
 
+![](/images/constructure/dec.png)
+
+
 ```
 function decToBin(dec) {
 	var stack = new Stack();
@@ -244,11 +247,11 @@ console.log(pq.toString()); // c-8, b-9, a-10, d-11
 
 ---
 
-### 链表
+### 链表 (linked list)
 
 线性结构；
 链表中每个元素包含存储的数据和指向下一个元素的指针；
-![](/images/linkedList.jpg)
+![](/images/constructure/linkedList.jpg)
 
 ---
 
@@ -476,7 +479,7 @@ console.log(list.indexOf("a")); // 0
 
 ### 双向链表
 
-![](/images/doubleLinkedList.jpg)
+![](/images/constructure/doubleLinkedList.jpg)
 
 head 和 tail 分别指向头部和尾部的节点;
 每个节点有 3 个属性，prev 指向前一个节点，next 指向下一个，data 存储当前节点数据;
@@ -820,7 +823,7 @@ a.用常量 1 取代所有的加法常量（3n+1+1）=> 3n; （2n² + 3n + 1 + 1
 b.只保留最高项 (2n² + 3n) => O(2n²)
 c.如最高项存在常量且不为 1，则去除; O(3n) => O(n); O(2n²) => O(n²);
 
-![](/images/bigO.jpg)
+![](/images/constructure/bigO.jpg)
 
 ###### O(1) 常数
 
