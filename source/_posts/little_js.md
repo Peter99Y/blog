@@ -109,8 +109,8 @@ let str = 'abc'.substr(0,1);		// 'a' 截取字符,不改变原字符
 ```
 
 ```
-let str = 'china是一个美丽的国家'.replace('china', '中国');
-let str = 'CHINA是一个美丽的国家, 啊，china!'.replace(/china/gi, '中国');
+let str = 'china是美丽的国家'.replace('china', '中国');
+let str = 'CHINA是美丽的国家'.replace(/china/gi, '中国');
 ```
 
 ```
