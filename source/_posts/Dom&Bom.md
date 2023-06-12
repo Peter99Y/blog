@@ -547,7 +547,7 @@ goBack.addEventListener('click',function(){
 		var btn = document.querySelector('button');
 
 		btn.addEventListener('click', function(){
-			console.log('最后的 window.onload 注册事件会覆盖以前的');
+			console.log('多个window.onload事件，最后的 window.onload 注册事件会覆盖以前的');
 		})
 	}
 	*/
@@ -573,21 +573,21 @@ goBack.addEventListener('click',function(){
 窗口大小发生像素变化触发事件
 
 ```
-  var div = document.querySelector('div');
+var div = document.querySelector('div');
 
-  window.onresize = function(){
-	if(window.innerWidth <= 800){  // 当前屏幕的宽度;
-
+window.onresize = function(){
+	// 当前屏幕的宽度;
+	if(window.innerWidth <= 800){
 		div.style.display = 'none';
 	}else{
 		div.style.display = 'block';
 	}
-  }
+}
 ```
 
 ###### window.setTimeout & setInterval 定时器
 
-###### window.locatin 
+###### window.location 
 解析/获取/设置访问的 URL 的对象
 
 ```
@@ -602,8 +602,8 @@ goBack.addEventListener('click',function(){
        location.search      ?name=tom&password=123查询字符串
 
   方法:
-   location.assign("新url")  也可实现在当前窗口打开，可后退
    location.href="新url"
+   location.assign("新url")  也可实现在当前窗口打开，可后退
    location.replace("新url")  实现禁止后退      原理: 用新url替换history中旧的url
 
   刷新:
@@ -625,8 +625,18 @@ if((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobil
  cookieEnabled: 判断当前浏览器是否启用了cookie。
  plugins: 保存浏览器安装的所有插件信息的集合
  userAgent: 保存浏览器名称和版本号的字符串
- geolocation: 该对象提供用户地理位置信息，通过getCurrentPosition获取;    navigator.geolocation.getCurrentPosition(position=>{ console.log('用户地理信息:', position) })
-	  latitude 维度    longitude 经度  accuracy经纬度精确度  altitude海拔高度 altitudeAccuracy海拔高度经度 heading设备方向 speed速度
+ geolocation: 该对象提供用户地理位置信息，通过getCurrentPosition获取;  
+	latitude 维度    
+	longitude 经度  
+	accuracy 经纬度精确度  
+	altitude 海拔高度 
+	altitudeAccuracy 海拔高度经度 
+	heading 设备方向 
+	speed 速度
+
+ 	navigator.geolocation.getCurrentPosition( position => { 
+		console.log('用户地理信息:', position) 
+	});
 ```
 
 ###### window.history 
