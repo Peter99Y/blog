@@ -203,8 +203,8 @@ fn(1);
 
 ### 全局预编译
 
-只是没有函数预编译的第 3 步(没形参)
 第一步创建的叫 GO 对象
+没有函数预编译的第 3 步(没形参)
 
 ```
 console.log(a);		// f a(){}
@@ -253,19 +253,19 @@ var GO = {
 function fn(){
 	console.log(b);		// undefined
 	if(a){
-		var b = 100;	// 别管if条件，预编译同样把它作为AO属性名
+		var b = 100;	// 别管if条件，预编译同样把它作为AO属性名;
 	}
 
 	// a = 10是在fn()完后才执行; if(a) 的a还是undefined; 所以AO.b没有赋值100;
 	console.log(b);		// undefined;
 	c = 234;
-	console.log(c);		// 234
+	console.log(c);		// 234	Go.c;
 }
 
 var a;
 fn();
 a = 10;
-console.log(c); 		// 234
+console.log(c); 		// 234	Go.c;
 ```
 
 ```
@@ -448,7 +448,7 @@ for (var i = 0; i < lis.length; i++) {
 
 -   创建对象三种方式：
 
-    1.  var obj = { } 对象字面量 (特殊键名必加引号)
+    1.  var obj = { }; 对象字面量 (特殊键名必加引号)
     2.  var obj= new Object();
     3.  构造函数;
 
@@ -533,6 +533,7 @@ Object 构造函数的原型对象.\_\_proto\_\_ 指向 null;
 当访问对象的属性和方法时(就近原则), 首先查找对象自身是否有，如没有，就会根据原型链向上查找，直到最后 undefined;
 
 ![](/images/js/proto.png)
+
 ##### 继承
 
 ES6 没有 extends 继承，而是利用函数继承父类型的属性，利用原型对象继承父类型的方法;
@@ -550,6 +551,47 @@ function Food(name, price, category) {
 
 let food = new Food("cheese", 5, "food");
 ```
+
+###### 构造函数模式
+
+每个 new 出来的实例对象都是独立的，但里面的属性和方法重复，造成内存泄漏；
+
+```
+function Animal(name){
+	this.name = name;
+	this.bark = function(){
+		console.log('wow!')
+	}
+}
+
+var cat = new Animal('cat');
+var dog = new Animal('dog');
+
+console.log(cat.__proto__ === dog.__proto__);	// false;
+```
+
+###### 原型链模式
+
+弊端：继承的原型对象的属性和方法同时会被修改；
+
+```
+function Animal(){
+	Animal.prototype.category = '动物';
+}
+
+function Dog(){
+	Dog.prototype = Father.prototype;
+	Dog.prototype.name = 'dog';
+}
+
+var dog = new Dog();
+var animal = new Animal();
+
+console.log(animal.name);	// 'dog'
+console.log(dog.name);		// 'dog'
+```
+
+###### 圣杯模式
 
 ```
 Product.prototype.sum = function (arr) {
@@ -601,19 +643,19 @@ class Animal {
 	constructor(name) {
 		// 实例对象共有属性
 		this.name = name;
-        this.init();         // 创建实例对象就立即调用;
+		this.init();         // 创建实例对象就立即调用;
 	}
-    init(){
-        console.log('initial finished');
-    }
+	init(){
+		console.log('initial finished');
+	}
 	// 实例对象共有方法
 	run(method) {
 		console.log(this.name, `is runing ${method}`);
 	},
-    // 静态方法
-    static eat(){
-        console.log('chips');
-    }
+	// 静态方法
+	static eat(){
+		console.log('chips');
+	}
 }
 
 // 生成实例对象
@@ -659,18 +701,18 @@ dog.run("fast");
 
 ```
 class Father {
-    run(){
-        console.log('run')
-    }
+	run(){
+		console.log('run')
+	}
 	say() {
-        console.log('f')
+		console.log('f')
 	}
 }
 
 class Son extends Father{
-    say(){
-        console.log('s')
-    }
+	say(){
+	    console.log('s')
+	}
 }
 
 var s = new Son(1, 2);
@@ -682,22 +724,22 @@ s.say();    // s
 class Father {
 	constructor(x, y) {
 		this.x = x;
-        this.y = y;
+		this.y = y;
 	}
 	sum() {
 	    console.log(this.x + this.y);
 	}
-    say() {
+	say() {
 		console.log("fuck");
 	}
 }
 
 class Son extends Father{
-    constructor(x, y){
-        // 调用父类constructor构造函数; 等价于 Father.constructor(x,y);
-        super(x, y);
-    }
-    say() {
+	constructor(x, y){
+		// 调用父类constructor构造函数; 等价于 Father.constructor(x,y);
+		super(x, y);
+	}
+	say() {
 		super.say();        // 调用父类普通函数;
 	}
 

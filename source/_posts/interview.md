@@ -88,3 +88,13 @@ function deepClone(obj = {}) {
 	return result;
 }
 ```
+
+### css
+
+###### 圣杯布局
+
+![](/images/interview/shengbei.png)
+
+###### BFC
+
+BFC是一个独立的布局环境，BFC内部的元素布局与外部互不影响；

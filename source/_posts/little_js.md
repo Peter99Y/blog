@@ -2,7 +2,7 @@
 title: little js
 ---
 
-#### new Set()
+###### new Set()
 
 Set 构造函数去重
 
@@ -35,7 +35,7 @@ function unique(arr) {
 }
 ```
 
-#### 伪数组转数组
+###### 伪数组转数组
 
 转成真正的数组后，可调用数组的方法
 
@@ -58,7 +58,7 @@ var arr = Array.from(likeArray);
 console.log(arr);       //[1,2]
 ```
 
-#### 包装类
+###### 包装类
 
 基本数据类型是没有属性和方法的，只有对象才有属性和方法，js 默认将 string, number, boolean 类型包装为复杂数据类型;
 为了方便操作基本数据类型，js 提供了 String, Number, Boolean 包装类;
@@ -74,7 +74,7 @@ var str = temp;
 temp = null;
 ```
 
-#### string
+###### string
 
 ```
 let str = ' hello '.strim();		// 'hello'
@@ -117,7 +117,7 @@ let str = 'CHINA是美丽的国家'.replace(/china/gi, '中国');
 let str = 'china is china'.match(/china/ig);		// ['china', 'china']
 ```
 
-#### number
+###### number
 
 ```
 let num =  isNaN (1-'a');		// true
@@ -127,6 +127,8 @@ let num =  isFinite(10/3);		// true
 let num =  isNaN( Number('1a') );	// true
 ```
 
+###### parseInt
+
 ```
 let num = parseInt(1.23);		// 1
 
@@ -135,15 +137,17 @@ let num = parseInt('7a12');		// 7
 let num = parseInt('a712');		// NaN
 ```
 
+###### parseFloat
+
 ```
-let num = isNaN(parseFloat('a34'));		// true
+let num = isNaN(parseFloat('a34'));			// true
 
-let num = parseFloat('1.32a3');			//1.32
+let num = parseFloat('1.32a3');			// 1.32
 
-let num = parseFloat('11a1').toFixed(2);	// '11.00'
+let num = parseFloat('11a1').toFixed(2);		// '11.00'
 ```
 
-### 隐式转换
+###### 隐式转换
 
 > NaN、 ''、 null、 0、 false、 undefined
 
