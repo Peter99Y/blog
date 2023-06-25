@@ -1,16 +1,12 @@
 ---
-title: JS
+title: Function
 ---
 
 ### 函数
 
 > 所有函数都是构造函数 new Function() 的实例对象;
 
--   函数定义方式
-
 ```
-var f = new Function("a", "b", "console.log(a+b)");  // (罕见) 生成函数f
-
 // 函数声明 (命名函数)
 function fn() {}
 
@@ -21,13 +17,15 @@ console.log(f instanceof Object);                   // true
 console.log(f.__proto__ === Function.prototype);    // true
 ```
 
--   函数调用方式 & 内部的 this 指向
+-   函数内部的 this 指向
 
 ```
 // 普通函数
-function fn2() {
+function fn() {
     console.log(this)       // window
 }
+fn();
+
 // 对象方法
 var obj = {
     say:function(){
@@ -46,6 +44,7 @@ new Start();
 btn.onclick = function(){
     console.log(this);      // btn元素
 }
+
 // 定时器函数
 setInterval(()=>{
     console.log(this);      // window
@@ -91,7 +90,7 @@ let food = new Food("cheese", 5, "food");
 ```
 function fn(val, val2, val3) {
 	console.log(this);            // obj
-    console.log(val,val2,val3);   // 1 2 3
+	console.log(val,val2,val3);   // 1 2 3
 }
 
 let obj = { name: "c" };
@@ -134,8 +133,6 @@ btn.onclick = function () {
 	);
 };
 ```
-
----
 
 ### 函数预编译
 
@@ -811,7 +808,7 @@ var dog = new Animal("dog");
 dog.run();     // 这里dog.run调用，run函数里的this, 指向dog实例对象;
 ```
 
-##### example:
+##### example
 
 ```
 // let that;

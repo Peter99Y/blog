@@ -60,7 +60,7 @@ const handleCount = () => {
 
 ### ref
 
-获取 Html 元素
+-   获取 DOM 元素；
 
 ```
 <script setup>
@@ -82,7 +82,37 @@ onMounted(() => {
 </template>
 ```
 
-默认组件内部属性和方法不开放给父组件访问，通过 defineExpose 暴露指定属性和方法
+-   接收一个基本数据类型/引用数据类型，并返回一个响应式对象
+
+```
+<script setup>
+// ref函数内部依赖reactive函数实现；
+import { ref } from "vue";
+
+const count = ref(2);
+const handleCount = () => {
+    count.value++;
+};
+
+// 接收一个泛型；
+type UserType = {
+    name: string;
+};
+let user = ref<UserType>({ name: "tom" });
+const change = () => {
+    user.value.name = "jack";
+};
+</script>
+
+<template>
+    <div>{{ count }}</div>
+    <button @click="handleCount">click</button>
+</template>
+```
+
+###### defineExpose
+
+默认不开放给父组件访问，通过 defineExpose 暴露组件内的属性和方法
 
 ```
 <script setup>
@@ -101,26 +131,6 @@ defineExpose({
 
 <template>
     {{ msg }}
-</template>
-```
-
-接收一个 简单类型/对象类型数据，并返回一个响应式对象
-
-```
-<script setup>
-import { ref } from "vue";
-
-// ref函数内部依赖reactive函数实现
-const count = ref(2);
-const handleCount = () => {
-    count.value++;
-};
-</script>
-
-<template>
-    <div>{{ count }}</div>
-
-    <button @click="handleCount">click</button>
 </template>
 ```
 
