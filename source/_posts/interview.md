@@ -89,12 +89,30 @@ function deepClone(obj = {}) {
 }
 ```
 
-### css
+#### 首屏加载优化
 
-###### 圣杯布局
+-   路由懒加载
+    vue 是单页应用，打包时，所有的 js 都会打包成一个 js 文件会变得非常大，影响页面加载速度，使用 import 导入组件可以把路由对应的组件分割成不同的代码块，用户访问对应的路由才加载对应的组件；
+-   vue3 - defineAsyncComponent 异步组件加载；
+-   vuex 状态管理；
+-   图片懒加载；
+
+#### 生命周期
+
+-   created: 编译模版；
+-   mounted: 挂载模版；
+-   updated: 在组件的任意 DOM 节点更新后调用；
+    注意：仅限用差值语法使用在页面上的 data 属性，若没有使用在页面上，自身的 updated 或子组件的 updated 都不会触发；
+
+#### vue3 composition Api
+
+-   选项式写法，在 data 中定义的属性，methods,computed,watch 中都会使用，造成代码结构是不相关的；组合式 api 则可以统一写在一块，高内聚；
+-   选项式与 ts 结合并不友好，组合式与 ts 结合更友好，比如类型推断；
+
+#### css - 圣杯布局
 
 ![](/images/interview/shengbei.png)
 
-###### BFC
+#### css - BFC
 
-BFC是一个独立的布局环境，BFC内部的元素布局与外部互不影响；
+BFC 是一个独立的布局环境，BFC 内部的元素布局与外部互不影响；

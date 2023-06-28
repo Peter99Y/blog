@@ -3,10 +3,10 @@ title: vue2/3
 ---
 
 ### MVVM
+
 M(model:指的是 data 中的数据) V(view: 视图) VM(ViewModel: 实现控制逻辑,将 M & V 结合在一起)
 
 ![](/images/vue2&3/1.webp)
-
 
 ```
 <style type="text/css">
@@ -24,7 +24,7 @@ M(model:指的是 data 中的数据) V(view: 视图) VM(ViewModel: 实现控制�
 
       填充HTML片段
 	  <div v-html="msghtml"></div>
-      
+
       跳过编辑过程, 直接填充原始信息--如双花括号
 	  <div v-pre>{{msg}}</div>
 
@@ -290,6 +290,52 @@ vue 提供了一个内置的<component>组件，专门用来实现组件动态�
 </script>
 ```
 
+### v3 异步组件加载
+
+同步组件加载
+
+```
+<script>
+import Son from '../components/HelloWorld.vue'
+export default {
+    components:{
+        Son
+    },
+};
+</script>
+```
+
+defineAsyncComponent() 异步组件加载，按需加载
+
+```
+<script>
+import { defineAsyncComponent } from "vue";
+import LoadingComponent from '../components/loding.vue'
+import ErrorComponent from '../components/error.vue'
+
+export default {
+    components: {
+        Son1: defineAsyncComponent(()=>import('../components/HelloWorld.vue'))
+        Son2: defineAsyncComponent({
+            // 加载函数
+            loader: () => import("../components/HelloWorld.vue"),
+
+            // 加载异步组件时使用的组件
+            loadingComponent: LoadingComponent,
+            // 展示加载组件前的延迟时间，默认为 200ms
+            delay: 200,
+
+            // 加载失败后展示的组件
+            errorComponent: ErrorComponent,
+            // 如果提供了一个 timeout 时间限制，并超时了
+            // 也会显示这里配置的报错组件，默认值是：Infinity
+            timeout: 3000,
+        }),
+    },
+};
+</script>
+```
+
 ### 自定义指令（当内置指令不满足需求时）
 
 `vue2`
@@ -370,6 +416,7 @@ export default {
 };
 </script>
 ```
+
 ---
 
 ### computed
@@ -438,35 +485,40 @@ export default {
 
 ```
 export default {
-		data:{
-			msg:'hello',
+    data() {
+        return {
+            msg: "hello",
 
-			msgObj:{
-				name: 'tom',
-				age: 10,
-			}
-		},
-		watch:{
-            msg(newV, oldV){
-                console.log('newV')
+            msgObj: {
+                name: "tom",
+                age: 10,
             },
-			msg:{
-				handler:function(newV, oldV){ },
-                immediate: true    // 组件初始化不会掉用watch，如果想立即掉用...
-			},
-			msgObj:{
-				handler:function(newV, oldV){ },
-				deep:true         // 监听对象/数组 每一个值的变化
-			},
-			'msgObj.name':{       //监听具体到对象的单个属性变化
-				handler:function(newV, oldV){ }
-			}
-		}
+        };
+    },
+    watch: {
+        msg(newV, oldV) {
+            console.log("newV");
+        },
+        msg: {
+            handler: function (newV, oldV) {},
+            immediate: true, // 组件初始化不会掉用watch，如果想立即掉用...
+        },
+        msgObj: {
+            handler: function (newV, oldV) {},
+            deep: true, // 监听对象/数组 每一个值的变化
+        },
+        "msgObj.name": {
+            //监听具体到对象的单个属性变化
+            handler: function (newV, oldV) {},
+        },
+    },
 }
 ```
 
 ### filter
+
 注意: 过滤器内无法获取 this(也就是 Vue 实例对象), 只支持对被过滤的数据的改变;
+注意: vue3 移除了 filter，可使用方法或计算属性完成；
 
 ```
 <div id="app">
@@ -549,6 +601,7 @@ export default {
 ```
 
 ---
+
 ### 组件传值
 
 ###### 父组件向子组件传值
@@ -700,7 +753,7 @@ export default {
 </script>
 ```
 
-######   v-model 修饰符
+###### v-model 修饰符
 
 ```
 <template>
@@ -752,7 +805,7 @@ export default {
 
 ###### 非父子组件间传值 - 中央事件总线 eventbus
 
-vue3 中需要借助 mitt 第三方包创建 eventBus 对象;安装 mitt;
+vue3移除，可借助 mitt 第三方包创建 eventBus 对象;安装 mitt;
 
 `eventBus.js`
 
@@ -947,6 +1000,7 @@ export default {
 ---
 
 ### $set
+
 Vue 会在初始化实例时对 property 执行 getter/setter 转化，所以 property 必须在 data 对象上存在才能让 Vue 将它转换为响应式的；
 
 ```
@@ -1182,6 +1236,7 @@ v-enter-active / v-leave-active: 进入/离开过度时的生效状态;
 ---
 
 ### 路由: 对于单页面应用程序来说，主要通过不同的 hash 地址，实现不同页面的切换，称作前端路由
+
 1.URL 中 hash #(井号)代表网页中的一个位置，不会发起新的 http 请求，只是实现客户端页面的定位。
 2.#右边的字符，是位置的标识符。 3.改变#会改变浏览器的访问历史记录
 4.window.location.hash 可读取或修改#值
@@ -1325,6 +1380,7 @@ export default router;
 ---
 
 ###### 路由懒加载
+
 根据匹配到的路由按需加载组件，而不是应用打开时加载所有的组件
 
 ```
@@ -1341,6 +1397,7 @@ export default new Router({
 ```
 
 ###### 路由守卫
+
 文档: `https://router.vuejs.org/zh/`
 全局前置守卫 router.beforeEach
 
@@ -1403,6 +1460,7 @@ methods:{},
 ```
 
 ###### keep-alive
+
 vue 内置组件,可以使被包含的组件保留状态避免重新渲染
 `router.js`
 
@@ -1427,7 +1485,8 @@ vue 内置组件,可以使被包含的组件保留状态避免重新渲染
 
 ---
 
-###### ES6 模块化:  
+###### ES6 模块化:
+
 模块化就是把单独的一个功能封装到一个模块(文件)中，模块之间相互隔离，但是可以通过特定的接口公开内部成员，也可以依赖别的模块；这样方便代码的重用，从而提升开发效率，方便后期维护;
 
 ES6 模块化定义: 1.每个 JS 文件都是一个独立的模块 2.导入模块成员 import 3.暴露模块成员 export;

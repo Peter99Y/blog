@@ -2,48 +2,64 @@
 title: vue3组合式API
 ---
 
+### setup
+
 ```
-<script>
-export default {
-    setup(){
-        const msg = '这是一条信息';
-
-        const handleMsg = ()=>{
-            console.log('这是一条信息');
-        }
-        return {
-            msg,
-            handleMsg
-        }
-    }
-}
-</script>
-
 <template>
-    <div>{{ msg }}</div>
-
-    <button @click="handleMsg">click</button>
+    <div>{{ data.count }}</div>
+    <button @click="handleChange">click</button>
 </template>
+
+<script>
+import {reactive} from 'vue'
+export default {
+    setup() {
+        const data = reactive({
+            count: 1,
+        });
+
+        const handleChange = ()=>{
+            data.count += 1;
+        }
+
+        return {
+            data,
+            handleChange,
+        }
+    },
+};
+</script>
 ```
 
 语法糖简写模式
 
 ```
-<script setup>
-const msg = "这是一条信息";
+<template>
+    <div>{{ data.count }}</div>
+    <button @click="handleChange">click</button>
+</template>
 
-const handleMsg = () => {
-    console.log("这是一条信息");
+<script setup>
+import { reactive } from "vue";
+
+const data = reactive({
+    count: 1,
+});
+
+const handleChange = () => {
+    data.count += 1;
 };
 </script>
 ```
 
 ### reactive
 
+接受一个对象参数，不接受基本数据类型，并返回深层响应式对象
+
 ```
 <script setup>
-// 接受一个对象参数，并返回响应式对象
 import { reactive } from "vue";
+
 const state = reactive({ count: 1 });
 
 const handleCount = () => {
@@ -53,7 +69,6 @@ const handleCount = () => {
 
 <template>
     <div>{{ state.count }}</div>
-
     <button @click="handleCount">click</button>
 </template>
 ```
@@ -82,19 +97,22 @@ onMounted(() => {
 </template>
 ```
 
--   接收一个基本数据类型/引用数据类型，并返回一个响应式对象
+-   接收一个基本数据类型/引用数据类型，并返回一个深层响应式对象
 
 ```
 <script setup>
-// ref函数内部依赖reactive函数实现；
 import { ref } from "vue";
 
+// new Proxy({value: 'tom'}); 会包装成一个代理对象，绑定的value属性就是响应式对象；
+// 所以js部分需要.value才能修改，html不用；
+const user = ref('tom');
+
 const count = ref(2);
+
 const handleCount = () => {
     count.value++;
 };
 
-// 接收一个泛型；
 type UserType = {
     name: string;
 };
@@ -108,6 +126,53 @@ const change = () => {
     <div>{{ count }}</div>
     <button @click="handleCount">click</button>
 </template>
+```
+
+###### toRef, toRefs
+
+```
+<template>
+    <h5>{{ name }}</h5>
+    <div>{{ count }}</div>
+    <div>{{ city }}</div>
+    <button @click="handleChange">click</button>
+</template>
+
+<script>
+import {reactive, toRef, toRefs, ref} from 'vue'
+export default {
+    setup() {
+        const city = ref('北京');
+        const data = reactive({
+            count: 1,
+            name: 'tom',
+            city: city
+        });
+
+        let count = toRef(data, 'count');
+        let allData = toRefs(data);
+
+        const handleChange = ()=>{
+            // data.count += 1;
+            // count.value += 1;
+            allData.count.value += 1;
+        }
+
+        return {
+            // 非响应式
+            // count: data.count,
+
+            // toRef: 响应式的，同时原数据修改/自身修改，同时都会修改；
+            // count: count,
+
+            // toRefs:
+            ...allData,
+
+            handleChange,
+        }
+    },
+};
+</script>
 ```
 
 ###### defineExpose
@@ -142,7 +207,6 @@ import { ref, computed } from "vue";
 
 const list = ref([1,2,3,4,5]);
 
-// return基于相应式数据做计算的值
 const computedList = computed(()=>{
     return list.value.filter(it=>it > 2);
 })
@@ -162,7 +226,7 @@ watch(
         console.log("count:", newV);
     },
     {
-        immediate: true,
+        immediate: true,    // 页面第一次加载触发；
         // deep: true
     }
 );
@@ -198,9 +262,27 @@ watch(()=> info.value.count, (newV)=>{
 </script>
 ```
 
-#### 声明周期
+##### watchEffect
+
+-   页面首次加载会立即执行；
+-   自动侦听内部的依赖并重新执行；
+-   第二个参数可选 DOM 渲染前后才执行；
+
+---
+
+#### 组合式 Api 生命周期
 
 组合式 API setup 中码字 等于 选项式 API beforeCreate/created 声明周期中码字, 其他生命周期都是加了一个前缀 on;
+vue2 | vue3
+--- | ---
+beforeCreate | setup
+created | setup
+beforeMount | onBeforeMount
+mounted | onMounted
+beforeUpdate | onBeforeUpdate
+updated | onUpdated
+beforeDestory | onBeforeUnmount
+destroyed | onUnmounted
 
 ```
 <script setup>
@@ -217,24 +299,40 @@ onMounted(()=>{
 </script>
 ```
 
-#### 父子通信
+#### directive
+
+任何以 v 开头的驼峰式命名的变量都可以被用作一个自定义指令
+
+#### 动态组件&lt;composite&gt;
 
 ```
 <script setup>
+import Foo from "./Foo.vue";
+import Bar from "./Bar.vue";
+</script>
+I
+<template>
+    <component :is="Foo" />
+    <component :is="someCondition ? Foo : Bar" />
+</template>
+```
 
+#### defineProps 父子通信
+
+```
+<script setup>
 import { ref } from 'vue';
+
 // 组合式API下无需注册
 import Child from './components/Right.vue'
-const count = ref(100);
 
+const count = ref(100);
 </script>
 
 <template>
     <Child :count="count"/>
 </template>
 ```
-
-defineProps 接收父级传递的参数
 
 ```
 <script setup>
@@ -248,7 +346,7 @@ defineProps({
 </template>
 ```
 
-#### 子父通信
+#### defineEmits 子父通信
 
 ```
 <script setup>
@@ -268,8 +366,6 @@ const handleMsg = (msg) => {
 </template>
 ```
 
-defineEmits 定义自定义事件
-
 ```
 <script setup>
 const $emit = defineEmits(["push-msg"]);
@@ -284,7 +380,44 @@ const handleMsg = () => {
 </template>
 ```
 
+#### another props & emits
+
+特别恶心，选项式和组合式请别混用；
+
+```
+<template>
+    <div>{{ newCount }}</div>
+    <button @click="handleChange">add</button>
+</template>
+
+<script>
+import { computed } from "vue";
+export default {
+    props: {
+        count: "",
+    },
+    emits: ["change-count"],
+    setup(props, { emit }) {
+        let newCount = computed(() => props.count * 2);
+
+        let handleChange = () => {
+            emit("change-count", newCount.value);
+        };
+
+        return {
+            newCount,
+            handleChange,
+        };
+    },
+};
+</script>
+```
+
 #### provide & inject
+
+多层嵌套组件中使用；
+
+`父组件.vue`
 
 ```
 <script setup>
@@ -298,6 +431,7 @@ const handleMsg = () => {
 
 // 传递数据
 provide("info", msg);
+
 // 传递方法
 provide("setInfo", handleMsg);
 </script>
@@ -306,6 +440,8 @@ provide("setInfo", handleMsg);
     <Child ref="childRef" />
 </template>
 ```
+
+`子组件.vue`
 
 ```
 <script setup>
