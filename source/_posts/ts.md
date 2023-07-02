@@ -23,7 +23,7 @@ let count = 12;           	// 默认推断number类型
 count = 'a';			// err
 ```
 
-###### 类型
+###### undefined & null 类型
 
 undefined & null 都可以作为其他类型 (ts 配置文件可禁用被赋值给其他类型);
 
@@ -60,7 +60,6 @@ const arr: Array<number | string | boolean> = [1, "2", false];
 元祖类型在定义时，限制数组数据的类型/位置/长度;
 
 ```
-// 元祖类型
 let arr: [string, number, boolean] = ["1", 2, false];
 ```
 
@@ -84,7 +83,7 @@ obj.age = 10;
 不清楚变量是什么数据类型 or 很多类型都可以使用，不需要进行类型检测
 
 ```
-let any :string |number | object | boolean = 'hello';
+let any :string | number | object | boolean = 'hello';
 
 let any : any = 'hello';
 
@@ -203,8 +202,8 @@ class Person implements userType {
 
 ###### type & interface
 
--   type 合并;
-    type 不能重复定义相同名实现继承；
+-   type 可以合并 type;
+    type 实现继承不能重复定义相同名；
 
 ```
 type Name = {
@@ -287,7 +286,7 @@ let res:boolean = handleAdd({ name: "tom", age: 10 });
 
 ### 断言
 
-主动判定变量是某种类型
+as 主动判定变量是某种类型
 
 ```
 function fn(arg: number): boolean | number {
@@ -400,7 +399,7 @@ const obj = new Animal(el);
 public 默认
 protected 修饰的属性/方法，只能在类的原型方法上调用，继承的父类上的也可访问 ，实例对象不能访问；
 private 修饰私有属性/方法，不能调用继承父类的，子类不能覆盖，实例对象不能访问；
-readonly 修饰的属性 只能在constructor构造函数中被修改
+readonly 修饰的属性 只能在 constructor 构造函数中被修改
 
 ```
 class Animal {
@@ -445,7 +444,9 @@ console.log(Dog.showSite());
 ```
 
 ###### 单列模式
-如链接数据库,http请求等只需产生一个对象；
+
+如链接数据库,http 请求等只需产生一个对象；
+
 ```
 class Axios {
 	private static instance: Axios | null = null;
@@ -811,11 +812,12 @@ tsc -w 监视根据 json 文件监视 ts；
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true,
 ```
-- 类装饰器的target接收构造函数;
-- 方法装饰器，属性装饰器，参数装饰器的target:
-	-   修饰静态函数，接收的是构造函数；
-	-   修饰原型函数，接收原型对象；
-- propertyKey: 修饰的方法名/属性名；
+
+-   类装饰器的 target 接收构造函数;
+-   方法装饰器，属性装饰器，参数装饰器的 target:
+    -   修饰静态函数，接收的是构造函数；
+    -   修饰原型函数，接收原型对象；
+-   propertyKey: 修饰的方法名/属性名；
 
 ###### 类装饰器
 
@@ -973,6 +975,7 @@ new Article().handleErr();
 ```
 
 ###### 属性装饰器
+
 ```
 const lowerWordDecorator: PropertyDecorator = (
 	target: Object,
