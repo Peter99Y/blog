@@ -457,3 +457,74 @@ const handleMsg = inject('setInfo')
     <button @click="handleMsg">click</button>
 </template>
 ```
+
+### vue 中使用 ts
+
+其他请参考官网
+
+#### reactive
+
+```
+<script setup lang="ts">
+interface IUser {
+    name: string
+}
+const user : IUser = reactive({
+    name: 'tom'
+})
+</script>
+```
+
+#### ref
+
+```
+<script setup lang="ts">
+import type {Ref} from 'vue';
+const user : Ref<string> = ref('tom');
+
+// or
+
+const user = ref<string>('tom');
+</script>
+```
+
+```
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+const el = ref<HTMLInputElement | null>(null)
+
+onMounted(() => {
+  el.value?.focus()
+})
+</script>
+
+<template>
+  <input ref="el" />
+</template>
+```
+
+#### computed
+
+```
+<script setup lang="ts">
+const double = computed<number>(() => {
+  // 若返回值不是 number 类型则会报错
+})
+</script>
+```
+
+#### 函数
+
+```
+<script setup lang="ts">
+function handleChange(event) {
+  // `event` 隐式地标注为 `any` 类型
+  console.log(event.target.value)
+}
+</script>
+
+<template>
+  <input type="text" @change="handleChange" />
+</template>
+```
