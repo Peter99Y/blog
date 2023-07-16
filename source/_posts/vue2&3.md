@@ -336,9 +336,9 @@ export default {
 </script>
 ```
 
-### 自定义指令（当内置指令不满足需求时）
+### directive 自定义指令
 
-`vue2`
+###### v2
 
 ```
 <div id="app">
@@ -387,7 +387,7 @@ export default {
 </script>
 ```
 
-`vue3`
+###### v3
 
 ```
 <script>
@@ -415,6 +415,34 @@ export default {
     },
 };
 </script>
+```
+
+###### 全局挂载
+
+```
+// main.js 引入插件并注册
+import { lazyPlugin } from "./directives/index";
+```
+
+```
+export const lazyPlugin = {
+	install(app/vue) {
+        // 防抖
+        Vue.directive("debounce", {
+            inserted: function (el, binding) {
+                let timer;
+                el.addEventListener("keyup", () => {
+                    if (timer) {
+                        clearTimeout(timer);
+                    }
+                    timer = setTimeout(() => {
+                        binding.value();
+                    }, 400);
+                });
+            },
+        });
+    },
+};
 ```
 
 ---
@@ -805,7 +833,7 @@ export default {
 
 ###### 非父子组件间传值 - 中央事件总线 eventbus
 
-vue3移除，可借助 mitt 第三方包创建 eventBus 对象;安装 mitt;
+vue3 移除，可借助 mitt 第三方包创建 eventBus 对象;安装 mitt;
 
 `eventBus.js`
 
