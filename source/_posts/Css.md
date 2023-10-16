@@ -50,11 +50,28 @@ position: sticky;
 
 ![](/images/Css/sticky.png)
 
+### 伪元素 ::before/::after
+
+-   content 可设置字符串、空白、图片、计数器、attr（通过元素上的属性值设置字符串）;
+
+```
+div::after {
+    content: attr(label-suffix);
+    /* content: "："; */
+}
+```
+
+```
+<div label-suffix="：">名称</div>
+```
+
+![](/images/Css/content_attr.png)
+
 ### 伪类
 
 ###### :has
 
-通过子元素设置父元素样式;
+通过判断子元素条件设置父元素样式;
 
 ```
     // 如果div下有h5元素，就给div设置背景颜色
@@ -75,19 +92,154 @@ position: sticky;
 
 ![](/images/Css/has.png)
 
-###### ::before/::after
-
--   attr 通过元素上的属性值设置 content
+###### :is/:where
 
 ```
-div::after {
-    content: attr(label-suffix);
-    /* content: "："; */
-}
+    <style>
+        /*
+            .line1 h4,
+            .line2 h4,
+            .line3 h4 {
+                color: orange;
+            }
+        */
+
+        :is(.line1, .line2, .line3) h4 {
+            color: orange;
+        }
+    </style>
 ```
 
 ```
-<div label-suffix="：">名称</div>
+    <div class="line1">
+        <h4>hello</h4>
+    </div>
+    <div class="line2">
+        <h4>hello</h4>
+    </div>
+    <div class="line2">
+        <h4>hello</h4>
+    </div>
 ```
 
-![](/images/Css/content_attr.png)
+### display
+
+会重绘、会重排
+
+-   1. 不会触发 - select-content 内容在 none 的情况下，虽然元素存在，我们也知道这块区域存这块内容，
+       但是无论如何在隐藏的空白区域内点击都不会有反应；
+
+-   2. 脱离文档流 - div 元素在 none 的情况下，后面会内容顶上来；
+
+-   3. 子元素受影响 - div 元素在 none 的情况下，里面的子元素也会跟着隐藏（即使子元素又设置了 block）
+
+-   4. 过渡动画无效；
+
+```
+        .select-wrapper {
+            cursor: pointer;
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .select-wrapper:hover .select-content {
+            display: block;
+        }
+
+        .select-content {
+            margin-top: 12px;
+            position: absolute;
+            left: 0;
+
+            /* 4. 过渡动画无效 */
+            display: none;
+            transition: all 0.2s ease;
+        }
+```
+
+```
+    <div class="select-wrapper">
+        <span> 消息⬇ </span></span>
+
+        <div class="select-content">
+            <div style="display: none;">
+                <a href="#" style="display: block;">关注</a>
+            </div>
+            <a href="#">点赞</a>
+            <a href="#">收藏</a>
+        </div>
+    </div>
+```
+
+![](/images/Css/display.png)
+
+### visibility
+
+会重绘
+
+-   1. 不触发事件 - 自身 hidden 情况下，不会触发自身事件；
+-   2. 不脱离文档流（即不会重排），后面元素不会顶上来；
+-   3. 子元素可设置 visible，从而不受父元素 hidden 的影响；
+-   4. 过渡动画效果有效；
+
+```
+    .select-wrapper {
+        cursor: pointer;
+        position: relative;
+        margin-bottom: 50px;
+    }
+
+    .select-wrapper:hover .select-content {
+        visibility: visible;
+    }
+
+    .select-content {
+        margin-top: 12px;
+        position: absolute;
+        left: 0;
+
+        transition: all 0.2s ease;
+        visibility: hidden;
+    }
+```
+
+```
+    <div class="select-wrapper">
+        <span> 消息⬇ </span></span>
+
+        <div class="select-content">
+            <div style="visibility: hidden;">
+                <a href="#" style="visibility: visible;">关注</a>
+            </div>
+            <div><a href="#">点赞</a></div>
+            <div><a href="#">收藏</a></div>
+        </div>
+    </div>
+```
+
+### opacity
+
+不重排、不重绘
+
+-   1. 会触发事件；
+-   2. 不会脱离文档流，也不会重绘，只是降低了 alpha 值；
+-   3. 子元素设置 opacity:1 显示无效；
+-   4. 有过渡动画效果；
+
+```
+    <div style="
+            width: 100px;
+            height: 200px;
+            background-color: orange;
+            opacity: 0;">
+        <span style="opacity: 1">son</span>
+    </div>
+
+    <script>
+
+        let i = document.querySelector('div')
+        i.addEventListener('click', function () {
+            console.log('i')
+        })
+    </script>
+```

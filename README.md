@@ -1,5 +1,3 @@
-# blog-server
-
 # hexo clean
 
 删除 public 文件夹

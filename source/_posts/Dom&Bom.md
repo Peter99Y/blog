@@ -8,7 +8,7 @@ title: Dom & Bom
 
 ![](/images/Dom&Bom/1.webp)
 
-###### 节点类型 nodeType
+###### nodeType 节点类型
 
 -   9：document;
 -   1：element(元素节点);
@@ -43,7 +43,9 @@ console.log(typeof ele)     // object
 console.dir( ele )          // 查看元素对象的属性和方法
 ```
 
-###### el.parentNode 获取元素父节点
+###### el.parentNode
+
+获取元素父节点
 
 ```
 var liTwo = document.getElementsByTagName('li')[1];
@@ -51,7 +53,9 @@ liTwo.parentNode;
 liTwo.parentElement;    // 等价于
 ```
 
-###### 获取元素子节点
+###### el.children, el.firstElementChild, el.lastElementChild
+
+获取元素子节点;
 
 ```
 var ul = document.getElementById('ul-box');
@@ -62,7 +66,9 @@ ul.firstElementChild;
 ul.lastElementChild;
 ```
 
-###### 获取元素兄弟节点
+###### el.previousElementSibling, .nextElementSibling
+
+获取元素兄弟节点;
 
 ```
 var liTwo = document.getElementsByTagName('li')[1];
@@ -99,7 +105,7 @@ btn.onclick = function(){
 }
 ```
 
-###### 获取标签上所有属性
+###### el.attributes, el.setAttribute, el.removeAttribute
 
 ```
 <input type="text" v-model="msg">
@@ -108,39 +114,70 @@ var inp = document.querySelector('input');
 console.log( inp.attributes );  // { 0: type, 1: v-model }
 ```
 
-###### 获取/修改/移除 标签上属性
-
-```
-<div id="box" class="bg" data-index="1" data-list-name="hh"> hello </div>
-
-<script>
-  var box = document.getElementById('box');
-
-  1.元素本身的属性可直接获取
-  console.log(box.id);
-
-  2.存取class 需使用 className
-  if(box.className == 'bg'){
-    box.className = 'change-bg'
-  }
-
-  3.或
-  console.log( box.getAttribute('id') );
-```
-
-###### 标签自定义属性名
-
-H5 元素规定自定义属性 data- 开头作为自定义属性名
+H5 元素规定自定义属性 data- 开头作为自定义属性名，标签自定义属性名（data-Name）
 
 ```
   if(box.getAttribute('data-index') == 1){
       box.setAttribute('data-index', 2);
+
       H5新增 定义属性dataset集合, 不再需要前缀data- ;   (ie 11才支持)
       console.log( box.dataset.listName);
   }else{
       box.removeAttribute('data-index');
   }
 </script>
+```
+
+###### el.className
+
+获取/修改/移除 标签属性;
+
+```
+<div
+  id="box"
+  class="bg"
+  data-index="1"
+  data-list-name="hh"
+>
+  hello
+</div>
+```
+
+```
+<script>
+  var box = document.getElementById('box');
+
+  1.元素本身的属性可直接获取/设置;
+  box.id = 'box-wrapper';
+
+  2.或
+  var idValue = box.getAttribute('id');
+
+  3.获取/设置class属性 需使用 className
+  var title = box.className;
+  if(title === 'bg'){
+    box.className = 'change-bg'
+  }
+</script>
+```
+
+###### el.classList、.add、.remove、.replace、.toggle
+
+获取/修改/移除/切换 元素属性;
+
+```
+    <script>
+        let c = document.querySelector('#ccc');
+        let btn = document.querySelector('button');
+
+        c.classList.remove('bg');
+        c.classList.add('small-bg', 'middle-bg', 'big-bg');
+
+        btn.addEventListener('click', function () {
+            // 如元素的class值show已存在，则移除它，否则添加它;
+            c.classList.toggle('show')
+        })
+    </script>
 ```
 
 ###### el.cloneNode 克隆节点
@@ -538,7 +575,8 @@ goBack.addEventListener('click',function(){
 
 ![](/images/Dom&Bom/11.webp)
 
-###### window.onload 
+###### window.onload
+
 当文档内容(图片, 脚本文件, css, 外部文件)完全加载完会触发该事件
 
 ```
@@ -569,7 +607,8 @@ goBack.addEventListener('click',function(){
 	})
 ```
 
-###### window.onresize 
+###### window.onresize
+
 窗口大小发生像素变化触发事件
 
 ```
@@ -587,7 +626,8 @@ window.onresize = function(){
 
 ###### window.setTimeout & setInterval 定时器
 
-###### window.location 
+###### window.location
+
 解析/获取/设置访问的 URL 的对象
 
 ```
@@ -611,7 +651,8 @@ window.onresize = function(){
    location.reload(true)                  2. 强制刷新: 跳过浏览器缓存，总是从服务器下载最新的资源
 ```
 
-######   window.navigator 
+###### window.navigator
+
 浏览器保存的配置信息对象
 
 ```
@@ -625,21 +666,22 @@ if((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobil
  cookieEnabled: 判断当前浏览器是否启用了cookie。
  plugins: 保存浏览器安装的所有插件信息的集合
  userAgent: 保存浏览器名称和版本号的字符串
- geolocation: 该对象提供用户地理位置信息，通过getCurrentPosition获取;  
-	latitude 维度    
-	longitude 经度  
-	accuracy 经纬度精确度  
-	altitude 海拔高度 
-	altitudeAccuracy 海拔高度经度 
-	heading 设备方向 
+ geolocation: 该对象提供用户地理位置信息，通过getCurrentPosition获取;
+	latitude 维度
+	longitude 经度
+	accuracy 经纬度精确度
+	altitude 海拔高度
+	altitudeAccuracy 海拔高度经度
+	heading 设备方向
 	speed 速度
 
- 	navigator.geolocation.getCurrentPosition( position => { 
-		console.log('用户地理信息:', position) 
+ 	navigator.geolocation.getCurrentPosition( position => {
+		console.log('用户地理信息:', position)
 	});
 ```
 
-###### window.history 
+###### window.history
+
 保存当前窗口打开后，成功访问过的 url 的历史记录栈的对象
 
 ```
