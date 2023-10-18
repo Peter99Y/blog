@@ -122,6 +122,65 @@ div::after {
     </div>
 ```
 
+###### :not
+
+-   注意：p:not(.world){...} 如 p :not 中间空格，否则认为是下级元素；
+
+```
+    p:not(.world){
+        color: orange;
+    }
+```
+
+```
+   <p>hello</p>
+   <p class="world">world</p>
+```
+
+![](/images/Css/not1.png)
+
+---
+
+-   在 p 元素下给 span 元素设置 color
+
+```
+    p span:not(.world){
+        color: orange;
+    }
+```
+
+```
+    <p>
+        <span>hello</span>
+    </p>
+
+    <p>
+        <span class="world">world</span>
+    </p>
+```
+
+![](/images/Css/not2.png)
+
+---
+
+-   div 元素下给既不是 h3 也不是 h5 元素设置 color
+
+```
+    div :not(h3):not(h5){
+        color: orange;
+    }
+```
+
+```
+    <div>
+        <h3>1</h3>
+        <h4>2</h4>
+        <h5>3</h5>
+    </div>
+```
+
+---
+
 ### display
 
 会重绘、会重排
