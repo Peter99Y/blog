@@ -81,73 +81,6 @@ M(model:指的是 data 中的数据) V(view: 视图) VM(ViewModel: 实现控制�
 </script>
 ```
 
-###### 属性绑定 v-bind:src=" " or :src=" " & 双向数据绑定原理
-
-```
-<div id="app">
-     双向数据绑定的本质就是通过属性绑定input的value，通过事件绑定input事件，当输入时获取输入的值，并赋值给value;
-	{{msg}}
-	<input type="text" name="" :value="msg" @input="msg = $event.target.value">
-
-</div>
-<script>
-	new Vue({
-		el:'#app',
-		data:{
-			msg: '',
-		},
-	})
-</script>
-```
-
-###### 事件绑定 v-on:click="" or @click=""
-
-```
-<style type="text/css">
-	div{
-		width: 200px; height: 200px;  background-color: orange;
-	}
-</style>
-
-<div id="app">
-    事件修饰符
-    <a href="www.baidu.com" @click.prevent="goAnother">link</a>
-
-    <!-- 取消冒泡: 点击button时， 如btn的click事件不加.stop修饰符，btn & div都会执行；button加上，就只有button执行 -->
-	<div @click="handleF">
-		<button @click.stop="handleBtn">btn</button>
-	</div>
-
-        <!-- 利用冒泡 点击所有btn，都湖执行handleBtn-->
-	<div @click="handleBtn">
-		<button>btn1</button>
-		<button>btn2</button>
-		<button>btn3</button>
-	</div>
-
-    按键修饰符
-    <input type="text" name="" @keyup.enter="submit">
-    //自定义按键修饰符
-    <input type="text" name="" @keyup.f2="submit">
-</div>
-<script>
-    Vue.config.keyCodes.f2 = 113;
-	new Vue({
-		el:'#app',
-		methods:{
-            goAnother(){
-				console.log('取消默认跳转，而是转为编程式跳转')
-			},
-			handleBtn(){
-				console.log('btn');
-			},
-			handleF(){
-				console.log('father')
-			}
-		}
-	})
-```
-
 ###### class & style
 
 ```
@@ -203,25 +136,116 @@ M(model:指的是 data 中的数据) V(view: 视图) VM(ViewModel: 实现控制�
 </script>
 ```
 
-###### $attrs & props
+### v-on
 
--   给封装组件标签上添加 class 和 style 元素，默认会添加到组件的根标签上(一个根标签，vue3 中多个根标签不会默认添加)
--   $attrs 可获取组件标签上的，除了 props 声明接收了自定义属性的其他属性；
+```
+<div id="app">
+    事件修饰符
+    <a href="www.baidu.com" @click.prevent="goAnother">link</a>
+
+    <!-- 取消冒泡: 点击button时， 如btn的click事件不加.stop修饰符，btn & div都会执行；button加上，就只有button执行 -->
+	<div @click="handleF">
+		<button @click.stop="handleBtn">btn</button>
+	</div>
+
+        <!-- 利用冒泡 点击所有btn，都湖执行handleBtn-->
+	<div @click="handleBtn">
+		<button>btn1</button>
+		<button>btn2</button>
+		<button>btn3</button>
+	</div>
+
+    按键修饰符
+    <input type="text" name="" @keyup.enter="submit">
+    //自定义按键修饰符
+    <input type="text" name="" @keyup.f2="submit">
+</div>
+
+<script>
+    Vue.config.keyCodes.f2 = 113;
+	new Vue({
+		el:'#app',
+		methods:{
+            goAnother(){
+				console.log('取消默认跳转，而是转为编程式跳转')
+			},
+			handleBtn(){
+				console.log('btn');
+			},
+			handleF(){
+				console.log('father')
+			}
+		}
+	})
+```
+
+### v-bind & v-on
+
+v-bind 绑定属性/对象中所有键值对
+v-on 绑定事件/对象中所有事件键值对
+
+```
+    <!-- data - { key: 'maxlength' } -->
+
+    <MyInput
+        :id="1"
+        :[key]="100"
+        :type="'text'"
+        :size="'small'"
+        :placeholder="'请输入'"
+        v-model="search"
+        @focus="handleFocus"
+        @input="(val)=> search = val.replace(/[^\d]/g, '')"
+        @blur="handleBlur"
+        >hello</MyInput
+    >
+
+
+    <MyInput
+        v-bind="{
+            id: 1,
+            type: 'text',
+            size: 'small',
+            placeholder: '请输入',
+        }"
+        >hello</MyInput
+    >
+```
+
+```
+<el-input v-bind="$attrs" v-on="$listeners"></el-input>
+```
+
+### props & $attrs & $listener
+
+-   给组件标签上添加 class 和 style 元素，默认会添加到组件的根标签上(一个根标签，vue3 中多个根标签不会默认添加)
+-   $attrs 获取组件标签上，除了 props 已经声明接收过的属性的对象；
+-   $listener 获取组件标签上绑定的所有事件的对象；
 
 `父组件.vue`
 
 ```
 <template>
-    <Left class="ccc mmm" data-index="99" style="border:1px solid #ccc" :click="show"/>
+    <Left
+        class="ccc mmm"
+        data-index="99"
+        style="border:1px solid #ccc"
+        :click="show"
+        @show-model="handleShow"
+    />
 </template>
 
 <script>
 import Left from "./components/Left.vue";
+
 export default {
     components: { Left },
     methods: {
         show(){
-            alert('可向子组件传递方法!')
+            alert('可向子组件传递方法!');
+        },
+        handleShow(){
+            console.log('这是子组件的事件，只是父组件穿透');
         }
     },
 };
@@ -243,7 +267,7 @@ export default {
 export default {
     inheritAttrs: false,    // 此属性可阻止属性自定添加到根组件上(只有一个根组件时)
     props: {
-        dataIndex: "",      // props接收了$attrs中接收不到
+        dataIndex: "",      // 如props接收了，$attrs中将获取不到；
         click: Function,
     }
 };
