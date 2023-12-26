@@ -2,28 +2,55 @@
 title: Ts
 ---
 
+### 编译环境
+
+-   全局安装
+    npm install typescript -g
+    mac 系统 brew install typescript
+
+-   局部安装
+    限定某个项目的 ts 为特定版本，不像全局 ts 不同电脑安装不同版本，从而导致某个特性被废除
+    npm install typescript -D
+
+-   tsc -v 查看版本
+
 -   html 页面中引入 ts 文件，需要通过命令 tsc 文件名（Type Script Compile）编译成 js 文件，最后引入编译后的 js 文件。
 
--   vscode 自动编译 ts
-    -   在所处目录中 tsc --init 生成 tsconfig.json 文件;
-    -   tsc 文件名 -w (监视文件变动);
-    -   tsc -w (根据 json 文件监视项目文件);
+-   编译 ts 文件：tsc demo.ts
+
+-   自动编译 ts 文件：tsc demo.ts -w
+    <!-- -   在所处目录中 tsc --init 生成 tsconfig.json 文件;
+    -   tsc 文件名 -w (监视文件变动); -->
 
 ---
 
-###### 类型推断
+### 类型推断
 
-会默认先赋值的类型
+没有设置类型时，默认会推断类型
 
 ```
+let isShown = 1 > 2
+isShown = true;
+
 let info;                  	// any类型
 info = {name: 'tom'};
+info = true;
 
-let count = 12;           	// 默认推断number类型
+let count = 12;           	// count:number
 count = 'a';			// err
+
+const greet = ["hello", 99];	// greet:(string|number)[]
+greet.push(true);		// err
+
+const user = { name: "tom", age: 10 };	  // user:{age: number}
+user.age = "10";		  	  // err
+
+function sum(a: number, b: number) {	  // sum(a:number,b:number):string
+  return '结果是：' + a + b;
+}
 ```
 
-###### undefined & null 类型
+### undefined & null 类型
 
 undefined & null 都可以作为其他类型 (ts 配置文件可禁用被赋值给其他类型);
 
@@ -40,22 +67,26 @@ let nu: null = null;
 let un: undefined = undefined;
 ```
 
-###### 数组类型
+### 数组类型
+
+与元祖相比，不限制长度和位置，只限制里面的类型
 
 ```
 const arr string[];
 
-const arr: number[] = [1, 2, 3];
+const arr: number[] = [1, 2, 3];	// 数值数组
 
-const arr : (string | boolean)[] = ['hello', true];
+const arr: string | number[];		// 要么是字符串，要么是数值数组
 
-区分：
-const arr: string | number[];	// 字符串 or 数字数组
+const arr : (string | boolean)[] = ['hello', 'word', true];	// 数组可包含字符串或布尔值
 
-const arr: Array<number | string | boolean> = [1, "2", false];
+let arr: { id: number }[] = [{ id: 1 }, { id: 2 }, { id: 3 }];	// 对象数组
+arr.push(1);							// err
+
+const arr: Array<number | string | object> = [1, "2", {}];	// 使用泛型设置数组
 ```
 
-###### 元祖类型
+### 元祖类型
 
 元祖类型在定义时，限制数组数据的类型/位置/长度;
 
@@ -63,19 +94,21 @@ const arr: Array<number | string | boolean> = [1, "2", false];
 let arr: [string, number, boolean] = ["1", 2, false];
 ```
 
-###### object 类型
+### 对象类型
 
 ```
-let obj:object;
+let obj:object;			// 限定obj为对象类型
 
-let obj: {
+let obj: {			// 限定obj为对象类型，同时限定了3个属性，以及限定每个属性值类型
 	name: string;
 	age: number;
-	hobbit?: string; // 有or没有属性都可
+	hobbit?: string; 	// 有or没有属性都可
 };
 
-obj.name = 'tom';
-obj.age = 10;
+obj = {					// err 缺少age属性
+	name: 'tom',
+	test: true,			// err obj没有设置test属性
+}
 ```
 
 ###### any 类型
@@ -94,7 +127,7 @@ let arr: any[] = [{}, [], 1, false, "a"];
 console.log(arr[0].split(''))	// err
 ```
 
-###### unkonwn 类型
+### unkonwn 类型
 
 ```
 let key: unknown = "hello";
@@ -102,7 +135,7 @@ let key: unknown = "hello";
 let b: string = key as string;		// 使用类型断言（断定key是string类型）
 ```
 
-###### 枚举类型
+### 枚举类型
 
 里面每个数据都可以叫元素，每个元素都有自己的编号，编号从 0 递增，可手动赋值；
 
@@ -125,7 +158,7 @@ let c: Color = Color.red;
 console.log(c)        		// 0
 ```
 
-###### void 类型
+### void 类型
 
 值是 null，undefined; 常用于函数返回值;
 
@@ -145,7 +178,7 @@ let sum = (a: number, b: number): string => {
 let res: string = sum(1, 2);
 ```
 
-###### never 类型
+### never 类型
 
 ```
 function run():never{
@@ -155,7 +188,7 @@ function run():never{
 run();
 ```
 
-###### 函数
+### 函数
 
 ```
 let fn: Function = () => 'hello';
@@ -169,7 +202,7 @@ let sum = (a: number, b: number): string => {
 let res: string = sum(1, 2);
 ```
 
-###### 函数 剩余参数
+### 函数 剩余参数
 
 ```
 function sum(...args: number[]): number {
@@ -200,7 +233,7 @@ class Person implements userType {
 }
 ```
 
-###### type & interface
+### type & interface
 
 -   type 可以合并 type;
     type 实现继承不能重复定义相同名；
@@ -258,7 +291,7 @@ let obj: userType = {
 };
 ```
 
-###### 函数原型
+### 函数原型
 
 函数原型声明的参数名称只是占位，可不一致；
 
