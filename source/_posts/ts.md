@@ -21,6 +21,7 @@ title: Ts
 -   自动编译 ts 文件：tsc demo.ts -w
     <!-- -   在所处目录中 tsc --init 生成 tsconfig.json 文件;
     -   tsc 文件名 -w (监视文件变动); -->
+-   生成 ts 配置文件 tsc --init
 
 ---
 
@@ -32,39 +33,69 @@ title: Ts
 let isShown = 1 > 2
 isShown = true;
 
-let info;                  	// any类型
+let info;                  			// any类型
 info = {name: 'tom'};
 info = true;
 
-let count = 12;           	// count:number
-count = 'a';			// err
+let count = 12;           			// count:number
+count = 'a';					// err
 
-const greet = ["hello", 99];	// greet:(string|number)[]
-greet.push(true);		// err
+const greet = ["hello", 99];			// greet:(string|number)[]
+greet.push(true);				// err
 
-const user = { name: "tom", age: 10 };	  // user:{age: number}
-user.age = "10";		  	  // err
+const user = { name: "tom", age: 10 };	  	// user:{age: number}
+user.age = "10";		  	  	// err
 
-function sum(a: number, b: number) {	  // sum(a:number,b:number):string
+function sum(a: number, b: number) {	  	// sum(a:any,b:any):string
   return '结果是：' + a + b;
 }
 ```
 
-### undefined & null 类型
+### never 类型
 
-undefined & null 都可以作为其他类型 (ts 配置文件可禁用被赋值给其他类型);
+什么值都没有
 
 ```
+function run():never{
+	throw new Error('错误');
+}
+
+run();
+```
+
+### void 类型
+
+值只能是 null 或 undefined; 常用于函数返回值;
+
+```
+let str:void = null;
+str = undefined;
+
+function show():void{}
+
+function run():void | string{
+	return 'faster';
+}
+
+let sum = (a: number, b: number): string => {
+	return `a+b=${a + b}`;
+};
+let res: string = sum(1, 2);
+```
+
+### undefined & null 类型
+
+undefined & null 可以被赋值给其他类型
+
+```
+let nu: null = null;
+let unde: undefined = undefined;
+
 let flag: boolean = true;
 flag = null;
 
 let count: number = 10;
 count = undefined;
-
-let str: string = "小明";
-
-let nu: null = null;
-let un: undefined = undefined;
 ```
 
 ### 数组类型
@@ -105,22 +136,22 @@ let obj: {			// 限定obj为对象类型，同时限定了3个属性，以及限
 	hobbit?: string; 	// 有or没有属性都可
 };
 
-obj = {					// err 缺少age属性
+obj = {				// err 缺少age属性
 	name: 'tom',
-	test: true,			// err obj没有设置test属性
+	test: true,		// err obj没有设置test属性
 }
 ```
 
-###### any 类型
+### any 类型
 
-不清楚变量是什么数据类型 or 很多类型都可以使用，不需要进行类型检测
+不清楚变量是什么数据类型 or 很多类型都可以使用不限定类型，不需要进行类型校验（但也就失去了 ts 的意义了）
 
 ```
 let any :string | number | object | boolean = 'hello';
-
 let any : any = 'hello';
 
 let arr: any[] = [{}, [], 1, false, "a"];
+let arr: Array<any> = [];
 
 
 // 缺点：编译时没有了类型检测
@@ -129,10 +160,26 @@ console.log(arr[0].split(''))	// err
 
 ### unkonwn 类型
 
+不清楚什么类型，但是有类型的；
+
 ```
-let key: unknown = "hello";
-// let b: string = key;		// err
-let b: string = key as string;		// 使用类型断言（断定key是string类型）
+let a: any = "hello";
+let word: string = a;
+
+let b: unknown = "hello";
+let word2: string = b; 		// err；把一个不知道的类型赋值给字符串就会报错
+
+let word3: string = b as string; 	// 明确说明这个类型是string类型
+```
+
+#### 类型转换
+
+值没有问题的，转换类型
+
+```
+let str: string = "99";
+let a: number = str as number; 		// err; 把string不能直接转成number类型
+let b: number = str as unknown as number;   	// 但可以先转成未知类型，再把未知类型转成number类型
 ```
 
 ### 枚举类型
@@ -158,51 +205,31 @@ let c: Color = Color.red;
 console.log(c)        		// 0
 ```
 
-### void 类型
-
-值是 null，undefined; 常用于函数返回值;
-
-```
-let str:void = null;
-str = undefined;
-
-function show():void{}
-
-function run():void | string{
-	return 'faster';
-}
-
-let sum = (a: number, b: number): string => {
-	return `a+b=${a + b}`;
-};
-let res: string = sum(1, 2);
-```
-
-### never 类型
-
-```
-function run():never{
-	throw new Error('错误');
-}
-
-run();
-```
-
 ### 函数
 
 ```
-let fn: Function = () => 'hello';
+let fn: Function = (a: number, b: number) => "结果是" + a + b;
 ```
 
 ```
-let sum = (a: number, b: number): string => {
-	return `a+b=${a + b}`;
+let sum = (a: number, b: number, c: number = 0.6, d?: number): number => {
+	return (a + b) * c;
 };
 
-let res: string = sum(1, 2);
+let res: string = sum(1, 2) as unknown as string;
 ```
 
-### 函数 剩余参数
+函数结构定义
+
+```
+let sum: (a: number, b: number) => number; 	// 定义函数
+
+sum = (x, y) => {       			// 需要实现的函数；形参可不一致
+	return x + y;
+};
+
+sum(1, 2);
+```
 
 ```
 function sum(...args: number[]): number {
@@ -215,13 +242,26 @@ console.log(sum(1, 2, 3));
 ### type
 
 ```
+let addUser = (user: { name: string; age: number }): void => {
+	console.log("添加用户");
+};
+let updateUser = (user: { name: string; age: number }): void => {
+	console.log("更新用户");
+};
+```
+
+对对象声明/定义
+
+```
 type userType = {
 	name: string;
 	age: number;
 	sex?: string | number
 };
 
-let add = (user: userType): void => console.log("添加用户");
+let addUser = (user: userType): void => console.log("添加用户");
+
+let updateUser = (user: userType): void => console.log("更新用户");
 
 class Person implements userType {
 	name: string
@@ -231,6 +271,21 @@ class Person implements userType {
 		this.age = age;
 	}
 }
+```
+
+对函数声明/定义
+
+```
+type userType = { name: string; age: number }; // 声明一个对象结构
+
+type addUserFnType = (user: userType) => boolean; // 声明一个函数结构，userType对象约束参数
+
+let handleAddUser: addUserFnType = (u: userType) => {    // addUserFnType约束变量，需要的是一个函数
+	console.log("添加用户成功", u);
+	return true;
+};
+
+handleAddUser({ name: "tom", age: 10 });
 ```
 
 ### type & interface
