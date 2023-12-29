@@ -30,7 +30,7 @@ title: Ts
 没有设置类型时，默认会推断类型
 
 ```
-let isShown = 1 > 2
+let isShown = 1 > 2;				// isShown: boolean
 isShown = true;
 
 let info;                  			// any类型
@@ -49,6 +49,11 @@ user.age = "10";		  	  	// err
 function sum(a: number, b: number) {	  	// sum(a:any,b:any):string
   return '结果是：' + a + b;
 }
+
+function fn(arg: boolean): string | number {
+	return arg ? "hello" : 100;
+}
+let res = fn(true); 				// res: string | number
 ```
 
 ### never 类型
@@ -123,6 +128,7 @@ const arr: Array<number | string | object> = [1, "2", {}];	// 使用泛型设置
 
 ```
 let arr: [string, number, boolean] = ["1", 2, false];
+arr[0] = 99				// err; 可改值，不能更改类型
 ```
 
 ### 对象类型
@@ -184,25 +190,37 @@ let b: number = str as unknown as number;   	// 但可以先转成未知类型�
 
 ### 枚举类型
 
+```
+let gender: "male" | "female"; 	// gender: "male" | "female"
+gender = "man";				// err
+
+let user: gender = 'male';
+```
+
 里面每个数据都可以叫元素，每个元素都有自己的编号，编号从 0 递增，可手动赋值；
 
 ```
 enum Color {
 	red,
 	green,
-	blue,
+	yellow = 5,
+	orange,
 }
 
-console.log( Color[0] ); 	// red
-
 console.log(
-	Color.red,		// 0; 访问的是编号
-	Color.green,		// 1
-	Color.blue		// 2
+	Color[0] 	// red
+);
+console.log(
+	Color[5] 	// yellow
 );
 
-let c: Color = Color.red;
-console.log(c)        		// 0
+console.log(
+	Color.red, 	// 0
+	Color.green 	// 1
+);
+
+let c: Color = Color.orange;
+console.log(c); 	// 6
 ```
 
 ### 函数
@@ -372,9 +390,11 @@ let handleAdd: addFn = (user: userType): boolean => {
 let res:boolean = handleAdd({ name: "tom", age: 10 });
 ```
 
+---
+
 ### 断言
 
-as 主动判定变量是某种类型
+主动判定变量是某种类型
 
 ```
 function fn(arg: number): boolean | number {
@@ -384,59 +404,67 @@ function fn(arg: number): boolean | number {
 let res = fn(1) as boolean;
 ```
 
-```
-let gender : 'male' | 'female'; // 限定值类型
-gender = 'abc';			// err
-gender = 'male';
-```
-
-###### as const
+###### 转值类型
 
 ```
-// 宽泛类型(限制值类型)
-let url: string = "www.abc.com";
+let url: string = "www.abc.com";	// 宽泛类型
 
-// 值类型(限制值)
-let name1: "tom" = "tom";
-const name2 = "tom"; 		// 等价于
-let name3 = "tom" as const; 	// 等价于
+let user1 = "tom" as const; 		// user1: "tom" 转成值类型
+let user1 = <const>"tom";		// 泛型
+
+let user2: "tom" = "tom";		// user2: "tom" 等价于 值类型
+
+const user3 = "tom"; 			// user3: "tom" 等价于
 ```
 
-###### 数组中断言
+###### 数组转元祖
 
 ```
-const arr = [true, 1, "a"];
-// (boolean | number | string)[] (数组)(宽泛类型);
+const arr = [true, 1, "a"];		// arr: (boolean | number | string)[]
 
 let url: string = "www.abc.com";
-const arr2 = [url, true, 1] as const;
-// [string, true, 1]  (只读; 把数组转元祖)(值类型);
+let count = 99 as const;		// count: 99;	转值类型，非count: number
+
+let arr2 = [url, true, count] as const;	// arr2: readonly [string, true, 99]
+arr2[0] = 'hello';				// err; 只读
 ```
 
-###### 对象中断言
+###### 对象
 
 ```
 let str: string = "look";
 let number = 10 as const;
 
 const obj = {
-	name: str,		// 只读 string (宽泛类型)
-	age: number,		// 只读 10 (值类型)
+	name: str, 			// readonly name: string;
+	age: number, 			// readonly age: 10; 值类型
 } as const;
 ```
 
-###### 解构断言
+###### 解构
 
 ```
+// 2. 它只能识别出数组有字符串或函数 - fn: (string | ((x: number, y: number) => number))[]
 function fn() {
-	let a = "hello";
 	let b = (x: number, y: number) => x + y;
+	let a = "hello";
 
 	return [a, b];
 }
 
-const [n, m] = fn() as [string, Function]
-let res = m(1, 2);
+const [n, m] = fn();		// 1. 解构时，ts是不清楚数组里每个下标对应的值类型
+m(1, 2);			// 3. err; 字符串无法调用
+```
+
+```
+const [n, m] = fn() as [string, Function];
+console.log(m(1, 2));
+```
+
+```
+const [n, m] = fn();
+let sum = (m as Function)(1, 2);
+console.log(sum);
 ```
 
 ```
@@ -444,48 +472,104 @@ function fn() {
 	let a = "hello";
 	let b = (x: number, y: number) => x + y;
 
-	return [a, b] as [typeof a, typeof b];
 	return [a, b] as const;		// 将数组转成元祖
+	// or
+	return [a, b] as [string, Function];
 }
 
 const [n, m] = fn();
 let res = m(1, 2);
 ```
 
-###### 非空断言
+###### 非空
 
 明确不会为 null;
 
 ```
 const el:HTMLDivElement = document.querySelector('div') as HTMLDivElement;
-// 如果没获取到div标签，就是null，断言就是div标签；
+// 可能是div标签 or null，明确能获取到，断言是div标签；
 
-const el:HTMLDivElement = document.querySelector('div')!// 把null去掉;
+const el:HTMLDivElement = document.querySelector('div')!	// 把null去掉;
 ```
 
--   class 断言
+###### class
 
 ```
-class Animal{
-	el: HTMLDivElement
-	constructor(el:HTMLDivElement){
+class Animal {
+	el: HTMLDivElement;
+	constructor(el: HTMLDivElement) {
 		this.el = el;
 	}
-	show(){
+	show() {
 		return this.el.innerHTML;
 	}
 }
 
-const el = document.querySelector('div') as HTMLDivElement;
+const el = document.querySelector("div") as HTMLDivElement;
 const obj = new Animal(el);
-// const el = document.querySelector('.ccc')!;
-// err; 非null，推断是Element，而不是HTMLDivElement
+
+const ell = document.querySelector(".ccc")!;	// ell: Element
+const objj = new Animal(ell); 			// err; !只是去除了null,依然不知是哪类标签
 ```
+
+---
 
 ### class
 
-public 默认
-protected 修饰的属性/方法，只能在类的原型方法上调用，继承的父类上的也可访问 ，实例对象不能访问；
+public 属性和方法 默认是 public，子类可覆盖属性和方法；
+
+```
+class Animal {
+	public name: string;
+	age: number;
+
+	constructor(name: string, age: number) {
+		this.name = name;
+		this.age = age;
+	}
+	public run() {
+		return `${this.name}跑得很快`;
+	}
+}
+
+const dog = new Animal("dog", 10);
+console.log(dog.name, dog.age); 	// dog 10
+console.log(dog.run()); 		// dog跑得很快
+```
+
+protected 修饰的属性/方法，只能在类及子类里可访问，实例对象无法访问；
+子类只能覆盖父类 public，不能覆盖父类 protected；
+
+```
+class Animal {
+	protected name: string;
+	public age: number;
+
+	constructor(name: string, age: number) {
+		this.name = name;
+		this.age = age;
+	}
+	protected run() {
+		return `${this.name}跑得很快`;
+	}
+}
+
+class Dog extends Animal {
+	constructor(a: string, b: number) {
+		super(a, b);
+	}
+	triggerRun() {
+		return this.run();
+	}
+}
+
+const dan = new Dog("Dan", 10);
+
+console.log(dan.age); 			// 10
+console.log(dan.run());		// err; 只能在类“Animal”及其子类中访问
+console.log(dan.triggerRun()); 	// Dan跑得很快
+```
+
 private 修饰私有属性/方法，不能调用继承父类的，子类不能覆盖，实例对象不能访问；
 readonly 修饰的属性 只能在 constructor 构造函数中被修改
 
@@ -517,7 +601,7 @@ class Dog extends Animal {
 	}
 
 	public show() {
-		// console.log(this.popular);	// err // 私有属性不能被继承调用
+		// console.log(this.popular);	// err; 私有属性不能被继承调用
 		this.run();
 	}
 
