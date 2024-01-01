@@ -308,8 +308,9 @@ handleAddUser({ name: "tom", age: 10 });
 
 ### type & interface
 
+-   不能定义相同 type 名称;
+
 -   type 可以合并 type;
-    type 实现继承不能重复定义相同名；
 
 ```
 type Name = {
@@ -320,22 +321,28 @@ type Age = {
 	age: number
 }
 
+// type合并
 type User = Name & Age;
-type User2 = Name | Age;
-
-const obj:User = {
+const obj: User = {
 	name: 'tom',
 	age: 10
 }
 
+type User2 = Name | Age;
 const obj2:User2 = {
 	name: 'jack'
+}
+
+class Person implements User {
+	name: string = 'tom';
+	age: number = 10;
 }
 ```
 
 ```
 // 声明基本类型别名
-type isOut = boolean;
+type IsOut = boolean;
+
 // 声明联合类型
 type Sex = "boy" | "girl";
 
@@ -343,6 +350,7 @@ type Sex = "boy" | "girl";
 // 	name: string;
 // 	age: number;
 // 	sex?: Sex;
+//	isOut: IsOut
 // 	show(): string;
 // 	[key: string]: any;
 // };
@@ -537,8 +545,8 @@ console.log(dog.name, dog.age); 	// dog 10
 console.log(dog.run()); 		// dog跑得很快
 ```
 
-protected 修饰的属性/方法，只能在类及子类里可访问，实例对象无法访问；
-子类只能覆盖父类 public，不能覆盖父类 protected；
+protected 修饰的属性/方法，只能在类访问，子类可访问父类，实例对象无法访问；
+子类不不能覆盖父类 protected 属性/方法；
 
 ```
 class Animal {
@@ -570,27 +578,11 @@ console.log(dan.run());		// err; 只能在类“Animal”及其子类中访问
 console.log(dan.triggerRun()); 	// Dan跑得很快
 ```
 
-private 修饰私有属性/方法，不能调用继承父类的，子类不能覆盖，实例对象不能访问；
+private 修饰私有属性/方法，子类不能继承父类，子类不能覆盖父类，子类相同属性只能改得比父类宽松，实例对象不能访问；
+
 readonly 修饰的属性 只能在 constructor 构造函数中被修改
 
 ```
-class Animal {
-	public name: string;
-	public age: number;
-
-	protected pows: number;
-	private popular: string = "欢迎";
-
-	constructor(name: string, age: number, pows: number) {
-		this.name = name;
-		this.age = age;
-		this.pows = pows;
-	}
-	protected run() {
-		console.log(`${this.name} 跑得快，它非常${this.popular}`);
-	}
-}
-
 class Dog extends Animal {
 	readonly site: string = "http://abc.com";
 	static host: string = "http";
@@ -600,19 +592,10 @@ class Dog extends Animal {
 		this.site = site || this.site;
 	}
 
-	public show() {
-		// console.log(this.popular);	// err; 私有属性不能被继承调用
-		this.run();
-	}
-
 	static showSite() {
 		return this.host;
 	}
 }
-
-let dog = new Dog("dog", 10, 4);
-dog.show();
-console.log(Dog.showSite());
 ```
 
 ###### 单列模式
@@ -623,7 +606,6 @@ console.log(Dog.showSite());
 class Axios {
 	private static instance: Axios | null = null;
 
-	// 给构造函数添加了私有属性，new Axios将不能实例化对象，也就等同于不能在外部生成对象；
 	private constructor() {}
 
 	static make(): Axios {
@@ -636,41 +618,44 @@ class Axios {
 	}
 }
 
+// 给构造函数添加了私有属性，new Axios将不能实例化对象，也就等同于不能在外部生成对象；
+cosnt http = new Axios();	// err;
 const http = Axios.make();
 ```
 
 ###### get & set
 
 ```
-class Animal{
-	private _name: string
-	constructor(name:string){
+class Animal {
+	private _name: string; // 属性和方法不能同名
+
+	constructor(name: string) {
 		this._name = name;
 	}
-	public get name():string{
+	public get name(): string {
 		return this._name;
 	}
-	public set name(name:string){
+	public set name(name: string) {
 		this._name = name;
 	}
-	public get firstName():string{
-		return this._name.substring(0,1)
+	public get firstName(): string {
+		return this._name.substring(0, 1);
 	}
 }
 
-const dog = new Animal('dog');
-console.log(dog.name)
-console.log(dog.firstName)
+const dog = new Animal("dog");
 ```
 
 ###### abstruct 抽象类
 
-    抽象属性/方法必须存在于抽象类中，相当于父类定义了规范，子类必须定义抽象属性/方法;
-    不能 new 抽象类实例化对象（只是提供规范）
+    1.抽象属性/方法必须存在于抽象类中，相当于父类定义了规范，子类必须定义抽象属性/方法;
+    不能 new 抽象类实例化对象，它只是提供规范;
+    2.它和接口的区别不只有抽象的规范待子类实现，还有自身的属性和方法;
 
 ```
 abstract class Animal {
 	abstract name: string;
+
 	abstract run(): void;
 
 	protected getPosition(): number[] {
@@ -679,17 +664,18 @@ abstract class Animal {
 }
 
 class Dog extends Animal {
-	name: string
-	constructor(name:string){
+	name: string;
+
+	constructor(name: string) {
 		super();
 		this.name = name;
 	}
 	run(): void {
-		console.log(this.name + 'run fast');
+		console.log(this.name + "run fast");
 	}
 }
 
-let dog = new Dog('dog');
+let dog = new Dog("dog");
 dog.run();
 ```
 
@@ -697,21 +683,35 @@ dog.run();
 
 ### interface
 
-接口是是一种规范/约束；
-接口内的属性和方法需要实现 (除了不必):
+接口是是一种约定的规范；
+接口内的属性和方法必须实现 (除了?):
 
 ###### 对象接口
 
 ```
 interface UserInter {
 	name: string;
-	show?(): void;
-	[key: string]: any;	// 可以有额外任何属性 值是any类型
+	age?: number,
+	show?(): string;
+	[key: string]: any; // 这里的any指的是对象的属性值可以是任何宽泛类型
 }
+
+// let obj: { name: string; age: number; show?(): string; [key: string]: any } = {
+// 	name: "tom",
+// 	age: 10,
+// 	show() {
+// 		return "hello";
+// 	},
+// 	city: "Beijing",
+// };
 
 let obj: UserInter = {
 	name: "tom",
 	age: 10,
+	show() {
+		return "hello";
+	},
+	city: "Beijing"
 };
 ```
 
@@ -747,31 +747,33 @@ console.log(arr);		// [ { name: 'tom', age: 10, sex: 1 } ...]
 
 ###### 函数接口
 
-    接口可以定义函数的参数和返回的类型
-
 ```
+// 定义接口
 interface Good {
 	(price: number): number;
 }
 
+// 对函数的约束
 let handle: Good = (price: number) => price * 2;
 ```
 
 ```
+// 定义接口
 interface UserInter {
 	name: string;
 	age: number;
 	isLocked: boolean;
 }
 
+// 对对象约束
 const user: UserInter = {
 	name: "tom",
 	age: 10,
 	isLocked: false,
 };
 
-// 对形参约束，对返回值约束
-function handleLock(user:UserInter, lock: boolean):UserInter{
+// 对形参和返回值约束
+function handleLock(user:UserInter, lock: boolean): UserInter{
 	user.isLocked = lock;
 	return user;
 }
@@ -791,7 +793,7 @@ interface UserInter {
 class User {
 	_userInfo: UserInter
 
-	constructor(user:UserInter){
+	constructor(user: UserInter){
 		this._userInfo = user;
 	}
 	get userInfo(): UserInter {
@@ -802,7 +804,7 @@ class User {
 
 ###### 接口继承
 
--   继承相同接口名
+-   相同接口名会自动合并
 
 ```
 interface User {
@@ -818,19 +820,25 @@ const obj: User = {
 };
 ```
 
--   extends 继承接口
+extends or implements 继承接口
 
 ```
 interface ISay {
 	firstName: string;
 	lastName: string;
-	say();
 }
 interface IRun {
 	run();
 }
 
-// interface IMix extends ISay, IRun {}
+// 声明Imix接口，它继承于ISay 和 IRun接口
+interface IMix extends ISay, IRun {}
+```
+
+class 实现多个接口约束
+
+```
+// class Person implements IMix{}
 
 class Person implements ISay, IRun {
 	firstName: string;
@@ -840,9 +848,6 @@ class Person implements ISay, IRun {
 		this.firstName = firtname;
 		this.lastName = lastname;
 	}
-	say() {
-		console.log("我是个坏蛋");
-	}
 	run() {
 		console.log("我可以跑10公里");
 	}
@@ -851,29 +856,36 @@ class Person implements ISay, IRun {
 new Person("tom", "k");
 ```
 
+---
+
 ### 泛型
 
 动态传递类型
 
 ```
-// function dump(arg: string): string {
-// 	return arg;
-// }
+function dump(arg: string): string {
+	return arg;
+}
+dump('hello');
 
-// function dump(arg: number): number {
-// 	return arg;
-// }
 
+function dump(arg: number): number {
+	return arg;
+}
+dump(1);
+```
+
+```
 function dump<T>(arg: T): T {
 	return arg;
 }
 
+dump(true);			// 不传会自动推断
 dump<string>('hello');
 dump<number>(1);
-dump(true);	 	// 不传自动推断
 ```
 
-###### 泛型约束
+###### 对泛型约束
 
 T 是根据动态传递的类型，如 string 和 any[] 都有 length 属性，但 number 是没有的;
 
@@ -910,7 +922,7 @@ function getArr<T>(arg: T[]):number{
 console.log( getArr<string | number>(['hello', 2, 3]) )
 ```
 
-###### 泛型 & class
+###### class
 
 ```
 class Collection<T> {
@@ -954,7 +966,7 @@ const user1 = new User<UserInter>({ name: "tom", age: 10 });
 console.log(user1.get());
 ```
 
-###### 泛型 & interface
+###### interface
 
 ```
 interface ArticleInter<A, B> {
@@ -974,6 +986,8 @@ const article: ArticleInter<boolean, CommentType> = {
 	comments: [{ comment: "first learning" }],
 };
 ```
+
+---
 
 ### 装饰器
 
