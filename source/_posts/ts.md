@@ -18,7 +18,7 @@ title: Ts
 
 -   编译 ts 文件：tsc demo.ts
 
--   自动编译 ts 文件：tsc demo.ts -w
+-   自动编译 ts 文件：tsc demo.ts -w (不会走 tsconfig.json 配置文件，只是编译并监测某个文件)
     <!-- -   在所处目录中 tsc --init 生成 tsconfig.json 文件;
     -   tsc 文件名 -w (监视文件变动); -->
 -   生成 ts 配置文件 tsc --init
@@ -885,44 +885,52 @@ dump<string>('hello');
 dump<number>(1);
 ```
 
-###### 对泛型约束
-
-T 是根据动态传递的类型，如 string 和 any[] 都有 length 属性，但 number 是没有的;
+###### 泛型约束
 
 ```
 function getLength<T>(arg: T): number {
+	// err; string和数组才有length属性；自动推断number、boolean没有报错
 	return arg.length;
 }
 ```
 
-约束泛型只能是字符串或者数组两种类型，不能是其他类型
-
 ```
+// 定义函数时，使泛型继承字符串或者数组原型上的属性length，也就不会报错，但其他类型依然有问题
 function getLength<T extends string | any[]>(arg: T): number {
 	return arg.length;
 }
 
-// or 我们自己添加个类型（此类型必须包含length属性）
-// function getLength<T extends { length: number }>(arg: T): number {
-// 	return arg.length;
-// }
-
-getLength<string>("hello");
-getLength<any[]>([1, 2, 3]);
-getLength<number>(10)	// err
+console.log(getLength("123")); 	// 3
+console.log(getLength([1, 2, 3])); 	// 3
+console.log(getLength(100)); 		// err
 ```
 
-约束数组成员
+```
+// 或者定义一个type；约束在调用时必须传入的参数属性上必须有一个length属性；
+type typeLength = { length: number };
+
+function getLength<T extends typeLength>(arg: T): number {
+	return arg.length;
+}
+
+console.log(getLength([1, 2, 3])); 	// 3; 传入的数组本身就是有length属性；
+console.log(getLength(100)); 		// err; 但数值是没有length属性；
+```
+
+###### 数组约束
+
+如调用者明确知道自己传入的是数组，不会传其他类型导致而错误，T[]约束的是数组的成员类型；
 
 ```
 function getArr<T>(arg: T[]):number{
 	return arg.length;
 }
 
-console.log( getArr<string | number>(['hello', 2, 3]) )
+getArr('hello');		// err;
+getArr<string | number>(['hello', 2, 3]);	// 3
 ```
 
-###### class
+###### class 约束
 
 ```
 class Collection<T> {
@@ -966,7 +974,7 @@ const user1 = new User<UserInter>({ name: "tom", age: 10 });
 console.log(user1.get());
 ```
 
-###### interface
+###### interface 约束
 
 ```
 interface ArticleInter<A, B> {
@@ -991,91 +999,195 @@ const article: ArticleInter<boolean, CommentType> = {
 
 ### 装饰器
 
-请先打开 tsconfig.json 修改装饰器配置；
-tsc -w 监视根据 json 文件监视 ts；
+1. 报错：“作为表达式调用时，无法解析类修饰器的签名”；
+2. 打开 tsconfig.json 修改装饰器配置，将以下两个属性修改为 true；
+3. 执行命令：tsc -w 根据 json 配置项监测文件；
 
 ```
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true,
 ```
 
--   类装饰器的 target 接收构造函数;
+#### 类装饰器
+
+在类的原型链上增加属性和方法；
+
+<!-- -   类装饰器的 target 接收构造函数;
 -   方法装饰器，属性装饰器，参数装饰器的 target:
     -   修饰静态函数，接收的是构造函数；
     -   修饰原型函数，接收原型对象；
--   propertyKey: 修饰的方法名/属性名；
-
-###### 类装饰器
+-   propertyKey: 修饰的方法名/属性名； -->
 
 ```
+// 1. 定义一个变量，设置它的装饰器为类装饰器
 const moveDecorator: ClassDecorator = (target: Function) => {
-	target.prototype.msg = 'hello';
+	// 3. target参数就是装饰器所接收到的类
+	console.log(target); 	// [class Tank] 类的构造函数
 
 	target.prototype.getPosition = (): { x: number; y: number } => {
 		return { x: 100, y: 100 };
 	};
 };
 
-// 类放置在第二排作为装饰器参数将类的构造函数传递;
+// 2. 放在类上一行表示此类使用这个装饰器
 @moveDecorator
-class Tank {
-	public getPosition() {}
-}
+class Tank {}
+// moveDecorator(Tank);	// 不使用@语法糖方式
+
 const t = new Tank();
-console.log(t.getPosition());
+console.log((t as any).getPosition());	// 类里面没有方法所以报错，断言一下即可；
 ```
 
-不使用@语法糖方式
+###### 装饰器叠加
 
 ```
-class Player {
-	public getPosition() {}
-}
-const p = new Player();
-moveDecorator(Player);
+const moveDecorator: ClassDecorator = (target: Function) => {
+	target.prototype.getPosition = (): { x: number; y: number } => {
+		return { x: 100, y: 100 };
+	};
+};
 
-console.log(p.getPosition());
+const musicDecorator: ClassDecorator = (target: Function) => {
+	target.prototype.pause = (): void => {
+		console.log("播放音乐");
+	};
+};
+
+@moveDecorator
+@musicDecorator
+class Tank {}
+
+const t = new Tank();
+(t as any).pause();
 ```
 
 ###### 装饰器工厂
 
 ```
-const MusicDecoratorFactory = (type: string): ClassDecorator => {
-	switch (type) {
-		case "Tank":
-			return (target: Function) => {
-				target.prototype.playMusic = (): void => {
-					console.log("tank music");
-				};
+const musicFactorDecorator = (type: number): ClassDecorator => {
+	return (target: Function) => {
+		if (type === 0) {
+			target.prototype.play = (): void => {
+				console.log("战争");
 			};
-		default:
-			return (target: Function) => {
-				target.prototype.playMusic = (): void => {
-					console.log("default music");
-				};
+		} else {
+			target.prototype.play = (): void => {
+				console.log("呐喊");
 			};
-	}
+		}
+	};
 };
 
-@MusicDecoratorFactory("Tank")
-class Tank {
-	public playMusic() {}
-}
-const t = new Tank();
-t.playMusic();
+@musicFactorDecorator(0)
+class Tank {}
+new Tank().play(); // 战争
 
-
-@MusicDecoratorFactory("Player")
-class Player {
-	public playMusic() {}
-}
-const p = new Tank();
-p.playMusic();
+@musicFactorDecorator(1)
+class Player {}
+new Player().play(); // 呐喊
 ```
 
-###### 方法装饰器
+###### 案例 - 处理统一信息
 
-放在方法上面修饰方法就是方法装饰器;
+```
+const messageDecorator: ClassDecorator = (target: Function) => {
+	target.prototype.message = (content: string) => {
+		console.log(content);
+	};
+};
+
+@messageDecorator
+class Web {
+	public login() {
+		// console.log("登陆成功");
+		(this as any).message("登陆成功");
+	}
+}
+
+new Web().login();
+```
+
+#### 方法装饰器
+
+放在方法上方就是方法装饰器;
+
+```
+const showDecorator: MethodDecorator = (
+	target: object, 		// 修饰普通方法是原型对象，静态方法是构造函数
+	propertyKey: string, 		// 修饰的方法名
+	descriptor: PropertyDescriptor // 对这个方法的描述（value,可遍历，可修改，可配置）
+) => {
+	descriptor.value = () => {
+		console.log("修改掉修饰的普通方法/静态方法");
+	};
+};
+
+class User {
+	@showDecorator
+	public show() {
+		console.log("不会被打印");
+	}
+}
+
+new User().show();	// 修改掉...
+```
+
+###### 案例 - 高亮文字
+
+```
+const highlightDecorator: MethodDecorator = (
+	target: object,
+	propertyKey: string,
+	descriptor: PropertyDescriptor
+) => {
+	const method = descriptor.value;
+	descriptor.value = () => {
+		return `<div style="color:red;">${method()}</div>`;
+	};
+};
+
+class User {
+	@highlightDecorator
+	public response() {
+		return "开发人员A";
+	}
+}
+
+let u = new User();
+document.body.insertAdjacentHTML("beforeend", u.response());
+```
+
+###### 案例 - 统一错误处理
+
+```
+const ErrorDecorator: MethodDecorator = (
+	target: Object,
+	propertyKey: string | symbol,
+	descriptor: PropertyDescriptor
+) => {
+	let method = descriptor.value;
+	descriptor.value = () => {
+		try {
+			method();
+		} catch (err) {
+			console.log(`%c ${err.message}", "color:green;font-size:33px;`);
+		}
+	};
+};
+
+class User {
+	@ErrorDecorator
+	findUser() {
+		throw new Error("您查找的用户不存在");
+	}
+}
+
+new User().findUser();
+```
+
+###### 案例 - 用户权限验证
+
+装饰器工厂
 
 ```
 type userType = {
@@ -1084,25 +1196,12 @@ type userType = {
 	permissions: string[];
 };
 
-const user:userType = {
+const user: userType = {
 	name: "tom",
 	isLogin: true,
-	permissions: ["edit"],
+	permissions: ["add", "edit", "remove", "list"],
 };
 
-const HighLightDecorator: MethodDecorator = (
-	target: Object,
-	propertyKey: string | symbol,
-	descriptor: PropertyDescriptor
-) => {
-	// 获得修饰的方法;
-	const method = descriptor.value;
-	descriptor.value = () => {
-		return `<h3 style="color:red;">${method()}</h3>`;
-	};
-};
-
-// 装饰器工厂
 const AccessDecorator = (keys: string[]): MethodDecorator => {
 	return (
 		target: Object,
@@ -1117,6 +1216,7 @@ const AccessDecorator = (keys: string[]): MethodDecorator => {
 		};
 		descriptor.value = () => {
 			if (user.isLogin === true && validate()) {
+				console.log("操作成功");
 				return method();
 			} else {
 				location.href = "login.html";
@@ -1125,45 +1225,55 @@ const AccessDecorator = (keys: string[]): MethodDecorator => {
 	};
 };
 
-const ErrorDecorator: MethodDecorator = (
-	target: Object,
-	propertyKey: string | symbol,
-	descriptor: PropertyDescriptor
+class Article {
+	@AccessDecorator(["edit"])
+	public handleEdit() {
+		console.log("修改操作");
+	}
+
+	@AccessDecorator(["add"])
+	public handleAdd() {
+		console.log("添加操作");
+	}
+}
+
+new Article().handleAdd();
+```
+
+#### 属性装饰器 & 参数装饰器
+
+```
+// 属性装饰器
+const propDecorator: PropertyDecorator = (
+	target: object,
+	propertyKey: string | symbol
 ) => {
-	let method = descriptor.value;
-	descriptor.value = () => {
-		try {
-			method();
-		} catch (err) {
-			console.log("%c hello", "color:green;font-size:33px;");
-		}
-	};
+	console.log(target);
+	console.log(propertyKey);
+};
+
+// 参数装饰器
+const paramsDecorator: ParameterDecorator = (
+	target: object,
+	propertyKey: string | symbol | undefined,
+	parameterIndex: number
+) => {
+	console.log(`${parameterIndex} 参数下标位置`);
 };
 
 class Article {
-	@HighLightDecorator
-	public response() {
-		return "hello world";
-	}
 
-	@AccessDecorator(['add', 'edit', 'remove', 'delete'])
-	public handleEdit(){
-		console.log('执行修改操作');
-	}
+	@propDecorator
+	public title: string | undefined;
 
-	@ErrorDecorator
-	public handleErr() {
-		throw new Error("false");
-	}
+	public show(id: number, @paramsDecorator content: string) {}
 }
-document.body.insertAdjacentHTML("beforeend", new Article().response());
-new Article().handleErr();
 ```
 
-###### 属性装饰器
+###### 案例 - 文字处理成小写
 
 ```
-const lowerWordDecorator: PropertyDecorator = (
+const lowerWordPropDecorator: PropertyDecorator = (
 	target: Object,
 	propertyKey: string | symbol
 ) => {
