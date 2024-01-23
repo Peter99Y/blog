@@ -550,3 +550,24 @@ div::after {
         </div>
     </div>
 ```
+
+### 文字阴影
+
+```
+    h1 {
+        color: #e6e6e6;
+        font-size: 100px;
+
+        /* x轴，y轴，模糊半径，颜色，逗号间隔可添加多个阴影 */
+        text-shadow:
+            1px -1px #fff,
+            -1px 1px #999,
+            -10px 10px 5px #808080;
+
+        /* 第一个：从右上角度照射高亮边角
+        第二个：左下角阴影
+        第三个：文字背景阴影（对应照射角度） */
+    }
+```
+
+![](/images/Css/text-shadow.png)

@@ -2,7 +2,7 @@
 title: vue3组合式API
 ---
 
-### setup
+## setup
 
 ```
 <template>
@@ -52,7 +52,7 @@ const handleChange = () => {
 </script>
 ```
 
-### reactive
+## reactive
 
 接受一个对象参数，不接受基本数据类型，并返回深层响应式对象
 
@@ -73,9 +73,9 @@ const handleCount = () => {
 </template>
 ```
 
-### ref
+## ref
 
--   获取 DOM 元素；
+###### 获取 DOM 元素；
 
 ```
 <script setup>
@@ -97,7 +97,7 @@ onMounted(() => {
 </template>
 ```
 
--   接收一个基本数据类型/引用数据类型，并返回一个深层响应式对象
+###### 接收一个基本/引用数据类型，声明响应式状态返回一个深层次响应式对象；
 
 ```
 <script setup>
@@ -112,14 +112,6 @@ const count = ref(2);
 const handleCount = () => {
     count.value++;
 };
-
-type UserType = {
-    name: string;
-};
-let user = ref<UserType>({ name: "tom" });
-const change = () => {
-    user.value.name = "jack";
-};
 </script>
 
 <template>
@@ -128,7 +120,39 @@ const change = () => {
 </template>
 ```
 
-###### toRef, toRefs
+###### 标注类型
+
+类型推断
+
+```
+const user = ref({name: "tom"});      // const user: Ref<{name: string }>
+```
+
+Ref type;
+
+```
+import type { Ref } from 'vue';
+
+const user: Ref = ref({ name: 'tom', age: 10 })
+```
+
+泛型
+
+```
+import { ref } from "vue";
+
+type userType = {
+  name: string;
+  age: number;
+};
+
+const user = ref<userType>({
+  name: "tom",
+  age: 10,
+});
+```
+
+#### toRef, toRefs
 
 ```
 <template>
@@ -175,7 +199,7 @@ export default {
 </script>
 ```
 
-###### defineExpose
+#### defineExpose
 
 默认不开放给父组件访问，通过 defineExpose 暴露组件内的属性和方法
 
@@ -199,7 +223,7 @@ defineExpose({
 </template>
 ```
 
-### computed
+## computed
 
 ```
 <script setup>
@@ -213,9 +237,9 @@ const computedList = computed(()=>{
 </script>
 ```
 
-### watch
+## watch
 
-##### 单个数据侦听
+### 单个数据侦听
 
 ```
 const count = ref(0);
@@ -232,7 +256,7 @@ watch(
 );
 ```
 
-##### 多个数据侦听
+### 多个数据侦听
 
 ```
 watch([count, name], ([newC, newN], [oldC, oldN]) => {
@@ -240,7 +264,7 @@ watch([count, name], ([newC, newN], [oldC, oldN]) => {
 });
 ```
 
-##### 精确侦听
+### 精确侦听
 
 ```
 <script setup>
@@ -262,7 +286,7 @@ watch(()=> info.value.count, (newV)=>{
 </script>
 ```
 
-##### watchEffect
+### watchEffect
 
 -   页面首次加载会立即执行；
 -   自动侦听内部的依赖并重新执行；
@@ -270,7 +294,7 @@ watch(()=> info.value.count, (newV)=>{
 
 ---
 
-#### 组合式 Api 生命周期
+## 组合式 Api 生命周期
 
 组合式 API setup 中码字 等于 选项式 API beforeCreate/created 声明周期中码字, 其他生命周期都是加了一个前缀 on;
 vue2 | vue3
@@ -299,11 +323,11 @@ onMounted(()=>{
 </script>
 ```
 
-#### directive
+## directive
 
 任何以 v 开头的驼峰式命名的变量都可以被用作一个自定义指令
 
-#### 动态组件&lt;composite&gt;
+## 动态组件&lt;composite&gt;
 
 ```
 <script setup>
@@ -317,7 +341,7 @@ I
 </template>
 ```
 
-#### defineProps 父子通信
+## defineProps 父子通信
 
 ```
 <script setup>
@@ -346,7 +370,7 @@ defineProps({
 </template>
 ```
 
-#### defineEmits 子父通信
+## defineEmits 子父通信
 
 ```
 <script setup>
@@ -380,7 +404,7 @@ const handleMsg = () => {
 </template>
 ```
 
-#### another props & emits
+## another props & emits
 
 特别恶心，选项式和组合式请别混用；
 
@@ -413,7 +437,7 @@ export default {
 </script>
 ```
 
-#### provide & inject
+## provide & inject
 
 多层嵌套组件中使用；
 
@@ -455,76 +479,5 @@ const handleMsg = inject('setInfo')
 <template>
     <div>{{ receiveInfo }}</div>
     <button @click="handleMsg">click</button>
-</template>
-```
-
-### vue 中使用 ts
-
-其他请参考官网
-
-#### reactive
-
-```
-<script setup lang="ts">
-interface IUser {
-    name: string
-}
-const user : IUser = reactive({
-    name: 'tom'
-})
-</script>
-```
-
-#### ref
-
-```
-<script setup lang="ts">
-import type {Ref} from 'vue';
-const user : Ref<string> = ref('tom');
-
-// or
-
-const user = ref<string>('tom');
-</script>
-```
-
-```
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-
-const el = ref<HTMLInputElement | null>(null)
-
-onMounted(() => {
-  el.value?.focus()
-})
-</script>
-
-<template>
-  <input ref="el" />
-</template>
-```
-
-#### computed
-
-```
-<script setup lang="ts">
-const double = computed<number>(() => {
-  // 若返回值不是 number 类型则会报错
-})
-</script>
-```
-
-#### 函数
-
-```
-<script setup lang="ts">
-function handleChange(event) {
-  // `event` 隐式地标注为 `any` 类型
-  console.log(event.target.value)
-}
-</script>
-
-<template>
-  <input type="text" @change="handleChange" />
 </template>
 ```

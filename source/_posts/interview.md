@@ -2,7 +2,15 @@
 title: Interview
 ---
 
-#### Eventloop
+## css - 圣杯布局
+
+![](/images/interview/shengbei.png)
+
+## css - BFC
+
+BFC 是一个独立的布局环境，BFC 内部的元素布局与外部互不影响；
+
+## Eventloop
 
 js 是一门**单线程**执行的编程语言，执行任务队列中同一时间只能执行一件事情。如果前一个任务非常耗时，后面的任务会一直等待，导致程序假死状态。
 
@@ -16,7 +24,7 @@ JavaScript 主线程从“任务队列”中读取异步任务的回调函数，
 
 ---
 
-#### 宏任务 & 微任务
+## 宏任务 & 微任务
 
 js 把异步任务做了进一步的划分，分为 2 类：
 
@@ -32,7 +40,7 @@ js 把异步任务做了进一步的划分，分为 2 类：
 
 ---
 
-#### 什么是前端工程化？
+## 什么是前端工程化？
 
 指的是 4 个现代化，对工具、技术、流程等进行规范、标准化。
 
@@ -45,17 +53,16 @@ js 把异步任务做了进一步的划分，分为 2 类：
 
 ---
 
-#### &lt;tempate&gt;
+## &lt;tempate&gt;
 
-是 vue 提供的容器标签，只起到包裹的作用，不会被渲染为真正的 DOM 元素。
-所以在\&lt;template&gt;标签上进行当循环的时候，无法绑定 key。
+1. 是 vue 提供的容器标签，只起到包裹的作用，不会被渲染为真正的 DOM 元素。
+   所以在&lt;template&gt;标签上进行当循环的时候，无法绑定 key。
 
-vue2 中 template 节点仅支持单个根节点。
-vue3 中组件根节点支持了多个根结点。
+2. vue2 中 template 节点仅支持单个根节点; vue3 中组件根节点支持了多个根结点。
 
 ---
 
-#### 浅拷贝& 深拷贝
+## 浅拷贝& 深拷贝
 
 浅拷贝只是拷贝第一层, 而像引用类型数组、对象，就只是拷贝引用地址;
 
@@ -89,7 +96,7 @@ function deepClone(obj = {}) {
 }
 ```
 
-#### 首屏加载优化
+## 首屏加载优化
 
 -   路由懒加载
     vue 是单页应用，打包时，所有的 js 都会打包成一个 js 文件会变得非常大，影响页面加载速度，使用 import 导入组件可以把路由对应的组件分割成不同的代码块，用户访问对应的路由才加载对应的组件；
@@ -97,22 +104,76 @@ function deepClone(obj = {}) {
 -   vuex 状态管理；
 -   图片懒加载；
 
-#### 生命周期
+## 生命周期
 
 -   created: 编译模版；
 -   mounted: 挂载模版；
 -   updated: 在组件的任意 DOM 节点更新后调用；
     注意：仅限用差值语法使用在页面上的 data 属性，若没有使用在页面上，自身的 updated 或子组件的 updated 都不会触发；
 
-#### vue3 composition Api
+## vue3 与 vue2 区别
 
--   选项式写法，在 data 中定义的属性，methods,computed,watch 中都会使用，造成代码结构是不相关的；组合式 api 则可以统一写在一块，高内聚；
--   选项式与 ts 结合并不友好，组合式与 ts 结合更友好，比如类型推断；
+1.  vue2 选项式写法，在 data 中定义的属性，methods，computed，watch 中都会使用，造成代码结构是分散不相关的；组合式 api 则可以统一写在一块，高内聚；
+2.  选项式与 ts 结合并不友好，组合式与 ts 结合更友好，比如类型推断；
 
-#### css - 圣杯布局
+3.  但 vue3 组合式 api 也造成一个问题，就是它不像 vue2 这种强制的帮你划分了结构，methods 里的方法都在 methods 对象里面，computed 里的方法都在 computed 里面，以及 watch、filter 等等。也就造成了 vue3 代码最后写出来很乱，所有的东西都在一块；解决方案就是拆分业务，根据业务把同一个组件中独立的业务代码抽象封装成函数。一个页面每一块的业务都可以独立成一个函数导入调用。
+    -   按照业务声明以“use”开头的逻辑函数；
+    -   把独立的业务逻辑封装到各个函数内部；
+    -   函数内部把组件中需要用到的数据和方法以对象的形式 return 出去；
+    -   在组件中导入函数，把对应的数据或方法解构使用即可；
 
-![](/images/interview/shengbei.png)
+```
+<script setup>
+import { useBanner } from "./components/useBanner";
+import { useCategory } from "./components/useCategory";
 
-#### css - BFC
+const { bannerList } = useBanner();
+const { categoryData } = useCategory();
+</script>
+```
 
-BFC 是一个独立的布局环境，BFC 内部的元素布局与外部互不影响；
+useBanner.js
+
+```
+// banner数据
+import { getBannerAPI } from "@/apis/home";
+import { onMounted, ref } from "vue";
+
+export function useBanner() {
+	const bannerList = ref([]);
+	const getBanner = async () => {
+		const res = await getBannerAPI({ site: 2 });
+		bannerList.value = res.result;
+	};
+
+	onMounted(() => getBanner());
+
+	return {
+		bannerList,
+	};
+}
+```
+
+## vue3 新特性
+
+1. 重写了双向绑定数据;
+   vue2 使用 Object.defineProperty 对属性做的监听，通过 get 和 set 做了对象属性的劫持；vue3 通过 ES6 的 Proxy 做的数据代理；
+   为什么要换成 proxy？defineProperty 是对于对象属性的监听，而对于数组 vue2 是自己重写了数组的方法；vue3 通过 proxy 可以对数组比较友好；
+
+<!-- 2. 提升了 VDOM 性能 -->
+
+3. vue3 支持了多个根节点，vue2 只能有一个根节点；
+
+4. v-model 支持了多个 v-model，vue2 只能是一个，如果要实现像多个 v-model 数据的修改效果，只能绑定多个属性，在子组件通过$emit 触发每个对应的自定义事件去修改父组件数据；
+
+<!-- 5. Tree-shaking 的支持， -->
+
+6. 支持了组合式 API；
+
+## 虚拟 DOM
+
+1. 虚拟 DOM 就是通过 js 生成一个*抽象语法树*。比如 ts 转 js 的时候，在转换的过程中也会抽象语法树的转换；Babel 这个插件在 ES6 语法转 ES5 的时候，也会进行抽象语法树的转换；
+
+2. 为什么不直接操作 DOM 呢？因为一个 DOM 它的属性是非常多的，直接操做 DOM 是非常浪费性能；
+   有了虚拟 DOM 之后可以做一些优化，比如一些 DOM 可以做一些复用，然后就产生了 diff 算法，通过 diff 算法的对比，让一些 DOM 被复用，也就优化了性能。
+3. diff 算法导致组件被复用，比如在切换的时候，循环的时候需要添加一个属性，并给它赋唯一值；
