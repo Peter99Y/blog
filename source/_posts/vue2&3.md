@@ -373,42 +373,39 @@ export default {
 	<input type="text" name="" v-focus>
 
 </div>
-<script>
-    //全局自定义指令
-	Vue.directive('color',{
-	    //bind：初始化设置。 只调用一次,指令第一次绑定到元素时调用；
-		bind: (el,binding)=>{
-				 // el: 指令所绑定的元素，可直接操作DOM;
-				 // binding.rawName: 'v-color',
-				 // binding.name: 'color',
-				 // binding.value: 'green'
-			el.style.background = binding.value
+```
+v2 全局自定义指令
+```
+Vue.directive('color', {
+	//bind：初始化设置。 只调用一次,指令第一次绑定到元素时调用；
+	bind: (el, binding) => {
+		// el: 指令所绑定的DOM元素; 
+		// binding: {rawName: 'v-color', name: 'color', value: 'green'}
+		el.style.background = binding.value
+	},
+	inserted: (el) => {         // inserted: 当被绑定的元素插入到DOM时调用
+		el.focus();             // el: 指令所绑定的元素，可直接用来操作DOM;
+	}
+})
+```
+v2 组件局部自定义指令
+```
+new Vue({
+	el: '#app',
+	data: {
+		setColor: 'red',
+	},
+	directives: {
+		focus: {
+			inserted: (el) => {
+				el.focus();
+			},
+			componentUpdated: (el) => {  // DOM元素及其子元素全部更新后调用
+				el.focus();
+			},
 		}
-	})
-
-	// Vue.directive('focus',{
-	// 	  inserted:(el)=>{          // inserted: 当被绑定的元素插入到DOM时调用
-	// 	  	  el.focus();           // el: 指令所绑定的元素，可直接用来操作DOM;
-	// 	  }
-	// })
-
-	new Vue({
-		el:'#app',
-		data:{
-			setColor:'red',
-		},
-		directives:{                // 局部自定义指令
-			focus:{
-				inserted:(el)=>{
-					el.focus();
-				},
-                componentUpdated: (el) => {  // DOM元素及其子元素全部更新后调用
-                    el.focus();
-                },
-			}
-		}
-	})
-</script>
+	}
+})
 ```
 
 ###### v3
@@ -426,8 +423,10 @@ export default {
             }
         }
     },
+    
+    // 简写 (如mounted 和 updated函数中逻辑相同)
     directives: {
-        focus: (el) => {    // 如mounted 和 updated函数中逻辑相同，可简写；
+        focus: (el) => {
             el.focus();
         },
         color: (el, binding) => {

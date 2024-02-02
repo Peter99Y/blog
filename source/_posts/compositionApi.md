@@ -54,7 +54,7 @@ const handleChange = () => {
 
 ## reactive
 
-接受一个对象参数，不接受基本数据类型，并返回深层响应式对象
+接受一个引用类型，不接受基本数据类型，并返回深层响应式对象
 
 ```
 <script setup>
@@ -71,6 +71,41 @@ const handleCount = () => {
     <div>{{ state.count }}</div>
     <button @click="handleCount">click</button>
 </template>
+```
+
+注意：不能对 reactive 生成的响应式对象覆盖，否则会丢失响应式
+
+```
+import { reactive } from "vue";
+
+let list = reactive<string[]>([]);
+
+setTimeout(() => {
+  list = ['hello', 'world'];
+  console.log('list', list);  // ['hello', 'world']; 视图不刷新
+}, 2000);
+```
+
+#### shallowReactive
+
+只对根属性(第一层级)有效;
+
+```
+import { shallowReactive } from "vue";
+
+let user = shallowReactive({
+  code: 200,
+  data: {
+    city: 'Shanghai',
+  }
+})
+
+setTimeout(() => {
+  user.code = 201;
+
+  // user.data.city = 'Beijing';    // 无效
+  user.data = { city: 'Beijing' };
+}, 2000);
 ```
 
 ## ref
@@ -152,52 +187,96 @@ const user = ref<userType>({
 });
 ```
 
-#### toRef, toRefs
+#### shallowRef & triggerRef
+
+shallowRef: 返回浅层响应数据;
+triggerRef: 强制触发 shallowRef;
 
 ```
-<template>
-    <h5>{{ name }}</h5>
-    <div>{{ count }}</div>
-    <div>{{ city }}</div>
-    <button @click="handleChange">click</button>
-</template>
+import { shallowRef, triggerRef } from "vue";
 
-<script>
-import {reactive, toRef, toRefs, ref} from 'vue'
-export default {
-    setup() {
-        const city = ref('北京');
-        const data = reactive({
-            count: 1,
-            name: 'tom',
-            city: city
-        });
+const user = shallowRef({ name: 'tom' })
+user.value.name = "jerry";
 
-        let count = toRef(data, 'count');
-        let allData = toRefs(data);
+if (user.value.name === 'jerry') {
+  console.log(true);            // true;   value对象下的数据会改变, 但视图不刷新
+  triggerRef(user);             // 强制出发一个shallowRef
+}
 
-        const handleChange = ()=>{
-            // data.count += 1;
-            // count.value += 1;
-            allData.count.value += 1;
-        }
-
-        return {
-            // 非响应式
-            // count: data.count,
-
-            // toRef: 响应式的，同时原数据修改/自身修改，同时都会修改；
-            // count: count,
-
-            // toRefs:
-            ...allData,
-
-            handleChange,
-        }
-    },
-};
-</script>
+// user.value = { name: 'jerry' };   // 只能直接改变value对象，视图才会刷新
 ```
+
+#### customRef
+
+自定义一个 ref
+
+```
+import { customRef } from "vue";
+
+function fnRef<T>(param: T) {
+  return customRef((track, trigger) => {
+    return {
+      get() {
+        track();    // 收集依赖
+        return param;
+      },
+      set(val) {
+        param = val;
+        trigger();  // 触发依赖更新
+      }
+    }
+  })
+}
+
+const str = fnRef<string>('hello');
+
+const handleClick = () => {
+  str.value = 'world';
+}
+```
+
+#### toRef & toRefs & toRaw
+
+提取出响应式对象的一个属性, 将其转换成 ref 响应式对象, 可同源修改 (传入响应式对象有效, 非响应式对象无效)
+
+```
+import { reactive, toRef } from "vue";
+
+let user = reactive({
+	age: 10,
+	data: {
+		info: {
+			username: 'tom',
+		}
+	}
+});
+let username = toRef(user.data.info, 'username');
+let age = toRef(user, 'age');
+
+setTimeout(() => {
+	age.value ++;      // 11
+	user.age ++;       // 12
+	username.value = 'jerry';	// jerry
+}, 1000);
+```
+
+toRefs
+
+```
+import { reactive, toRefs } from "vue";
+
+let user = reactive({ name: 'tom', age: 10 });
+const { name, age } = toRefs(user);
+
+setTimeout(() => {
+  name.value = 'jerry';
+
+  // age.value = '11';      // err; Ref<number> 自动类型推断
+  age.value = 11;
+}, 1000);
+```
+
+toRaw 将响应式对象转成普通对象
 
 #### defineExpose
 
@@ -225,6 +304,10 @@ defineExpose({
 
 ## computed
 
+-   传入函数
+
+-   传入{get,set}对象
+
 ```
 <script setup>
 import { ref, computed } from "vue";
@@ -239,7 +322,7 @@ const computedList = computed(()=>{
 
 ## watch
 
-### 单个数据侦听
+#### 单个数据侦听
 
 ```
 const count = ref(0);
@@ -250,47 +333,74 @@ watch(
         console.log("count:", newV);
     },
     {
-        immediate: true,    // 页面第一次加载触发；
-        // deep: true
+        immediate: true,    // 页面第一次加载触发;
+        deep: true,         // 深度监听, reactive无需;
+        flush: 'pre',       // 默认pre 组件更新前执行，sync同步执行，post组件更新后执行
     }
 );
 ```
 
-### 多个数据侦听
+#### 多个数据侦听
 
 ```
-watch([count, name], ([newC, newN], [oldC, oldN]) => {
-    console.log("count:", newC, "name:", newN);
-});
+watch(
+  [count, number],
+  ([newCount, newNumber], [oldC, oldN]) => {
+    console.log("count:", newCount, oldC);
+    console.log("number:", newNumber, oldN);
+  }
+);
 ```
 
-### 精确侦听
+#### 精确侦听
+
+deep 是对一个引用类型所有属性的监听;
+而 watch 传入回调函数是对引用类型的单个属性深度监听;
 
 ```
 <script setup>
-import { ref, watch } from "vue";
-
-const info = ref({
-    count: 0,
-    msg: 'hello'
+const result = ref({
+  info: {
+    count: {
+      number: 0,
+    }
+  },
 });
 
+watch(
+  () => result.value.info.count.number,
+  (newV) => {
+    console.log(newV);
+  }
+)
+
 const handleCount = () => {
-    info.value.count++;
+  result.value.info.count.number++;
 };
-
-watch(()=> info.value.count, (newV)=>{
-    console.log('info.count:', newV);
-})
-
-</script>
 ```
 
-### watchEffect
+#### watchEffect
 
--   页面首次加载会立即执行；
--   自动侦听内部的依赖并重新执行；
--   第二个参数可选 DOM 渲染前后才执行；
+-   回调函数内每个涉及的数据的修改都会触发;
+-   首次加载立即执行（普通 watch 需要配置 immediate）
+-   返回停止监听函数
+```
+import { watchEffect, ref } from "vue";
+
+let username = ref('')
+let password = ref('')
+
+const stop = watchEffect((onBefore) => {
+  onBefore(() => {
+    console.log('before trigger')
+  });
+
+  console.log('after trigger', username.value);
+  console.log('after trigger', password.value);
+})
+
+const stopWatch = () => stop();
+```
 
 ---
 
@@ -326,6 +436,35 @@ onMounted(()=>{
 ## directive
 
 任何以 v 开头的驼峰式命名的变量都可以被用作一个自定义指令
+```
+<script>
+export default {
+    directives:{
+        focus:{
+            mounted(el){    // 在绑定的元素挂载完成后调用，只在第一次插入DOM时；DOM更新时不触发
+                el.focus();
+            },
+            updated(el){
+                el.focus(); // 每次DOM更新时都会触发updated函数
+            }
+        }
+    },
+    
+    // 简写 (如mounted 和 updated函数中逻辑相同)
+    directives: {
+        focus: (el) => {
+            el.focus();
+        },
+        color: (el, binding) => {
+            el.style.color = binding.value;
+        },
+    },
+    data() {
+        return {};
+    },
+};
+</script>
+```
 
 ## 动态组件&lt;composite&gt;
 
