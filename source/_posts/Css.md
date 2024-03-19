@@ -570,4 +570,37 @@ div::after {
     }
 ```
 
-![](/images/Css/text-shadow.png)
+![](/images/Css/text-shadow.jpg)
+
+### clip-path
+
+裁剪一个元素成任意类型
+circle - 圆形; inset - 矩形; ellipse - 椭圆; polygon - 多边形
+
+```
+        img {
+            margin: 10px auto;
+            width: 100px;
+            display: block;
+        }
+
+        .img-1 {
+            /* 长度 at 圆心处于元素x位置 圆心处于元素y位置 */
+            clip-path: circle(50% at center center)
+        }
+
+        .img-2 {
+            clip-path: circle(100% at 100% 100%)
+        }
+
+        .img-3 {
+            /* 上右下左 */
+            clip-path: inset(0% 32% 0% 46%);
+        }
+
+        .img-4 {
+            /* 每个点的x & y轴位置 */
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+```
+![](/images/Css/clip-path.jpg)
