@@ -1,6 +1,8 @@
 ---
-title: jsx语法
+title: jsx语法 & vue中render函数中使用jsx
 ---
+
+### jsx 基础语法
 
 jsx 是**js 语法扩展**，浏览器本身不能识别，需要通过解析工具 babel 才能运行;
 
@@ -144,4 +146,161 @@ jsx 是**js 语法扩展**，浏览器本身不能识别，需要通过解析工
 
         ReactDOM.render(elem, document.querySelector('#app'));
     </script>
+```
+
+### vue render 函数创建 html 模版
+
+> 区别：
+> html -> render 函数 -> VNode -> 真是 Dom 节点 (使用&lt;template&gt;模版编译器渲染过程)
+> (无 html) render 函数 -> VNode -> 真实 Dom 节点 (render 函数渲染过程)
+
+`son.vue`
+
+```
+<script>
+export default {
+    props: {
+        tag: {
+            type: String,
+            default: "h6",
+        },
+        list: {
+            type: Array,
+            default: ()=>{
+                return ['hello', 'world']
+            }
+        }
+    },
+    render(createElement) {
+        return createElement(           // 最终return一个VNode虚拟节点
+            this.tag,                   // 1参: 渲染的标签 {String|Object|Fn}
+
+            {                           // 2参: html标签的各种属性
+                class: "div-wrapper",   //      设置class
+                style: {                //      设置style
+                    color: "yellow",
+                    fontSize: "40px"
+                },
+                attrs:{                 //      设置属性
+                    "data-index": 1
+                },
+                on: {
+                    click: () => {
+                        console.log("click");
+                    },
+                },
+                domProps:{              //      标签内容; (若3参有值会被覆盖)
+                    // innerHTML: 'hello'
+                }
+            },
+
+            // 'hello'                  // 3参: 当前标签的子元素 {String|Array}
+            this.list.map((name) => createElement("h5", `${name}`));
+        );
+    },
+};
+</script>
+```
+
+-   render 可以直接渲染组件
+
+`father.vue`
+
+```
+<script>
+import son from "./son.vue";
+export default {
+    render(createElement) {
+        return createElement(son, {
+            props: {
+                msg: "hello",
+            },
+        });
+    },
+};
+</script>
+```
+
+`son.vue`
+
+```
+<template>
+    <h1>{{msg}}</h1>
+</template>
+<script>
+export default {
+    props: {
+        msg:String
+    },
+};
+</script>
+```
+
+-   render 简化 vue
+
+`father.vue`
+
+```
+<template>
+    <div class="permit-wrapper">
+
+        <demo tag="h1">hello</demo>
+
+    </div>
+</template>
+
+<script>
+import demo from './demo.js'
+export default {
+    components:{
+        demo
+    }
+
+}
+</script>
+```
+
+`son.js render渲染模式`
+
+```
+export default {
+    props: {
+        tag:String
+    },
+    render(createElement){
+        // return createElement(this.tag, this.$slots.default);
+
+        const tag = this.tag;
+        return (
+            <tag>{this.$slots.default}</tag>
+        )
+    },
+};
+```
+
+`son.vue 普通模版渲染模式`
+
+```
+<template>
+    <div>
+        <h1 v-if="tag == 'h1'">
+            <slot/>
+        </h1>
+        <h2 v-if="tag == 'h2'">
+            <slot/>
+        </h2>
+        <h3 v-if="tag == 'h3'">
+            <slot/>
+        </h3>
+        ...
+    </div>
+</template>
+
+<script>
+export default {
+    props: {
+        tag:String
+    },
+};
+</script>
 ```
