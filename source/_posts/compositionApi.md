@@ -2,6 +2,52 @@
 title: vue3组合式API
 ---
 
+
+## vue3 与 vue2 区别
+
+1.  vue2 选项式写法，在 data 中定义的属性，methods，computed，watch 中都会使用，造成代码结构是分散不相关的；组合式 api 则可以统一写在一块，高内聚；
+2.  选项式与 ts 结合并不友好，组合式与 ts 结合更友好，比如类型推断；
+
+3.  但 vue3 组合式 api 也造成一个问题，就是它不像 vue2 这种强制的帮你划分了结构，methods 里的方法都在 methods 对象里面，computed 里的方法都在 computed 里面，以及 watch、filter 等等。也就造成了 vue3 代码最后写出来很乱，所有的东西都在一块；解决方案就是拆分业务，根据业务把同一个组件中独立的业务代码抽象封装成函数。一个页面每一块的业务都可以独立成一个函数导入调用。
+    -   按照业务声明以“use”开头的逻辑函数；
+    -   把独立的业务逻辑封装到各个函数内部；
+    -   函数内部把组件中需要用到的数据和方法以对象的形式 return 出去；
+    -   在组件中导入函数，把对应的数据或方法解构使用即可；
+
+```
+<script setup>
+import { useBanner } from "./components/useBanner";
+
+const { bannerList } = useBanner();
+</script>
+
+<template>
+	<div v-for="it of bannerList">{{it.name}}</div>
+</template>
+```
+
+useBanner.js
+
+```
+// banner数据
+import { getBannerAPI } from "@/apis/home";
+import { onMounted, ref } from "vue";
+
+export function useBanner() {
+	const bannerList = ref([]);
+	const getBanner = async () => {
+		const res = await getBannerAPI({ site: 2 });
+		bannerList.value = res.result;
+	};
+
+	onMounted(() => getBanner());
+
+	return {
+		bannerList,
+	};
+}
+```
+
 ## setup
 
 ```

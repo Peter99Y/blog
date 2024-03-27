@@ -2,7 +2,133 @@
 title: Css
 ---
 
-### 包含块
+## bfc
+
+Block Formatting Context 块级格式化上下文，它是一块**独立的渲染区域**，它规定了在该区域中，常规流**块元素**的布局;
+
+##### 独立的渲染区域
+
+块盒的排列布局是在一个区域里面，这个区域就是块级格式化上下文，就是 bfc 创建的区域；
+不同的 bfc 区域互不干扰，这个区域隔绝了内部和外部的联系，内部的渲染不会影响到外部，不会跟其他元素重叠或覆盖；
+
+以下元素会创建内部的 bfc;
+
+-   根元素 html;
+-   浮动元素 float;
+-   绝对定位元素 position: fixed/absolute;
+-   overflow 非 visible 的块盒;
+
+##### 常规流块元素布局
+
+-   在水平方向上撑满包含块，垂直方向上依次摆放;
+-   父子关系下，则垂直方向上外边距 margin 塌陷/margin 合并;
+-   父子关系下，父元素会无视浮动的子元素产生高度塌陷;
+-   兄弟关系下，左侧浮动元素会覆盖右侧常规流元素;
+
+##### bfc 解决方案
+
+-   bfc 元素和它的子元素不会外边距合并 (父子关系);
+    -   将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
+    -   父元素设置 border 或 padding(不推荐：影响元素);
+    -   父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
+    -   父元素设置 overflow;
+
+```
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .father{
+        background-color: yellowgreen;
+        height: 200px;
+        margin-top: 20px;
+        overflow: hidden;
+    }
+    .child{
+        background-color: orange;
+        height: 50px;
+        margin-top: 50px;
+    }
+</style>
+
+<body>
+    <div class="father">
+        <div class="child">margin-top:50</div>
+    </div>
+</body>
+```
+
+![](/images/Css/margin-top.jpg)
+
+-   bfc 元素的高度计算了子浮动元素 (父子关系);
+    -   父元素::after{clear: both; content: '', display: block};
+    -   将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
+    -   父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
+    -   父元素设置 overflow;
+
+```
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .father{
+        border: 1px solid black;
+        overflow: hidden;
+    }
+    .son{
+        width: 100px;
+        height: 100px;
+        background-color: orange;
+        margin-right: 20px;
+        float: left;
+    }
+</style>
+
+<div class="father">
+    <div class="son"></div>
+    <div class="son"></div>
+    <div class="son"></div>
+</div>
+```
+
+-   浮动元素 与 bfc 元素不会重叠 (兄弟关系);
+    -   将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
+    -   父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
+    -   将常规流元素设置成bfc元素 overflow: 非 visible 即可(hidden/auto/scroll)
+
+```
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .float{
+        width: 100px;
+        height: 100px;
+        background-color: tomato;
+        float: left;
+        margin-right: 10px;
+    }
+    .right{
+        height: 200px;
+        background-color: yellowgreen;
+        overflow: hidden;
+    }
+</style>
+
+<body>
+    <div class="float"></div>
+    <div class="right"></div>
+</body>
+```
+
+![](/images/Css/overflow.jpg)
+
+---
+
+## 包含块
 
 -   元素的排列是在一块区域中，这个区域包含了这个元素，所以元素的包含块就是元素的排列区域；
 
@@ -10,7 +136,7 @@ title: Css
 
 -   绝对定位元素的包含块是带有定位元素 padding+width 区域；绝对定位元素的 left/top 是相对于 padding+width 区域；
 
-### 粘性布局
+## 粘性布局
 
 position: sticky;
 
@@ -50,7 +176,7 @@ position: sticky;
 
 ![](/images/Css/sticky.png)
 
-### 伪元素 ::before/::after
+## 伪元素 ::before/::after
 
 -   content 可设置字符串、空白、图片、计数器、attr（通过元素上的属性值设置字符串）;
 
@@ -67,7 +193,7 @@ div::after {
 
 ![](/images/Css/content_attr.png)
 
-### 伪类
+## 伪类
 
 ###### :has
 
@@ -181,7 +307,7 @@ div::after {
 
 ---
 
-### display
+## display
 
 会重绘、会重排
 
@@ -232,7 +358,7 @@ div::after {
 
 ![](/images/Css/display.png)
 
-### visibility
+## visibility
 
 会重绘
 
@@ -603,4 +729,5 @@ circle - 圆形; inset - 矩形; ellipse - 椭圆; polygon - 多边形
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         }
 ```
+
 ![](/images/Css/clip-path.jpg)

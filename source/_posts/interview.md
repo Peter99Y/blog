@@ -125,11 +125,15 @@ function deepClone(obj = {}) {
 ```
 <script setup>
 import { useBanner } from "./components/useBanner";
-import { useCategory } from "./components/useCategory";
 
 const { bannerList } = useBanner();
-const { categoryData } = useCategory();
 </script>
+
+<template>
+	<div v-for="it of bannerList">{{it.name}}</div>
+</template>
+
+<style scoped></style>
 ```
 
 useBanner.js

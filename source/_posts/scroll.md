@@ -1,5 +1,5 @@
 ---
-title: jsx语法 & vue中render函数中使用jsx
+title: jsx语法 & vue render函数使用jsx
 ---
 
 ### jsx 基础语法
