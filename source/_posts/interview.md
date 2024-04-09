@@ -100,7 +100,7 @@ function deepClone(obj = {}) {
 
 -   路由懒加载
     vue 是单页应用，打包时，所有的 js 都会打包成一个 js 文件会变得非常大，影响页面加载速度，使用 import 导入组件可以把路由对应的组件分割成不同的代码块，用户访问对应的路由才加载对应的组件；
--   vue3 - defineAsyncComponent 异步组件加载；
+-   vue3 新增 defineAsyncComponent 异步组件，同样可以 npm run build 时将一个包分包，用到这个 js 时才会加载这个包；
 -   vuex 状态管理；
 -   图片懒加载；
 

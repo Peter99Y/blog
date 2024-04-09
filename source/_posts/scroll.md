@@ -1,5 +1,5 @@
 ---
-title: jsx语法 & vue render函数使用jsx
+title: jsx语法 & vue jsx & tsx
 ---
 
 ### jsx 基础语法
@@ -303,4 +303,101 @@ export default {
     },
 };
 </script>
+```
+
+### tsx
+
+`npm install @vitejs/plugin-vue-jsx -D`
+
+注意：ref 在 template 中会自动读取.value，tsx 需要手动指定.value;
+
+```
+// 第一种方式：直接返回默认的渲染函数
+//  export default function (){
+//     return (<div>hello world</div>)
+//  }
+
+// 第二种方式：optionsApi (少)
+// import { defineComponent } from "vue";
+// export default defineComponent({
+//     data(){
+//         return {
+//             name: 'tom',
+//         }
+//     },
+//     render (){
+//         return (<div>{this.name}</div>)
+//     }
+// })
+
+// 第三种方式：setup
+import { defineComponent, ref } from "vue";
+export default defineComponent({
+	setup() {
+        // 注意：ref在template中会自动读取.value，tsx需要手动指定.value;
+		const flag = ref(false);
+		return () => <div v-show={flag.value}>hello</div>;
+	},
+});
+```
+
+```
+interface propsInt {
+	name: string;
+}
+
+const A = (_, { slots }) => (
+	// <div>{slots.default ? slots.default() : "默认值"}</div>
+	<div>{slots.foo?.()}</div>
+);
+
+import { defineComponent, ref } from "vue";
+export default defineComponent({
+	props: {
+		name: String,
+	},
+	emits: ["on-change"],
+	setup(props: propsInt, { emit }) {
+		const flag = ref(false);
+
+		const list = [1, 2, 3];
+
+		const handleChange = (str: string) => {
+			emit("on-change", str);
+		};
+
+		const slot = {
+			default: () => <div>这是默认插槽</div>,
+			foo: () => <div>这是具名插槽</div>,
+		};
+
+        const searchName = ref<string>('');
+
+		return () => (
+			<div>
+				<div v-show={flag.value}> hello </div>
+
+				{/* v-if 无效，三元，与，非代替; */}
+				<div> {flag.value ? <span>真</span> : <span>假</span>} </div>
+
+				{/* v-for 无效，map 方法代替; */}
+				{/* v-bind 无效，花括号代替; */}
+				<div>
+					{list.map((it, idx) => {
+						return <span data-index={idx}>{it}</span>;
+					})}
+				</div>
+
+				<div>{props.name}</div>
+
+				<button onClick={() => handleChange(searchName.value)}>click</button>
+
+				<A v-slots={slot}></A>
+
+                <input type="text" v-model={searchName.value} />
+                {searchName.value}
+			</div>
+		);
+	},
+});
 ```

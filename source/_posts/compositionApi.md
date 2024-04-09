@@ -2,7 +2,6 @@
 title: vue3组合式API
 ---
 
-
 ## vue3 与 vue2 区别
 
 1.  vue2 选项式写法，在 data 中定义的属性，methods，computed，watch 中都会使用，造成代码结构是分散不相关的；组合式 api 则可以统一写在一块，高内聚；
@@ -329,23 +328,32 @@ toRaw 将响应式对象转成普通对象
 默认不开放给父组件访问，通过 defineExpose 暴露组件内的属性和方法
 
 ```
-<script setup>
-import { ref } from "vue";
-const msg = ref("");
+<template>
+    <Hello ref="child" />
+</template>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+import Hello from '@/components/HelloWorld.vue'
+
+let child = ref<InstanceType<typeof Hello>>()
+console.log(child.value?.changeMsg);
+</script>
+```
+
+```
+<script setup lang="ts">
+let msg = 'hello';
 
 const changeMsg = () => {
-    msg.value = "hello word";
+  msg = "hello word";
 };
 
 defineExpose({
-    msg,
-    changeMsg,
-});
+  msg,
+  changeMsg
+})
 </script>
-
-<template>
-    {{ msg }}
-</template>
 ```
 
 ## computed
@@ -361,7 +369,7 @@ import { ref, computed } from "vue";
 const list = ref([1,2,3,4,5]);
 
 const computedList = computed(()=>{
-    return list.value.filter(it=>it > 2);
+    return list.value.filter(it => it > 2);
 })
 </script>
 ```
@@ -430,6 +438,7 @@ const handleCount = () => {
 -   回调函数内每个涉及的数据的修改都会触发;
 -   首次加载立即执行（普通 watch 需要配置 immediate）
 -   返回停止监听函数
+
 ```
 import { watchEffect, ref } from "vue";
 
@@ -482,6 +491,7 @@ onMounted(()=>{
 ## directive
 
 任何以 v 开头的驼峰式命名的变量都可以被用作一个自定义指令
+
 ```
 <script>
 export default {
@@ -495,7 +505,7 @@ export default {
             }
         }
     },
-    
+
     // 简写 (如mounted 和 updated函数中逻辑相同)
     directives: {
         focus: (el) => {
@@ -512,50 +522,74 @@ export default {
 </script>
 ```
 
-## 动态组件&lt;composite&gt;
+## &lt;component&gt;
+
+动态组件
 
 ```
-<script setup>
-import Foo from "./Foo.vue";
-import Bar from "./Bar.vue";
-</script>
-I
 <template>
-    <component :is="Foo" />
-    <component :is="someCondition ? Foo : Bar" />
+    <div v-for="(it, idx) of 2" :key="idx" @click="handleSwitch(idx)">{{ it }}</div>
+
+    <component :is="whichOne"></component>
+</template>
+
+<script lang="ts" setup>
+import { shallowRef } from 'vue';
+import Hello from '@/components/HelloWorld.vue'
+import World from '@/components/World.vue'
+
+// 使用shallowRef，无需代理劫持组件属性，只需要代理到whichOne.value最外层对象;
+const whichOne = shallowRef(Hello);
+
+const handleSwitch = (index: number) => {
+    if (index === 0) {
+        whichOne.value = Hello;
+    } else {
+        whichOne.value = World;
+    }
+}
+
+</script>
+```
+
+## defineProps
+
+```
+<script setup lang="ts">
+const props = defineProps({
+  title: String,
+  arr: Array,
+})
+
+// ts泛型字面量
+const props = defineProps<{
+  title: string,
+  arr: number[],
+}>()
+
+// defineProps没有给props提供默认值的方式，
+// 使用ts特有的withDefaults函数设置默认值
+const props = withDefaults(
+  defineProps<{
+    title: string,
+    arr: number[],
+  }>(),
+  {
+    title: 'hello',
+    arr: () => [1, 2, 3]
+  }
+)
+
+console.log(props.title)  // 'hello'
+</script>
+
+<template>
+  <h2>{{ title }}</h2>
+  <h2>{{ arr }}</h2>
 </template>
 ```
 
-## defineProps 父子通信
-
-```
-<script setup>
-import { ref } from 'vue';
-
-// 组合式API下无需注册
-import Child from './components/Right.vue'
-
-const count = ref(100);
-</script>
-
-<template>
-    <Child :count="count"/>
-</template>
-```
-
-```
-<script setup>
-defineProps({
-    count: Number,
-});
-</script>
-
-<template>
-    <div>{{ count }}</div>
-</template>
-```
-
-## defineEmits 子父通信
+## defineEmits
 
 ```
 <script setup>
@@ -564,7 +598,7 @@ import Child from "./components/Right.vue";
 
 const info = ref("o");
 
-const handleMsg = (msg) => {
+const handleMsg = (msg: string) => {
     info.value = msg;
 };
 </script>
@@ -576,8 +610,15 @@ const handleMsg = (msg) => {
 ```
 
 ```
-<script setup>
-const $emit = defineEmits(["push-msg"]);
+<script setup lang="ts">
+const $emit = defineEmits(["push-msg", "push-data"]);
+
+// ts
+const $emit = defineEmits<{
+  (e: 'push-msg', data: string): void
+  (e: 'push-data', data: string): void
+}>();
+
 
 const handleMsg = () => {
     $emit("push-msg", "hello");
@@ -624,45 +665,378 @@ export default {
 
 ## provide & inject
 
-多层嵌套组件中使用；
+provide 在父组件中提供给嵌套的后代组件数据和方法，在任何一级后代组件中都可以使用 inject 接收；
 
-`父组件.vue`
+-   注意：会同源修改，若不希望后代组件修改，provide 使用 readonly;
 
 ```
-<script setup>
-import { ref, provide } from "vue";
-import Child from "./components/Right.vue";
+<script lang="ts" setup>
+import { ref, provide, readonly } from 'vue';
 
-const msg = ref("hello");
-const handleMsg = () => {
-    msg.value += 1;
-};
+const colorVal = ref<string>('red');
 
-// 传递数据
-provide("info", msg);
+provide('color', colorVal);
+provide('color', readonly(colorVal));
 
-// 传递方法
-provide("setInfo", handleMsg);
+const handleSwitch = () => {
+    colorVal.value = 'blue';
+}
+</script>
+```
+
+```
+<script lang="ts" setup>
+import { inject } from 'vue';
+
+const color = inject('color');
+
+const handleChange = () => {
+  color.value = 'pink';
+}
+</script>
+```
+
+## mitt
+
+兄弟组件传参
+`npm install mitt -S`;
+
+main.ts 初始化
+
+```
+import mitt from "mitt";
+const Mit = mitt();
+
+declare module "vue" {
+	export interface ComponentCustomProperties {
+		$bus: typeof Mit;
+	}
+}
+
+app.config.globalProperties.$bus = Mit;
+```
+
+```
+<script lang="ts" setup>
+import { getCurrentInstance } from 'vue';
+const instance = getCurrentInstance();
+
+const change = () => {
+  instance?.proxy?.$bus.emit('on-hello', '你好');
+  instance?.proxy?.$bus.emit('on-more', '你好');
+}
+</script>
+```
+
+```
+<script setup lang="ts">
+import { getCurrentInstance } from 'vue';
+
+const instance = getCurrentInstance();
+const getData = (data:any)=>{
+  console.log(data)
+}
+instance?.proxy?.$bus.on('on-hello', getData);
+instance?.proxy?.$bus.off('on-hello', getData);
+instance?.proxy?.$bus.all.clear();
+
+instance?.proxy?.$bus.on('*', (type, data) => {
+  console.log(type);
+  if(type === 'on-hello'){
+    console.log(data)
+  }
+
+  if(type === 'on-more'){
+    console.log(data)
+  }
+})
+</script>
+```
+
+## defineAsyncComponent
+
+异步导入组件
+
+`const AsyncComponent = defineAsyncComponent(() => import('@/components/async.vue'))`
+
+###### suspense
+
+suspense 内置组件协调对异步依赖的处理, 它让组件树上层等待下层的多个嵌套异步依赖项解析完成，在等待时渲染一个加载状态。
+
+1. 可以等待的异步依赖异步组件
+2. 可以等待的异步依赖带有异步 setup() 钩子的组件。这也包含了使用 &lt;script setup&gt; 时有顶层 await 表达式的组件。
+
+async.vue
+
+```
+<template>
+    <div class="async">
+        <div class="async-content">
+            <div><img :src="data.url"></div>
+            <div class="async-pop">
+                <div>姓名：{{ data.name }}</div>
+                <div>年龄：{{ data.age }}</div>
+                <div>{{ data.desc }}</div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { axios } from '@/server/axios'
+
+interface Data {
+    data: {
+        name: string,
+        age: number,
+        url: string,
+        desc: string
+    }
+}
+
+/**
+ * 使用顶层await将组件变成异步组件
+ *
+    await 必须在 async 函数中使用，如果直接在一个模块最外层直接使用 await，使得整个模块看起来就像是一个 async 函数;
+    await Promise.resolve();
+
+    注意：顶层 await 仅仅是允许在模块最外层使用 await，非 async 函数不能直接使用；
+ */
+
+
+const { data } = await axios.get<Data>('./data.json')
+</script>
+```
+
+```
+<template>
+    <div>
+        <!-- suspense协调对异步依赖的处理, 它让组件树上层等待下层的多个嵌套异步依赖项解析完成，在等待时渲染一个加载状态。 -->
+        <Suspense>
+            <!-- 默认插槽展示的组件 -->
+            <template #default>
+                <Async />
+            </template>
+
+            <!-- 反馈插槽 设置异步加载时动作，如骨架屏和loading-->
+            <template #fallback>
+                <el-skeleton :rows="2" />
+            </template>
+        </Suspense>
+    </div>
+</template>
+
+<script lang="ts" setup>
+import { defineAsyncComponent } from 'vue';
+
+// import Async from '@/components/async.vue'   // 同步导入
+const Async = defineAsyncComponent(() => import('@/components/async.vue')) // 异步导入
+
+</script>
+```
+
+## teleport
+
+将一个组件内部的一部分 html 模板渲染到该组件的 DOM 结构外层的位置去，比如 body 和 vue 应用平级，使其不受父级样式的影响；
+
+## keep-alive
+
+当组件被包裹了 keep-alive 后，组件内会新增 onActivated, onDeactivated 两个声明周期函数。
+
+son.vue
+
+```
+<template>
+  <input type="text" v-model="name">
+</template>
+
+<script lang="ts" setup>
+import { onActivated, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
+
+const name = ref(null);
+
+onMounted(() => {
+  console.log('1.组件首次挂载')
+})
+
+onActivated(() => {
+  console.log('keep-alive 1.组件首次挂载, 2.每次切换从缓存中被重新插入时执行')
+})
+
+onDeactivated(() => {
+  console.log('keep-alive 1.组件组件卸载, 2.每次切换从DOM 上移除、进入缓存执行')
+})
+
+onUnmounted(() => {
+  console.log('1.组件卸载')
+})
+</script>
+```
+
+```
+  <keep-alive>
+      <Hello v-if="isShown"></Hello>
+      <World v-else></World>
+  </keep-alive>
+```
+
+## transition
+
+```
+<template>
+    <button @click="handleSwitch">click</button>
+
+    <transition name="test">
+        <div class="box" v-if="isShown"></div>
+    </transition>
+</template>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+const isShown = ref(true);
+
+const handleSwitch = () => {
+    isShown.value = !isShown.value;
+}
 </script>
 
-<template>
-    <Child ref="childRef" />
-</template>
+<style scoped lang="scss">
+.box {
+    width: 200px;
+    height: 200px;
+    background-color: orange;
+}
+
+// 动画进入时
+.test-enter-from {
+    width: 0;
+    height: 0;
+}
+// 动画效果
+.test-enter-active {
+    transition: all 0.2s ease;
+}
+/**
+    动画结束最后一帧效果
+    可不写，或与原始box属性保持一致，否则最后一帧效果非常跳脱和突兀；
+*/
+// .test-enter-to {
+//     width: 500px;
+//     height: 500px;
+// }
+
+
+/**
+    动画开始第一帧效果
+    可不写，或与原始box属性保持一致，否则第一帧效果非常跳脱和突兀；
+*/
+// .test-leave-from {
+//     width: 200px;
+//     height: 200px;
+// }
+.test-leave-active {
+    transition: all 0.2s ease;
+}
+.test-leave-to {
+    width: 0;
+    height: 0;
+}
+</style>
 ```
 
-`子组件.vue`
+## tsx
+
+`npm install @vitejs/plugin-vue-jsx -D`
+
+注意：ref 在 template 中会自动读取.value，tsx 需要手动指定.value;
 
 ```
-<script setup>
-import { inject } from "vue";
+// 第一种方式：直接返回默认的渲染函数
+//  export default function (){
+//     return (<div>hello world</div>)
+//  }
 
-const receiveInfo = inject("info");
+// 第二种方式：optionsApi (少)
+// import { defineComponent } from "vue";
+// export default defineComponent({
+//     data(){
+//         return {
+//             name: 'tom',
+//         }
+//     },
+//     render (){
+//         return (<div>{this.name}</div>)
+//     }
+// })
 
-const handleMsg = inject('setInfo')
-</script>
+// 第三种方式：setup
+import { defineComponent, ref } from "vue";
+export default defineComponent({
+	setup() {
+        // 注意：ref在template中会自动读取.value，tsx需要手动指定.value;
+		const flag = ref(false);
+		return () => <div v-show={flag.value}>hello</div>;
+	},
+});
+```
 
-<template>
-    <div>{{ receiveInfo }}</div>
-    <button @click="handleMsg">click</button>
-</template>
+```
+interface propsInt {
+	name: string;
+}
+
+const A = (_, { slots }) => (
+	// <div>{slots.default ? slots.default() : "默认值"}</div>
+	<div>{slots.foo?.()}</div>
+);
+
+import { defineComponent, ref } from "vue";
+export default defineComponent({
+	props: {
+		name: String,
+	},
+	emits: ["on-change"],
+	setup(props: propsInt, { emit }) {
+		const flag = ref(false);
+
+		const list = [1, 2, 3];
+
+		const handleChange = (str: string) => {
+			emit("on-change", str);
+		};
+
+		const slot = {
+			default: () => <div>这是默认插槽</div>,
+			foo: () => <div>这是具名插槽</div>,
+		};
+
+        const searchName = ref<string>('');
+
+		return () => (
+			<div>
+				<div v-show={flag.value}> hello </div>
+
+				{/* v-if 无效，三元，与，非代替; */}
+				<div> {flag.value ? <span>真</span> : <span>假</span>} </div>
+
+				{/* v-for 无效，map 方法代替; */}
+				{/* v-bind 无效，花括号代替; */}
+				<div>
+					{list.map((it, idx) => {
+						return <span data-index={idx}>{it}</span>;
+					})}
+				</div>
+
+				<div>{props.name}</div>
+
+				<button onClick={() => handleChange(searchName.value)}>click</button>
+
+				<A v-slots={slot}></A>
+
+                <input type="text" v-model={searchName.value} />
+                {searchName.value}
+			</div>
+		);
+	},
+});
 ```
