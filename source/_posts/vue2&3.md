@@ -314,55 +314,7 @@ vue 提供了一个内置的<component>组件，专门用来实现组件动态�
 </script>
 ```
 
-### v3 异步组件加载
-
-同步组件加载
-
-```
-<script>
-import Son from '../components/HelloWorld.vue'
-export default {
-    components:{
-        Son
-    },
-};
-</script>
-```
-
-defineAsyncComponent() 异步组件加载，按需加载
-
-```
-<script>
-import { defineAsyncComponent } from "vue";
-import LoadingComponent from '../components/loding.vue'
-import ErrorComponent from '../components/error.vue'
-
-export default {
-    components: {
-        Son1: defineAsyncComponent(()=>import('../components/HelloWorld.vue'))
-        Son2: defineAsyncComponent({
-            // 加载函数
-            loader: () => import("../components/HelloWorld.vue"),
-
-            // 加载异步组件时使用的组件
-            loadingComponent: LoadingComponent,
-            // 展示加载组件前的延迟时间，默认为 200ms
-            delay: 200,
-
-            // 加载失败后展示的组件
-            errorComponent: ErrorComponent,
-            // 如果提供了一个 timeout 时间限制，并超时了
-            // 也会显示这里配置的报错组件，默认值是：Infinity
-            timeout: 3000,
-        }),
-    },
-};
-</script>
-```
-
 ### directive 自定义指令
-
-###### v2
 
 ```
 <div id="app">
@@ -374,12 +326,14 @@ export default {
 
 </div>
 ```
-v2 全局自定义指令
+
+-   全局自定义指令
+
 ```
 Vue.directive('color', {
 	//bind：初始化设置。 只调用一次,指令第一次绑定到元素时调用；
 	bind: (el, binding) => {
-		// el: 指令所绑定的DOM元素; 
+		// el: 指令所绑定的DOM元素;
 		// binding: {rawName: 'v-color', name: 'color', value: 'green'}
 		el.style.background = binding.value
 	},
@@ -388,7 +342,9 @@ Vue.directive('color', {
 	}
 })
 ```
-v2 组件局部自定义指令
+
+-   组件局部自定义指令
+
 ```
 new Vue({
 	el: '#app',
@@ -406,38 +362,6 @@ new Vue({
 		}
 	}
 })
-```
-
-###### v3
-
-```
-<script>
-export default {
-    directives:{
-        focus:{
-            mounted(el){    // 在绑定的元素挂载完成后调用，只在第一次插入DOM时；DOM更新时不触发
-                el.focus();
-            },
-            updated(el){
-                el.focus(); // 每次DOM更新时都会触发updated函数
-            }
-        }
-    },
-    
-    // 简写 (如mounted 和 updated函数中逻辑相同)
-    directives: {
-        focus: (el) => {
-            el.focus();
-        },
-        color: (el, binding) => {
-            el.style.color = binding.value;
-        },
-    },
-    data() {
-        return {};
-    },
-};
-</script>
 ```
 
 ###### 全局挂载
@@ -745,116 +669,61 @@ export default {
 
 ---
 
-###### v-model 双向数据绑定指令
+###### v-model
 
 `v-model实现原理:`
 
 ```
+<input v-model="msg">
+
+<!-- 等价于 -->
+
 <input type="text" :value="msg" @input="msg = $event.target.value" />
 ```
 
-当需要维护组件内外数据的同步时，可以在组件上使用 v-model 指令
-`父组件.vue`
+---
+
+组件上使用 v-model 指令
 
 ```
+<!-- 父组件.vue -->
 <template>
-    <Left :value="count" @update:value="count = $event" />
-    <Left v-model:value="count" />
+    <Child :value="count" @change="count = $event" />
 </template>
-```
 
-`子组件.vue`
-
-```
+<!-- 子组件 -->
 <template>
-    <div @click="$emit("update:value", value + 1)">{{ value }}</div>
+	<button @click="$emit('change', value + 1)">{{ value }}</button>
 </template>
 
 <script>
 export default {
-    props: ["value"],
-    emits: ["update:value"], // 更新哪个props的属性
+	props: ["value"],
 };
 </script>
 ```
 
-`简写模式`
-
 ```
+<!-- 父组件.vue -->
 <template>
-    <Left v-model:modelValue="count" />
-    <Left v-model="count" />             // 默认v-model:modelValue形式；
+	<Child v-model="count" />
 </template>
-```
 
-```
+<!-- 子组件 -->
 <template>
-    <input
-        type="text"
-        :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
-    />
+	<button @click="$emit('input', value + 1)">{{ value }}</button>
 </template>
 
 <script>
 export default {
-    props: ["modelValue"],
-    emits: ["update:modelValue"], // 更新哪个props的属性
-};
-</script>
-```
-
-###### v-model 修饰符
-
-```
-<template>
-    <Left v-model.upper="count" />
-    <Left v-model:title.upper.substr="name" />
-</template>
-```
-
-```
-<template>
-    <!-- <input type="text" :value="modelValue" @input="change" /> -->
-    <input type="text" :value="title" @input="change" />
-</template>
-
-<script>
-export default {
-    props: [
-        // "modelValue",
-        // "modelModifiers",  // 来源 v-model
-        "title",
-        "titleModifiers",     // 来源 v-model:title => 'titleModifiers';
-    ],
-    emits: [
-        // "update:modelValue",
-        "update:title",
-    ],
-    created() {
-        console.log(this.titleModifiers);
-    },
-    methods: {
-        change($event) {
-            let value = $event.target.value;
-
-            if (this.titleModifiers.upper) {
-                value = value.toUpperCase();
-            }
-
-            if (this.titleModifiers.substr) {
-                value = value.substr(0, 3);
-            }
-            this.$emit("update:title", value);
-        },
-    },
+	props: ["value"],
 };
 </script>
 ```
 
 ---
 
-###### 非父子组件间传值 - 中央事件总线 eventbus
+###### vue2 中央事件总线 eventbus
 
 vue3 移除，可借助 mitt 第三方包创建 eventBus 对象;安装 mitt;
 
@@ -904,62 +773,11 @@ export default {
 };
 ```
 
----
-
-###### 后代组件共享数据 provide & inject (非后代组件无法共享哦)
-
-`父组件.vue`
-
-```
-<script>
-import Left from "./components/Left.vue";
-import { computed } from "vue";
-
-export default {
-    components: {
-        Left,
-    },
-    data() {
-        return {
-            count: 100,
-        };
-    },
-    provide() {
-        return {
-            figure1: this.count,
-            // 引入computed函数将共享数据包装为响应式数据
-            figure2: computed(() => this.count),
-        };
-    },
-    methods: {
-        changeCount() {
-            this.count++;
-        },
-    },
-};
-</script>
-```
-
-`子孙组件.vue`
-
-```
-<template>
-    <div>{{ figure1 }}</div>
-    <div>{{ figure2 }}</div>
-</template>
-
-<script>
-export default {
-    inject: ["figure1", "figure2"],
-};
-</script>
-```
-
 共享数据方式 1.父子，2.子父，3.v-model，4.eventbus, 5.provide&inject, 6.vuex
 
 ---
 
-### 生命周期函数
+### vue2 生命周期函数
 
 -   created: 组件在内存中创建完成。
 -   mounted: 组件第一次被渲染完成。

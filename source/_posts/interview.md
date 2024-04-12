@@ -28,15 +28,19 @@ JavaScript 主线程从“任务队列”中读取异步任务的回调函数，
 
 js 把异步任务做了进一步的划分，分为 2 类：
 
--   宏任务：异步 Ajax, setTimout,setInterval, 文件操作等
--   微任务：Promise.then/.catch/.finnaly, process.nextTick 等
+-   宏任务：script(整体代码), Ajax, setTimout, setInterval, 文件操作等
+-   微任务：Promise.then/catch/finally, MutationObserver, process.nextTick 等
 
 ![](/images/interview/3.jpeg)
 
 ![](/images/interview/4.jpeg)
 
 解析：1 是异步宏任务，2 是同步任务，3 是异步微任务，4 是同步任务；
-先执行所有同步任务 2、4，再执行异步微任务 3，最后执行异步宏任务 1
+先执行 script 宏任务，优先执行同步任务（2、4），再执行异步微任务（3），所有异步微任务执行完后，最后执行 setTimeout 宏任务（1）；
+
+了解宏任务和微任务可以解决：
+js 操作数据是同步的，但 vue 操作 js 更新 DOM 是异步的，此时获得的 DOM 上的数据是之前的；
+通过 nextTick 将异步任务的微任务优先执行，再执行下一个异步宏任务；
 
 ---
 
@@ -181,3 +185,84 @@ export function useBanner() {
 2. 为什么不直接操作 DOM 呢？因为一个 DOM 它的属性是非常多的，直接操做 DOM 是非常浪费性能；
    有了虚拟 DOM 之后可以做一些优化，比如一些 DOM 可以做一些复用，然后就产生了 diff 算法，通过 diff 算法的对比，让一些 DOM 被复用，也就优化了性能。
 3. diff 算法导致组件被复用，比如在切换的时候，循环的时候需要添加一个属性，并给它赋唯一值；
+
+## scoped 原理
+
+1. 给 HTML 的 DOM 节点加一个不重复 data 属性（data-v-N）来表示它的唯一性；
+2. 在 css 选择器（如.box{width: 1px }）的末尾加一个当前组件的 data 属性选择器（data-v-N）来私有化样式（.box{width: 1px} => .box[data-v-N]{width: 1px}；
+3. 如组件内部包含了其他子组件，只会给子组件的最外层标签上添加当前组件的 data 属性；
+
+```
+<template>
+	<div class="container">
+		<el-input />
+	</div>
+</template>
+
+<style scoped>
+.container {
+	border: 1px solid orange;
+}
+
+/*
+	无效，因为是第2条原理，在css选择器末尾加一个当前组件的data属性选择器
+	.el-input .el-input__inner[data-v-N] {}
+
+	.el-input .el-input__inner {
+			border: 1px solid red;
+	}
+*/
+
+
+/*
+	有效 deep样式穿透将data属性提前到跟随的css选择器末尾
+	.el-input[data-v-N] .el-input__inner {}
+*/
+.el-input :deep(.el-input__inner) {
+	border: 1px solid red;
+}
+</style>
+```
+
+![](/images/interview/scoped.jpg)
+
+## 性能优化
+
+First Contentful Paint: 首次内容绘制的时间，浏览器第一次绘制 DOM 相关的内容，也是用户第一次看到页面内容的时间。
+Speed Index: 页面各个可见部分的显示平均时间，当我们的页面上存在轮播图或者需要从后段获取内容加载时，这个数据会受到影响。
+Largest Contentful Paint: 最大内容绘制时间，页面最大的元素绘制完成的时间。
+Time to Interactive: 从页面开始渲染到用户可以与页面进行交互的时间（内容渲染完毕，交互元素绑定的事件注册成功）。
+Total Blocking Time: 主进程被阻塞的时间（记录了首次内容绘制到用户可交互之间的时间内，主进程被阻塞导致阻碍用户的无法交互）
+
+![](/images/interview/lighthouse.jpg)
+
+###### 分析打包后的代码体积
+
+需安装插件 npm install rollup-plugin-visualizer 分析打包后的代码体积
+请查看其他别人的文档；
+
+###### vite 可配置优化
+
+`vite.config.ts`
+
+```
+defineConfig({
+	build:{
+		cssCodeSplit: true, // css代码拆分
+		sourcemap: false // 不生成sourcemap
+		minify: false, // 'esbuild'-打包速度快，'terser'-打包体积最小
+		assetsInlineLimit: 4000, // 不会打包小于的图片，小于4000kb的体积将被编译成base64
+	}
+})
+```
+
+###### PWA
+
+需安装 npm install vite-plugin-pwa -D
+利用 service worker 离线缓存, 利用 service worker 发送通知；
+
+###### 图片懒加载
+
+###### 虚拟列表（当后段返回上万条数据时）
+
+###### 防抖和节流

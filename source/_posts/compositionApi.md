@@ -665,7 +665,7 @@ export default {
 
 ## provide & inject
 
-provide 在父组件中提供给嵌套的后代组件数据和方法，在任何一级后代组件中都可以使用 inject 接收；
+provide 在父组件中提供给嵌套的后代组件数据和方法，在任何一级后代组件中都可以使用 inject 接收；(非后代组件无法共享哦)
 
 -   注意：会同源修改，若不希望后代组件修改，provide 使用 readonly;
 
@@ -755,9 +755,36 @@ instance?.proxy?.$bus.on('*', (type, data) => {
 
 ## defineAsyncComponent
 
-异步导入组件
+异步组件加载，按需加载
 
-`const AsyncComponent = defineAsyncComponent(() => import('@/components/async.vue'))`
+```
+<script>
+import { defineAsyncComponent } from "vue";
+import LoadingComponent from '../components/loding.vue'
+import ErrorComponent from '../components/error.vue'
+
+export default {
+    components: {
+        Son1: defineAsyncComponent(()=>import('../components/HelloWorld.vue'))
+        Son2: defineAsyncComponent({
+            // 加载函数
+            loader: () => import("../components/HelloWorld.vue"),
+
+            // 加载异步组件时使用的组件
+            loadingComponent: LoadingComponent,
+            // 展示加载组件前的延迟时间，默认为 200ms
+            delay: 200,
+
+            // 加载失败后展示的组件
+            errorComponent: ErrorComponent,
+            // 如果提供了一个 timeout 时间限制，并超时了
+            // 也会显示这里配置的报错组件，默认值是：Infinity
+            timeout: 3000,
+        }),
+    },
+};
+</script>
+```
 
 ###### suspense
 
@@ -1040,3 +1067,268 @@ export default defineComponent({
 	},
 });
 ```
+
+## v-model
+
+```
+<template>
+    <Child v-model:modelValue="count" />
+
+    <!-- 等价于 -->
+
+    <Child v-model="count" />
+</template>
+```
+
+```
+<template>
+	<button @click="$emit('update:modelValue', modelValue + 1)">
+		{{ modelValue }}
+	</button>
+
+	<input
+		type="text"
+		@input="(e) => $emit('update:msgValue', e.target.value)"
+	/>
+</template>
+
+<!-- 选项式 -->
+<script>
+export default {
+	props: ["modelValue"],
+	emits: ["update:modelValue"], // 更新哪个props的属性
+};
+</script>
+
+<!-- 组合式 -->
+<script setup>
+defineProps({ modelValue: Number, msgValue: String });
+
+defineEmits(["update:modelValue", "update:msgValue"]);
+</script>
+```
+
+###### v-model 修饰符
+
+```
+<template>
+    <Child v-model.upper="count" />
+    <Child v-model:title.upper.substr="name" />
+</template>
+```
+
+```
+<template>
+    <!-- <input type="text" :value="modelValue" @input="change" /> -->
+    <input type="text" :value="title" @input="change" />
+</template>
+
+<script>
+export default {
+    props: [
+        // "modelValue",
+        // "modelModifiers",  // 来源 v-model
+        "title",
+        "titleModifiers",     // 来源 v-model:title => 'titleModifiers';
+    ],
+    emits: [
+        // "update:modelValue",
+        "update:title",
+    ],
+    created() {
+        console.log(this.titleModifiers);
+    },
+    methods: {
+        change($event) {
+            let value = $event.target.value;
+
+            if (this.titleModifiers.upper) {
+                value = value.toUpperCase();
+            }
+
+            if (this.titleModifiers.substr) {
+                value = value.substr(0, 3);
+            }
+            this.$emit("update:title", value);
+        },
+    },
+};
+</script>
+```
+
+## directive
+
+```
+<script>
+export default {
+    directives:{
+        focus:{
+            mounted(el){    // 在绑定的元素挂载完成后调用，只在第一次插入DOM时；DOM更新时不触发
+                el.focus();
+            },
+            updated(el){
+                el.focus(); // 每次DOM更新时都会触发updated函数
+            }
+        }
+    },
+
+    // 简写 (如mounted 和 updated函数中逻辑相同)
+    directives: {
+        focus: (el) => {
+            el.focus();
+        },
+        color: (el, binding) => {
+            el.style.color = binding.value;
+        },
+    },
+    data() {
+        return {};
+    },
+};
+</script>
+```
+
+## style 新特性
+
+###### 插槽选择器
+
+修改从父组件插槽传递的 DOM 样式
+
+```
+<template>
+    <Hello>
+        <div class="content">这是内容</div>
+    </Hello>
+</template>
+```
+
+```
+<template>
+	<slot></slot>
+</template>
+
+<style scoped>
+/*
+.content{
+	color: orange;
+}
+*/
+
+:slotted(.content) {
+	color: orange;
+}
+</style>
+```
+
+###### 全局选择器
+
+```
+<style scoped>
+:global(.content){
+	color: orange;
+}
+</style>
+
+```
+
+###### 动态 css 属性
+
+```
+<script setup>
+import { ref } from "vue";
+// const style = ref("red");
+
+const style = ref({
+	backgroundColor: "red",
+});
+</script>
+
+<style scoped>
+.box {
+	/* background-color: v-bind(style); */
+	background-color: v-bind("style.backgroundColor");
+}
+</style>
+```
+
+###### module
+
+```
+<template>
+
+	<div class="box">1</div>
+
+	<div :class="$style.box">1</div>
+
+	<div :class="[$style.box, $style.content]">1</div>
+</template>
+
+<style scoped module>
+.box {
+	background-color: orange;
+}
+.content{
+    color: green;
+}
+</style>
+```
+
+```
+<template>
+	<div :class="test.box">1</div>
+
+	<div :class="cssObj.box">1</div>
+</template>
+
+<script setup>
+import { useCssModule } from "vue";
+const cssObj = useCssModule("test");
+</script>
+
+<!-- 自定义module名称 -->
+<style scoped module="test">
+.box {
+	background-color: orange;
+}
+</style>
+```
+
+
+## vite 环境变量
+
+普通 script 中可以从 import.meta.env 读取当前运行的环境
+
+```
+BASE_URL: '/', // 默认是vite.config.ts中defineConfig函数对象的base值
+MODE: 'development',
+DEV: 'true', // 运行开发环境run dev为真
+PROD: 'false', // 运行生产环境run build为真（永远与DEV相反）
+```
+
+###### 环境加载 .env 文件
+
+根文件可创建 .env.development、 .env.test、.env.production 等文件
+
+###### 自定义环境变量名称
+
+必须以 VITE\_开头才能暴露给 import.meta.env 对象上
+
+`.env.production`
+
+```
+VITE_HTTP = https://production.com
+```
+
+`package.json`
+
+```
+  "scripts": {
+    "prod": "vite --mode production", // 与创建的.env.production文件名称一致；
+  },
+```
+
+###### http-server
+打开打包后的index.html文件报错跨域， 借助http-server开启服务预览生产环境；
+`npm install http-server -g`;
+
+`http-server -p 9000 dist`; // 开启一个端口号9000的服务
