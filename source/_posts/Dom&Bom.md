@@ -650,6 +650,13 @@ window.onresize = function(){
    history.go(0) == location.reload()     1. 普通刷新: 优先从浏览器本地缓存中获取资源。缓存中没有或过期，才去服务器下载新的。
    location.reload(true)                  2. 强制刷新: 跳过浏览器缓存，总是从服务器下载最新的资源
 ```
+```
+window.addEventListener('hashChange', (e)=>{
+	console.log('hash地址改变', e)
+	let oldUrl = e.oldURL;
+	let newUrl = e.oldURL;
+})
+```
 
 ###### window.navigator
 

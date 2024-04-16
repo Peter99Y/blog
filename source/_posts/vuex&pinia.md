@@ -3,86 +3,173 @@ title: vuex & pinia
 ---
 
 ### Pinia
-状态管理工具，支持vue3组合式API
-getter使用computed函数
-移除了mutation
-在action中支持同步异步操作
+
+-   支持完整的 ts；
+-   支持 vue3 组合式 API；
+-   action 中支持同步异步操作；
+-   移除了 mutation，直接在 action 中修改 state 中的值；
+-   轻量化，压缩后的体积只有 1kb；
+
+`name.ts`
+
+```
+export const enum Names {
+	COUNTER = "COUNTER",
+}
+```
+
+`index.ts`
 
 ```
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { Names } from "./name";
 
-export const useCounterStore = defineStore("counter", () => {
-	// 定义数据（state）
-	const count = ref(0);
-
-	// 定义getter
-	const doubleCount = computed(() => {
-		return count.value * 2;
-	});
-
-	// 定义修改数据的方法（action 同步/异步)
-	const increment = () => {
-		count.value++;
-	};
-	const list = ref([]);
-	const getList = () => {
+type User = {
+	name: string;
+	age: number;
+};
+const Login = (): Promise<User> => {
+	return new Promise((resolve) => {
 		setTimeout(() => {
-			list.value = [{ id: 1}, { id: 2, }];
-		}, 1000);
-	};
+			resolve({
+				name: "Tom",
+				age: 100,
+			});
+		}, 2000);
+	});
+};
 
-	// 以对象的方式return供组件使用
-	return {
-		count,
-		doubleCount,
-		increment,
-		getList,
-		list,
-	};
+export const useCounterStore = defineStore(Names.COUNTER, {
+        state: () => {
+		return {
+			current: 1,
+			name: "tom",
+			user: <User>{},
+		};
+	},
+	getters: {
+		doubleCount: (state) => state.current * 2,
+                tripleCount(): number {
+			return this.current * 3;
+		},
+	},
+	actions: {
+		increment(data: number) {
+			this.current = data || this.current + 1;
+		},
+		async setUser() {
+			const result = await Login();
+			this.user = result;
+			this.setName(result.name);
+		},
+		setName(name: string) {
+			this.name = name;
+		},
+	},
 });
 ```
+
+```
+<template>
+	<div>
+		<h4>姓名：{{ testStore.name }}</h4>
+		<h4>年龄：{{ testStore.current }}</h4>
+		<h4>双倍：{{ testStore.doubleCount }}</h4>
+		<h4>三倍：{{ testStore.tripleCount }}</h4>
+
+		<button @click="testStore.increment">click</button>
+	</div>
+</template>
+<script setup>
+import { useTestStore } from "@/store";
+const testStore = useTestStore();
+</script>
+```
+
+注意：如直接解构，会导致响应式失效，需使用 storeToRefs，返回refs对象;
 
 ```
 <script setup>
-import { onMounted } from "vue";
-import { useCounterStore } from "../stores/counter";
+import { useTestStore } from "@/store";
 import { storeToRefs } from "pinia";
+const testStore = useTestStore();
 
-const counterStore = useCounterStore();
-// 直接结构导致响应式失效，使用storeToRefs
-// const { count } = counterStore;
-
-const { count, doubleCount, list } = storeToRefs(counterStore);
-const { increment, getList } = counterStore;
-
-onMounted(() => {
-    getList();
-});
+// const { current } = counterStore;
+const { current, name } = storeToRefs(testStore);
+const handleChange = () => {
+	current.value++;
+};
 </script>
-
-<template>
-    <button @click="increment">{{ count }}</button>
-
-    <div>{{ doubleCount }}</div>
-
-    <ul>
-        <li v-for="it of list" :key="it.id">{{ it.id }}</li>
-    </ul>
-</template>
 ```
+
+###### 修改 state 方式
+
+$patch、$reset、$subscribe
+```
+<script setup>
+import { useTestStore } from "@/store";
+const testStore = useTestStore();
+
+// 监听state改变
+testStore.$subscribe((args, state)=>{
+    console.log('args', args)
+    console.log('state', state)
+})
+
+// 监听actions的函数触发
+testStore.$onAction((args)=>{
+    console.log('args', args)
+})
+
+const handleChange = () => {
+    // actions中的函数去修改
+    testStore.increment(100);
+
+	// 直接修改
+	// testStore.current += 1;
+
+	// 批量修改
+	// testStore.$patch({
+	// 	current: 100,
+	// 	name: "jerry",
+	// });
+
+    // 批量修改函数模式
+	// testStore.$patch((state) => {
+	// 	state.current = 100;
+	// 	state.name = "Jerry";
+	// });
+
+    // $state模式
+    // testStore.$state = {
+        // current: 100,
+        // name: 'Jerry',
+    // }
+
+    // 恢复初始值
+	testStore.$reset();
+};
+</script>
+```
+
 ---
 
-
 ### Vuex
+
 实现组件全局状态(数据)管理的一种机制，方便实现组件之间数据的共享.
-存储在vuex中的数据都是响应式的，能够实时保持数据与页面的同步.
-只有组件之间共享的数据，才有必要存储到vuex中，对于组件中的私有数据，存储在组件自己的data中即可。
+存储在 vuex 中的数据都是响应式的，能够实时保持数据与页面的同步.
+只有组件之间共享的数据，才有必要存储到 vuex 中，对于组件中的私有数据，存储在组件自己的 data 中即可。
 install: npm install vuex --save
-###### State: 提供唯一的公共数据源，所有共享的数据都要统一放在store.state对象中
-###### Mutation: 变更Store中state的数据只能使用mustation, 不可以直接修改state的数据, 可以集中监控所有数据的变化
-###### Actions: 通过在action中触发mutation里的方式进行异步操作数据. 必须通过action，异步操作不能直接在mutation中!
-###### Getter: 不会修改state中的数据，只是包装数据的作用，类似computed&data的关系
+
+###### State: 提供唯一的公共数据源，所有共享的数据都要统一放在 store.state 对象中
+
+###### Mutation: 变更 Store 中 state 的数据只能使用 mustation, 不可以直接修改 state 的数据, 可以集中监控所有数据的变化
+
+###### Actions: 通过在 action 中触发 mutation 里的方式进行异步操作数据. 必须通过 action，异步操作不能直接在 mutation 中!
+
+###### Getter: 不会修改 state 中的数据，只是包装数据的作用，类似 computed&data 的关系
+
 ```
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -162,6 +249,7 @@ export default {
 }
 </script>
 ```
+
 ```
 import Vue from 'vue'
 import App from './App.vue'

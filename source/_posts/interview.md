@@ -241,7 +241,7 @@ Total Blocking Time: 主进程被阻塞的时间（记录了首次内容绘制�
 需安装插件 npm install rollup-plugin-visualizer 分析打包后的代码体积
 请查看其他别人的文档；
 
-###### vite 可配置优化
+-   vite 可配置优化
 
 `vite.config.ts`
 
@@ -256,13 +256,31 @@ defineConfig({
 })
 ```
 
-###### PWA
+-   PWA
 
 需安装 npm install vite-plugin-pwa -D
 利用 service worker 离线缓存, 利用 service worker 发送通知；
 
-###### 图片懒加载
+-   图片懒加载
 
-###### 虚拟列表（当后段返回上万条数据时）
+-   虚拟列表（当后段返回上万条数据时）
 
-###### 防抖和节流
+-   防抖和节流
+
+## vue-router 跳转实现
+
+1. hash 模式：URL 会带有#，它是通过 BOM 提供的 location.hash 实现的， 通过 window.addEventListener('hashchange',(e)=>{})监听 url 变化
+
+```
+location.href="新url"
+location.assign("新url")  也可实现在当前窗口打开，可后退
+location.replace("新url")  实现禁止后退      原理: 用新url替换history中旧的url
+```
+
+2. history 模式：通过 BOM 提供的 history 函数，window.addEventListener('popstate', (e)=>{})监听 url 变化；
+
+```
+history.forward()  ==  history.go(1) 前进一步
+history.back()   ==  history.go(-2) 后退两步
+history.go(0) 刷新
+```
