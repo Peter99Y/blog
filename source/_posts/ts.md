@@ -4,15 +4,13 @@ title: Ts
 
 ### 编译环境
 
+-   tsc --version: 查看版本，检测是否安装成功；
+
 -   全局安装
     npm install typescript -g
-    mac 系统 brew install typescript
-
 -   局部安装
-    限定某个项目的 ts 为特定版本，不像全局 ts 不同电脑安装不同版本，从而导致某个特性被废除
+    限定某个项目的 ts 为特定版本。若全局 ts 不同电脑安装不同版本，从而导致某个特性被废除
     npm install typescript -D
-
--   tsc -v 查看版本
 
 -   html 页面中引入 ts 文件，需要通过命令 tsc 文件名（Type Script Compile）编译成 js 文件，最后引入编译后的 js 文件。
 

@@ -96,7 +96,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 -   浮动元素 与 bfc 元素不会重叠 (兄弟关系);
     -   将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
     -   父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
-    -   将常规流元素设置成bfc元素 overflow: 非 visible 即可(hidden/auto/scroll)
+    -   将常规流元素设置成 bfc 元素 overflow: 非 visible 即可(hidden/auto/scroll)
 
 ```
 <style>
@@ -731,3 +731,9 @@ circle - 圆形; inset - 矩形; ellipse - 椭圆; polygon - 多边形
 ```
 
 ![](/images/Css/clip-path.jpg)
+
+## linear-gradient
+
+linear adj.线性的; gradient n.斜坡; adj.倾斜的;
+
+background: 可多个 linear-gradient 函数，与属性名越近的层级越高，图层越在上面；
