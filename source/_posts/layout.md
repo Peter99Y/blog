@@ -194,7 +194,7 @@ title: Layout
 
 ## 后台系统布局
 
-### 布局1
+### overflow 方式
 
 ```
 .container{
@@ -227,7 +227,6 @@ title: Layout
     background-color: yellowgreen;
 }
 .content .main{
-    overflow: hidden;
     height: 100%;
     padding: 20px;
     overflow: auto;
@@ -248,7 +247,7 @@ title: Layout
 
 ![](/images/layout/layout.png)
 
-### 布局2
+### flex 方式
 
 ```
 * {
@@ -297,3 +296,54 @@ title: Layout
 ```
 
 ![](/images/layout/layout2.png)
+
+### fixed 方式
+
+```
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.slide {
+    width: 200px;
+    height: 100vh;
+    background: orange;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 200px;
+    width: calc(100% - 200px);
+    height: 90px;
+    background-color: lightblue;
+}
+
+.main {
+    position: fixed;
+    left: 200px;
+    top: 90px;
+    width: calc(100% - 200px);
+    height: calc(100vh - 90px);
+    overflow: auto;
+    background: yellowgreen;
+}
+```
+
+```
+<div class="container">
+    <div class="slide">slider</div>
+    <div class="header">header</div>
+    <div class="main">
+        <p style="height: 200px;border: 1px solid #ccc;width: 100%;">1</p>
+        <p style="height: 200px;border: 1px solid #ccc;width: 100%;">1</p>
+        <p style="height: 200px;border: 1px solid #ccc;width: 100%;">1</p>
+        <p style="height: 200px;border: 1px solid #ccc;width: 100%;">1</p>
+        <p style="height: 200px;border: 1px solid #ccc;width: 100%;">1</p>
+    </div>
+</div>
+```
+
+![](/images/layout/layout3.png)
