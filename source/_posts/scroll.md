@@ -1,8 +1,8 @@
 ---
-title: jsx语法 & vue jsx & tsx
+title: jsx & tsx
 ---
 
-### jsx 基础语法
+### 基础语法
 
 jsx 是**js 语法扩展**，浏览器本身不能识别，需要通过解析工具 babel 才能运行;
 

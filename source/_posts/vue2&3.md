@@ -1,5 +1,5 @@
 ---
-title: vue2/3
+title: vue2
 ---
 
 ### MVVM

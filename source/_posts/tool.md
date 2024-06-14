@@ -1,5 +1,5 @@
 ---
-title: tool
+title: Tools
 ---
 
 ### 金额千分位
