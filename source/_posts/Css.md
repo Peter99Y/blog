@@ -495,3 +495,270 @@ circle - 圆形; inset - 矩形; ellipse - 椭圆; polygon - 多边形
 ```
 
 ![](/images/Css/clip-path.jpg)
+
+## grid
+
+> 当设置 display: grid; 相当于元素被设置成了块元素；inline-grid
+
+```
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.grid {
+    display: grid;
+    width: 500px;
+    height: 500px;
+    border: 3px solid orange;
+
+    /*
+        每列的列宽50px；
+        每行的行高50像素；
+    */
+    grid-template-columns: 100px 100px 100px 100px;
+    grid-template-rows: 50px 50px 50px;
+}
+```
+
+![](/images/Css/grid1.png)
+
+---
+
+###### %
+
+```
+/*
+    4列的列宽都是100px；
+    第1行高20%，第2行高30%，第3行高50%；
+*/
+
+grid-template-columns: 100px 100px 100px 100px;
+grid-template-rows: 20% 30% 50%;
+
+等价于
+
+grid-template-rows: 2fr 3fr 5fr;
+```
+
+![](/images/Css/grid2.png)
+
+---
+
+###### repeat()
+
+```
+/*
+    重复5列，每列的列宽20%；
+    重复3行，每行的行高50px；
+*/
+grid-template-columns: repeat(5, 20%);
+grid-template-rows: repeat(3, 50px);
+```
+
+![](/images/Css/grid3.png)
+
+---
+
+###### repeat(auto-fill)
+
+```
+/*
+    auto-fill会将列宽按照30%划分，不够划分时会留白
+*/
+grid-template-columns: repeat(auto-fill, 30%);
+grid-template-rows: repeat(3, 100px);
+```
+
+![](/images/Css/grid4.png)
+
+---
+
+###### auto
+
+```
+/*
+    第一列宽自适应铺满；
+    第二行高自适应铺满；
+*/
+grid-template-columns: auto 100px 100px;
+grid-template-rows: 100px auto 100px;
+```
+
+![](/images/Css/grid5.png)
+
+###### fr
+
+```
+/*
+    列宽比例 1:2:3；
+    行高比例 3:2:1；
+*/
+grid-template-columns: 1fr 2fr 3fr;
+grid-template-rows: 3fr 2fr 1fr;
+```
+
+![](/images/Css/grid6.png)
+
+---
+
+###### minmax(minVal, maxVal)
+
+若子元素像素太长会撑出父容器；
+
+```
+/*
+    最大值 <= 剩余空间，取最大值；
+    最小值 < 剩余空间 < 最大值，填满剩余空间；
+    剩余空间 <= 最小值，取最小值；
+*/
+grid-template-columns: 200px 190px minmax(100px, 200px);
+grid-template-rows: 100px 100px 100px;
+```
+
+![](/images/Css/grid7.png)
+
+###### gap
+
+gap 是多出来的部分会撑出父容器，即使元素使用了 box-sizing: border-box;
+
+```
+/* 如设置repeat(5, 1fr)，1fr是按比例来的，gap多出来的部分不会撑出父容器；*/
+grid-template-columns: repeat(5, 20%);
+grid-template-rows: repeat(5, 20%);
+
+
+/* 每行间隔20像素，每列间隔10像素 */
+row-gap: 20px;
+column-gap: 10px;
+等价于
+gap: 20px 10px;
+```
+
+![](/images/Css/grid8.png)
+
+---
+
+###### 排序
+
+```
+/* 默认为row水平排序 */
+grid-auto-flow: column;
+```
+
+![](/images/Css/grid9.png)
+
+---
+
+###### items 项目对齐方式
+
+```
+.grid {
+    display: grid;
+    width: 500px;
+    height: 500px;
+    border: 3px solid orange;
+    margin: 100px auto;
+
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+
+    /*
+        单元格内的项目对其方式：
+        水平位置；
+        垂直位置；
+    */
+    justify-items: center;
+    align-items: center;
+
+    /*
+        水平位置 垂直位置；
+    */
+    place-items: center center;
+}
+
+.grid > div{
+    width: 100px;
+    height: 100px;
+    background-color: yellowgreen;
+}
+```
+
+![](/images/Css/grid10.png)
+
+---
+
+###### content 网格对齐位置
+
+```
+    /* 整个网格在父容器位置 */
+    justify-content: space-between;
+    align-content: center;
+
+    等价于
+
+    place-content: center center;
+```
+
+![](/images/Css/grid11.png)
+
+---
+
+###### 合并
+
+-   合并了多少个单元格，需要删除多少个单元格，否则会造成看起来有空隙；
+
+-   指定合并的单元格在 html 排序位置无关；
+
+```
+<style>
+.grid {
+    display: grid;
+    width: 500px;
+    height: 500px;
+    border: 3px solid orange;
+    margin: 100px auto;
+
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+
+    gap: 10px;
+}
+
+.item-1 {
+    /* 列合并的开始/结束位置 */
+    /*
+        grid-column-start: 2;
+        grid-column-end: 4;
+    */
+
+    /* 行合并的开始/结束位置 */
+    /*
+        grid-row-start: 1;
+        grid-row-end: 3;
+    */
+
+    grid-column: 2/4;
+    grid-row: 1/3;
+}
+
+.item-2 {
+    grid-column: 1/3;
+    grid-row: 3/4;
+}
+
+.grid>div {
+    background-color: yellowgreen;
+}
+</style>
+
+<div class="grid">
+    <div></div>
+    <div></div>
+    <div class="item-1"></div>
+    <div class="item-2"></div>
+    <div></div>
+</div>
+```
+
+![](/images/Css/grid12.png)
