@@ -1,3 +1,7 @@
+---
+title: Hexo + Github action + page
+---
+
 # hexo clean
 
 删除 public 文件夹
