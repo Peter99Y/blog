@@ -48,4 +48,4 @@ jobs:
           git commit -m "Create by workflows"
           https://github.com/Peter99Y/blog.git
           git remote add origin https://${{ secrets.GH_TOKEN }}@github.com/Peter99Y/blog.git
-          git push origin HEAD:gh-pages -f
+          git push origin HEAD:action-page -f
