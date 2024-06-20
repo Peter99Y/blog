@@ -8,12 +8,12 @@ subtitle: ''
 description: ''
 keywords:
 author: Peter yu
-language: en
+language: zh-CN
 timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://gitee.com/hesayshi/blog.git
+url: https://github.com/Peter99Y/blog.git
 root: /blog/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -98,11 +98,12 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: keep
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://gitee.com/hesayshi/blog.git
+  root: /
+  repo: https://github.com/Peter99Y/blog.git
   branch: master
