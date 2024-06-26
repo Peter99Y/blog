@@ -240,7 +240,7 @@ let res: string = sum(1, 2) as unknown as string;
 ```
 let sum: (a: number, b: number) => number; 	// 定义函数
 
-sum = (x, y) => {       			// 需要实现的函数；形参可不一致
+sum = (x, y) => {       			// 需要实现的函数；定义的和函数的形参名可不一致
 	return x + y;
 };
 

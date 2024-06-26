@@ -2,30 +2,59 @@
 title: uniApp
 ---
 
-## 创建
+# 创建
+
+## 命令行创建
+
+-   `npx degit dcloudio/uni-preset-vue#vite-ts your-project`;
+-   `npm run dev:mp-weixin`;
+-   打包文件 dist/dev/mp-weixin;
+-   打开微信开发者工具，导入 mp-weixin 文件即可;
+-                             如果是ts，还需要安装ts声明文件
+
+`npm i -D @types/wechat-miniprogram @uni-helper/uni-app-types`;
+
+```
+// tsconfig.json
+
+{
+	"compoilerOptions": {
+		"types": {
+			"@types/wechat-minigrogram",
+			"@uni-helper/uni-app-types",
+		}
+	},
+	"vueCompilerOptions":{
+		"experimentalRuntimeMode": "runtime-uni-app"
+	}
+}
+```
+
+## HBuilder 创建
 
 ![](/images/uniApp/create.png)
 
-## 运行
-
-### h5
+#### h5 运行
 
 点击运行到浏览器/内置浏览器即可
 
-### 小程序
+#### 小程序运行
 
 -   运行 > 运行设置: 配置运行到小程序的启动设置；
 -   如运行到微信小程序自动打开，需要将设置 > 安全设置 > 服务端口；
 -   微信小程序本地联调接口时，详情 -> 本地设置 -> 不校验合法域名；
--   AppSecret(小程序密钥)，小程序有支付功能时添加；
--   上线时，需要在小程序服务器设置配置 request 合法域名才能被请求到；
-- 	上线时，downLoadFile合法域名（如小程序有将远程图片保存到相册的功能）；
-- 	上线时，uploadFile合法域名（如小程序有将图片上传到远程服务器的功能）；
 
 ![](/images/uniApp/start.png)
 ![](/images/uniApp/start1.png)
 
-## 内置组件
+#### 小程序后台账号配置
+
+-   AppSecret(小程序密钥)，小程序有支付功能时需要添加；
+-   上线时，需要在小程序服务器设置配置 request 合法域名才能被请求到；
+-   上线时，downLoadFile 合法域名（如小程序有将远程图片保存到相册的功能）；
+-   上线时，uploadFile 合法域名（如小程序有将图片上传到远程服务器的功能）；
+
+# 内置组件
 
 div，h1 标签在 h5 没问题，但是运行到小程序时就无效了，所以需要写 view 和 text 替代；
 
@@ -108,6 +137,37 @@ div，h1 标签在 h5 没问题，但是运行到小程序时就无效了，所�
 
 ![](/images/uniApp/image.png)
 
+### scroll-view
+
+可滚动区域
+如页面有导航，页面主要滚动区域 和 底部 tabbar 区域，只需要计算导航，剩下的就是滚动区域高度，tabbar 不必再计算；
+
+```
+<template>
+  <!-- 自定义导航栏 -->
+  <CustomNavBar />
+
+  不必计算底部tabbar高度
+  <scroll-view class="scroll-view" scroll-y>
+    <!-- 轮博图 -->
+    <!-- 商品类型 -->
+  </scroll-view>
+</template>
+
+<style lang="scss">
+page {
+  background-color: #f7f7f7;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .scroll-view {
+    flex: 1; // 剩余高度
+  }
+}
+</style>
+```
+
 ### navigator
 
 对应 uni.navigateTo 的 Api
@@ -119,21 +179,59 @@ div，h1 标签在 h5 没问题，但是运行到小程序时就无效了，所�
 	</navigator>
 ```
 
-## 生命周期
+# 生命周期
 
 onLaunch 应用初始化完成时触发（全局只触发一次），可执行判断本地是否有缓存，验证 token，获取用户登录信息等
 onLoad > onShow > onReady(可获取到 DOM 节点);
 
 > 与 vue 生命周期执行顺序：onLoad > onShow > onBeforeMount > onReady > onMounted
 
-## components
+# components
+
+-   非同名目录/同名文件.vue 形式，需在 pages.json 中注册全局自定义组件
+
+```
+// pages.json
+
+{
+  // 组件自动引入规则
+  "easycom": {
+    // 是否开启自动扫描 @/components/$1/$1.vue 组件
+    "autoscan": true,
+    // 以正则方式自定义组件匹配规则
+    "custom": {
+      // uni-ui 规则如下配置
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+
+      // 以 Xtx 开头的组件，在 components 目录中查找
+      "^Xtx(.*)": "@/components/Xtx$1.vue"
+    }
+  }
+}
+```
+
+-   创建同名目录/同名文件.vue 形式，可直接使用全局自定义组件；
 
 在项目根目录下创建文件 components，按照 components/目录名/文件名.vue 格式创建自定义组件；
-在其他页面在 template 可直接使用组件，无需先引入注册 import；
+在其他页面无需先引入注册 import，且无需配置 pages.json；
 
 ![](/images/uniApp/components.png)
 
-## pages.json
+-   创建 ts 文件，添加组件类型声明（这个 ts 文件无需导入）
+
+```
+// src/types/components.d.ts
+
+import RabbitSwiper from '@/components/RabbitSwiper/RabbitSwiper.vue'
+
+declare module 'vue' {
+  export interface GlobalComponents {
+    RabbitSwiper: typeof RabbitSwiper
+  }
+}
+```
+
+# pages.json
 
 新建页面并生成页面路由 或 自己新增页面添加对应的 path🪖 即可，页面访问地址：localhost:端口号/#/pages/目录/文件名；
 
@@ -173,7 +271,7 @@ onLoad > onShow > onReady(可获取到 DOM 节点);
 }
 ```
 
-## manifest.json
+# manifest.json
 
 ### AppId
 
@@ -185,7 +283,7 @@ onLoad > onShow > onReady(可获取到 DOM 节点);
 
 manifest.json > Web 配置 > 网站标题等；
 
-## vite.config.js
+# vite.config.js
 
 配置 plugin 插件，server，css，打包 build 等
 
@@ -195,6 +293,47 @@ manifest.json > Web 配置 > 网站标题等；
 2. 在 hbuilder 运行到内置浏览器；
 3. server 中配置 proxy 代理；
 
-## css
+# css
 
-在小程序中 !important 添加的 css 权重无效，使用:deep()改变子组件样式;
+在小程序中 !important 添加的 css 权重无效，使用:deep()改变子组件样式；
+
+在小程序中 page 根标签相当于 web 端的 body 根标签一样；
+
+# pinia
+
+```
+// 定义 Store
+export const useMemberStore = defineStore(
+  'member',
+  () => {
+    const profile = ref<any>()
+    return {
+      profile,
+    }
+  },
+  {
+    <!-- persist: true, // 布尔类型只对h5有效，小程序无效；需重新需配置 -->
+    persist: {
+      storage: {
+        getItem(key) {
+          return uni.getStorageSync(key)
+        },
+        setItem(key, value) {
+          uni.setStorageSync(key, value)
+        },
+      },
+    },
+  },
+)
+```
+
+# 分包和预下载
+
+小程序分包：将小程序的代码分割成多个部分，分别打包成多个小程序包，减少小程序的加载时间，提高用户体验；
+分包预下载：在进入小程序某个页面时，由框架自动预下载可能需要的分包，提升后续分包页面时的启动速度；
+
+# 打包上线
+
+-   运行打包命令 > 把打包的 dist/build/mp-weixin 导入到开发者工具 > 上传 > 公众号点击提交审核
+
+-   h5 打包后白屏问题(引用路径问题) > manifest.json > h5{router:{base: './'}}
