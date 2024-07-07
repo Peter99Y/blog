@@ -19,7 +19,7 @@ title: Ts
 -   自动编译 ts 文件：tsc demo.ts -w (不会走 tsconfig.json 配置文件，只是编译并监测某个文件)
     <!-- -   在所处目录中 tsc --init 生成 tsconfig.json 文件;
     -   tsc 文件名 -w (监视文件变动); -->
--   生成 ts 配置文件 tsc --init
+-   生成 tsconfig.json 配置文件： tsc --init
 
 ---
 
@@ -28,30 +28,72 @@ title: Ts
 没有设置类型时，默认会推断类型
 
 ```
-let isShown = 1 > 2;				// isShown: boolean
+let any; 				// any: any
+
+let isShown = 1 > 2;			// isShown: boolean
 isShown = true;
 
-let info;                  			// any类型
-info = {name: 'tom'};
-info = true;
+let greet = ["hello", 99];		// greet:(string|number)[]
+```
 
-let count = 12;           			// count:number
-count = 'a';					// err
+### 联合类型
 
-const greet = ["hello", 99];			// greet:(string|number)[]
-greet.push(true);				// err
+```
+const arr: boolean | number[] = true; 	// 要么是布尔类型，要么是数值数组类型
 
-const user = { name: "tom", age: 10 };	  	// user:{age: number}
-user.age = "10";		  	  	// err
+let fn = function (val: number | string): number | string {
+	return val;
+};
+```
 
-function sum(a: number, b: number) {	  	// sum(a:any,b:any):string
-  return '结果是：' + a + b;
+### 交叉类型
+
+```
+interface userInt {
+	name: string;
 }
 
-function fn(arg: boolean): string | number {
-	return arg ? "hello" : 100;
+interface infoInt {
+	age: number;
 }
-let res = fn(true); 				// res: string | number
+
+const usr = (user: userInt & infoInt): void => {
+	console.log(user);
+};
+
+usr({ name: "Tom", age: 1 });
+```
+
+### js 内置对象
+
+```
+let num: Number = new Number(1);
+let date: Date = new Date();
+let str: String = new String();
+let reg: RegExp = new RegExp(/\d/);
+let err: Error = new Error("error");
+let xhr: XMLHttpRequest = new XMLHttpRequest();
+
+// Promise比较特殊，它接收一个返回类型；
+let prm: Promise<string> = new Promise((r) => r("hi"));
+prm.then((res) => {
+	console.log(res.length); 	// 2
+});
+```
+
+```
+let d1: HTMLDivElement = document.querySelector("div")!; //  div: HTMLDivElement | null
+
+let d2 = document.querySelector("section/header/footer"); // sct: HTMLElement | null
+
+let d3 = document.querySelector(".demo"); // test: Element | null
+
+let d4 = document.querySelector(".demo") as Element; // test: Element
+
+let d5: NodeList = document.querySelectorAll("li");
+
+let d6: NodeListOf<HTMLDivElement | HTMLElement> =
+	document.querySelectorAll("div");
 ```
 
 ### never 类型
@@ -68,13 +110,15 @@ run();
 
 ### void 类型
 
-值只能是 null 或 undefined; 常用于函数返回值;
+常用于函数返回值；此类型的值只能是 null 或 undefined;
 
 ```
-let str:void = null;
+let str:void = null;			// 非严格模式可赋值为null;
 str = undefined;
 
-function show():void{}
+function show():void{
+	return null;			// err; 不能将类型“null”分配给类型“void”
+}
 
 function run():void | string{
 	return 'faster';
@@ -92,7 +136,7 @@ undefined & null 可以被赋值给其他类型
 
 ```
 let nu: null = null;
-let unde: undefined = undefined;
+let und: undefined = undefined;	  // 非严格模式下，null和undefined可互相赋值
 
 let flag: boolean = true;
 flag = null;
@@ -101,23 +145,105 @@ let count: number = 10;
 count = undefined;
 ```
 
+### any 类型 & unknown 类型
+
+```
+1. any & unknown 是顶级类型，可以被赋值以下所有类型
+2. Object
+3. Number & String & Boolean
+4. number & string & boolean
+5. 1	&	'hello' & true
+6. never
+```
+
+any 不清楚变量是什么数据类型 or 很多类型都可以使用不限定类型，不需要进行类型校验（但也就失去了 ts 的意义了）
+
+```
+let any : any;
+any = 'hello';
+any = {};
+any = Array(1,2,3);
+
+let arr: any[] = [{}, [], 1, false, "a"];
+let arr: Array<any> = [];	// 泛型方式
+
+// 缺点：编译时没有了类型检测
+console.log(arr[0].split(''))	// err
+```
+
+unknown 不清楚什么类型，但是有类型的；
+
+```
+let unk: unknown;
+let any: any;
+unk = unknown;
+unk = any;
+unk = [1,2,3];
+unk = 'hello';
+
+let word2: string = unk; 		// err；把一个unknown类型赋值给string类型就会报错
+
+let word3: string = unk as string; 	// 断言这个类型是string类型
+```
+
+区分：
+
+```
+let obj: any = { isShown: true, open: () => 123 };
+obj.isShown; //  可以读取，但没有提示了
+obj.open();
+
+let unk: unknown = { isShown: true, open: () => 123 };
+unk.isShown; // err；“unk”的类型为“未知”；unknown类型无法读属性和方法
+unk.open();
+```
+
 ### 数组类型
 
 与元祖相比，不限制长度和位置，只限制里面的类型
 
 ```
-const arr string[];
+const arr: string[];					// 字符串数组
 
-const arr: number[] = [1, 2, 3];	// 数值数组
+const arr: number[] = [1, 2, 3];			// 数值数组
 
-const arr: string | number[];		// 要么是字符串，要么是数值数组
+const arr: boolean | number[] = true; 			// 要么是布尔类型，要么是数值数组类型
 
-const arr : (string | boolean)[] = ['hello', 'word', true];	// 数组可包含字符串或布尔值
+const arr: (string | boolean)[] = ['hello', true];	// 数组里可包含 字符串和布尔值
 
-let arr: { id: number }[] = [{ id: 1 }, { id: 2 }, { id: 3 }];	// 对象数组
+let arr: { id: number }[] = [{ id: 1 }];			// 对象数组
 arr.push(1);							// err
 
-const arr: Array<number | string | object> = [1, "2", {}];	// 使用泛型设置数组
+let arr: (string[] | boolean)[] = [["hello"], true];		// 二维数组
+```
+
+###### 数组 & 泛型
+
+```
+let arr: Array<number | string | object> = [1, "2", {}];
+
+let arr: Array<Array<{ id: number }> | boolean> = [[{ id: 1 }], true];
+```
+
+###### 数组 & interface
+
+```
+enum SexType {
+	Girl,
+	Boy
+}
+
+interface UserInter {
+	name: string;
+	sex: SexType
+}
+
+let user1: UserInter = {
+	name: "tom",
+	sex: SexType.Boy
+};
+
+const userArr: UserInter[] = [user1, {name: 'Jack', sex: SexType.Boy}];
 ```
 
 ### 元祖类型
@@ -127,63 +253,99 @@ const arr: Array<number | string | object> = [1, "2", {}];	// 使用泛型设置
 ```
 let arr: [string, number, boolean] = ["1", 2, false];
 arr[0] = 99				// err; 可改值，不能更改类型
+
+let arr: readonly [x: number, y?: boolean] = [1, true];
 ```
 
 ### 对象类型
 
-```
-let obj:object;			// 限定obj为对象类型
+###### object 类型
 
-let obj: {			// 限定obj为对象类型，同时限定了3个属性，以及限定每个属性值类型
+```
+let obj: object = 1;		// err; 不能将类型“number”分配给类型“object”
+
+let obj: object = [];		// 约束只能是引用类型；
+let obj: object = () => 123;
+
+let obj: object = {
+  name: "Tom",
+  age: 10,
+}
+obj.city = 'Beijing'		// err; 类型“object”上不存在属性“city”
+```
+
+###### 字面量类型
+
+```
+let obj: {} = { age: 1 };	// 赋值无效
+obj.age = 2;		// err; 类型“{}”上不存在属性“age”
+
+
+let obj: {			// 约束obj为对象类型，同时约束只能多少个属性，以及是哪些属性， 并且约束属性值类型
 	name: string;
 	age: number;
 	hobbit?: string; 	// 有or没有属性都可
 };
 
-obj = {				// err 缺少age属性
+obj = {				// err；赋值时缺少age属性
 	name: 'tom',
-	test: true,		// err obj没有设置test属性
+	test: true,		// err；obj字面量没有设置test属性
 }
 ```
 
-### any 类型
-
-不清楚变量是什么数据类型 or 很多类型都可以使用不限定类型，不需要进行类型校验（但也就失去了 ts 的意义了）
+###### 对象 & interface
 
 ```
-let any :string | number | object | boolean = 'hello';
-let any : any = 'hello';
+/**
+let obj: {
+	name: string;
+	show?(): string;
+	[key: string]: any;		// 索引签名；约束key属性名称为string类型，约束属性值为any类型；
+	// [key: string]: number;	// 如number则会要求对象所有属性值都是number类型
+} = {
+	name: "tom",
+	age: 10,
+	show() {
+		return "hello";
+	},
+	city: "Beijing",
+};
+*/
 
-let arr: any[] = [{}, [], 1, false, "a"];
-let arr: Array<any> = [];
 
+interface UserInter {
+	name?: string;
+	readonly show(): string;
+	[key: string]: any;
+}
 
-// 缺点：编译时没有了类型检测
-console.log(arr[0].split(''))	// err
+let obj: UserInter = {
+	name: "tom",
+	show() {
+		return "hello";
+	},
+	city: "Beijing"
+};
 ```
 
-### unkonwn 类型
-
-不清楚什么类型，但是有类型的；
-
-```
-let a: any = "hello";
-let word: string = a;
-
-let b: unknown = "hello";
-let word2: string = b; 		// err；把一个不知道的类型赋值给字符串就会报错
-
-let word3: string = b as string; 	// 明确说明这个类型是string类型
-```
-
-#### 类型转换
+### 类型转换
 
 值没有问题的，转换类型
 
 ```
 let str: string = "99";
-let a: number = str as number; 		// err; 把string不能直接转成number类型
+
+let a: number = str as number; 		// err; string不能直接转成number类型
+
 let b: number = str as unknown as number;   	// 但可以先转成未知类型，再把未知类型转成number类型
+console.log(b, typeof b);   			// 99 string
+```
+
+```
+let fn = (a: number, b: number): number => { return a + b };
+
+let res: string = fn(1, 2) as unknown as string;
+console.log(res, typeof res);			// 3	number
 ```
 
 ### 枚举类型
@@ -221,153 +383,171 @@ let c: Color = Color.orange;
 console.log(c); 	// 6
 ```
 
+```
+enum Color {
+	red = "red",
+	green = "green",
+}
+
+console.log(Color.green)  // green
+```
+
+###### 反向映射
+
+枚举限数字类型，字符串报错；
+
+```
+enum Color {
+	yes,
+	no,
+	fail = 'err'		// 无法反向映射
+}
+
+let value = Color.yes;
+let key = Color[value];
+
+console.log(key);   		// yes
+console.log(value)  		// 0
+```
+
+###### 枚举 & interface
+
+```
+enum Sex {
+	male = "男",
+	female = "女",
+}
+
+interface userInt {
+	name: string;
+	habit: Sex;
+}
+
+let user: userInt = {
+	name: "Tom",
+	habit: Sex.male,
+};
+```
+
 ### 函数
 
 ```
-let fn: Function = (a: number, b: number) => "结果是" + a + b;
-```
+let fn: Function;			// 约束变量fn必须是函数类型
+fn = (a: number, b: number) => {return a };
 
-```
-let sum = (a: number, b: number, c: number = 0.6, d?: number): number => {
-	return (a + b) * c;
+
+let sum: (a: number) => number;	// 约束变量sum必须是函数类型、a形参是number类型、返回值是number类型
+sum = (x, y) => {			// 赋值函数时，形参名可不一致
+	return x;
 };
-
-let res: string = sum(1, 2) as unknown as string;
-```
-
-函数结构定义
-
-```
-let sum: (a: number, b: number) => number; 	// 定义函数
-
-sum = (x, y) => {       			// 需要实现的函数；定义的和函数的形参名可不一致
-	return x + y;
-};
-
 sum(1, 2);
 ```
 
+###### 函数 & interface
+
 ```
-function sum(...args: number[]): number {
-	return args.reduce((p, i) => p + i, 0);
+interface fnInter {
+	(price: number): number;
 }
 
-console.log(sum(1, 2, 3));
+let handleTotal: fnInter = (price: number) => price * 2;
 ```
 
-### type
-
 ```
-let addUser = (user: { name: string; age: number }): void => {
-	console.log("添加用户");
-};
-let updateUser = (user: { name: string; age: number }): void => {
-	console.log("更新用户");
-};
-```
-
-对对象声明/定义
-
-```
-type userType = {
+interface UserInter {
 	name: string;
 	age: number;
-	sex?: string | number
+	isLocked: boolean;
+}
+
+// interface约束形参 和 返回值
+function handleLock(user:UserInter, lock: boolean): UserInter{
+	user.isLocked = lock;
+	return user;
+}
+
+handleLock(user, true);
+```
+
+-   定义 this 类型
+
+```
+interface ObjInter {
+	user: string[];
+	add: (this: ObjInter, name: string) => void;
+}
+
+let obj: ObjInter = {
+	user: ["tom"],
+	add: function (this: ObjInter, name: string) {
+		this.user.push(name);
+	},
 };
 
-let addUser = (user: userType): void => console.log("添加用户");
+obj.add("jack");
+```
 
-let updateUser = (user: userType): void => console.log("更新用户");
+-   函数重载 一个函数通过参数实现多个方法
 
-class Person implements userType {
-	name: string
-	age: number
-	constructor(name:string, age:number){
-		this.name = name;
-		this.age = age;
+```
+let arr: number[] = [1, 2, 3];
+
+function findNum(): number[]; // 如没传就是查询全部
+
+function findNum(id: number): number[]; // 传id就是单个查询
+
+function findNum(add: number[]): number[]; // 传数值数组就是添加
+
+// 通过区分参数来实现不同功能
+function findNum(ids?: number | number[]): number[] {
+	if (typeof ids === "number") {
+		return arr.filter((i) => i === ids);
+	} else if (Array.isArray(ids)) {
+		arr.push(...ids);
+		return arr;
+	} else {
+		return arr;
 	}
 }
+
+console.log(findNum()); // [1,2,3]
+console.log(findNum(1)); // [1]
+console.log(findNum([4, 5])); // [1,2,3,4,5]
 ```
 
-对函数声明/定义
+###### 函数 & 泛型
 
 ```
-type userType = { name: string; age: number }; // 声明一个对象结构
+function add<T, K = boolean>(a:T, b: K):Array<T | K> {
+	return [a, b]
+}
 
-type addUserFnType = (user: userType) => boolean; // 声明一个函数结构，userType对象约束参数
+add(1, true)
+```
 
-let handleAddUser: addUserFnType = (u: userType) => {    // addUserFnType约束变量，需要的是一个函数
-	console.log("添加用户成功", u);
-	return true;
+```
+const axios = {
+	get<T>(url: string): Promise<T> {
+
+		return new Promise((resolve) => {
+			let xhr: XMLHttpRequest = new XMLHttpRequest();
+			xhr.open("GET", url);
+			xhr.onreadystatechange = () => {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					resolve(JSON.parse(xhr.responseText));
+				}
+			};
+		});
+
+	},
 };
 
-handleAddUser({ name: "tom", age: 10 });
-```
-
-### type & interface
-
--   不能定义相同 type 名称;
-
--   type 可以合并 type;
-
-```
-type Name = {
-	name: string
+interface resultData {
+	code: number;
+	message: string;
 }
 
-type Age = {
-	age: number
-}
-
-// type合并
-type User = Name & Age;
-const obj: User = {
-	name: 'tom',
-	age: 10
-}
-
-type User2 = Name | Age;
-const obj2:User2 = {
-	name: 'jack'
-}
-
-class Person implements User {
-	name: string = 'tom';
-	age: number = 10;
-}
-```
-
-```
-// 声明基本类型别名
-type IsOut = boolean;
-
-// 声明联合类型
-type Sex = "boy" | "girl";
-
-// type userType = {
-// 	name: string;
-// 	age: number;
-// 	sex?: Sex;
-//	isOut: IsOut
-// 	show(): string;
-// 	[key: string]: any;
-// };
-
-interface userType {
-	name: string;
-	age: number;
-	sex?: Sex;
-	show(): string;
-	[key: string]: any;
-}
-
-let obj: userType = {
-	name: "tom",
-	age: 10,
-	sex: "boy",
-	show: () => "have 10$",
-	city: "北京",
-};
+axios.get<resultData>("...").then((res) => {});
 ```
 
 ### 函数原型
@@ -398,7 +578,7 @@ let res:boolean = handleAdd({ name: "tom", age: 10 });
 
 ---
 
-### 断言
+### 类型断言
 
 主动判定变量是某种类型
 
@@ -406,8 +586,34 @@ let res:boolean = handleAdd({ name: "tom", age: 10 });
 function fn(arg: number): boolean | number {
 	return arg ? true : 0;
 }
-
 let res = fn(1) as boolean;
+
+--------------------------------------------
+
+let fn = function (num: number | string): void {
+	let length = (num as string).length;
+	console.log(length);
+};
+fn("123"); 			// 3；确定传的会有length属性就能做断言
+fn(123); 			// undefined；否则运行时会报错
+
+--------------------------------------------
+
+interface A {
+	run: string;
+}
+
+interface B {
+	build: string;
+}
+
+let fn = (type: A | B): void => {
+	let res = (<A>type).run;  // 泛型方式；类型断言
+	console.log(res);
+};
+
+fn({ build: "1" }); 		// undefined
+fn({ run: "1" }); 		// 1
 ```
 
 ###### 转值类型
@@ -596,6 +802,50 @@ class Dog extends Animal {
 }
 ```
 
+###### 泛型 & class
+
+```
+class Collection<T> {
+	data: T[] = [];
+
+	public push(...args: T[]) {
+		this.data.push(...args);
+	}
+}
+
+const col = new Collection<string>();
+col.push("hello", "word");
+
+const col2 = new Collection<number>();
+col2.push(1, 2);
+
+type UserType = {
+	name: string;
+	age: number;
+};
+
+const col3 = new Collection<UserType>();
+col3.push({ name: "tom", age: 1 }, { name: "jack", age: 2 });
+```
+
+```
+class User<T> {
+	public constructor(private _user:T) {}
+
+	public get() : T{
+		return this._user;
+	}
+}
+
+interface UserInter {
+	name: string;
+	age: number;
+}
+
+const user1 = new User<UserInter>({ name: "tom", age: 10 });
+console.log(user1.get());
+```
+
 ###### 单列模式
 
 如链接数据库,http 请求等只需产生一个对象；
@@ -644,11 +894,12 @@ class Animal {
 const dog = new Animal("dog");
 ```
 
-###### abstruct 抽象类
+###### 抽象类（少）
 
-    1.抽象属性/方法必须存在于抽象类中，相当于父类定义了规范，子类必须定义抽象属性/方法;
-    不能 new 抽象类实例化对象，它只是提供规范;
-    2.它和接口的区别不只有抽象的规范待子类实现，还有自身的属性和方法;
+-   abstract 加在 class 前面就是抽象类；
+-   abstract 类 不能 new 实例化；
+-   abstract 类里面的 abstract 属性/方法 必须定义在抽象类中，且 abstract 属性/方法只是定义，不能实现， 子类才必须实现定义父类定义的抽象属性/方法；
+-   它和接口的区别不只有抽象的规范待子类实现，还有自身的属性和方法；
 
 ```
 abstract class Animal {
@@ -684,102 +935,15 @@ dog.run();
 接口是是一种约定的规范；
 接口内的属性和方法必须实现 (除了?):
 
-###### 对象接口
+###### 对象 & interface
 
-```
-interface UserInter {
-	name: string;
-	age?: number,
-	show?(): string;
-	[key: string]: any; // 这里的any指的是对象的属性值可以是任何宽泛类型
-}
+###### 数组 & interface
 
-// let obj: { name: string; age: number; show?(): string; [key: string]: any } = {
-// 	name: "tom",
-// 	age: 10,
-// 	show() {
-// 		return "hello";
-// 	},
-// 	city: "Beijing",
-// };
+###### 函数 & interface
 
-let obj: UserInter = {
-	name: "tom",
-	age: 10,
-	show() {
-		return "hello";
-	},
-	city: "Beijing"
-};
-```
+###### 类 & interface
 
-###### 数组 & 枚举接口
-
-```
-enum SexType {
-	Girl,
-	Boy
-}
-
-interface UserInter {
-	name: string;
-	age: number;
-	sex: SexType
-}
-
-let user1: UserInter = {
-	name: "tom",
-	age: 10,
-	sex: SexType.Boy
-};
-
-let user2: UserInter = {
-	name: "jack",
-	age: 10,
-	sex: SexType.Girl
-};
-
-const arr: UserInter[] = [user1, user2];
-console.log(arr);		// [ { name: 'tom', age: 10, sex: 1 } ...]
-```
-
-###### 函数接口
-
-```
-// 定义接口
-interface Good {
-	(price: number): number;
-}
-
-// 对函数的约束
-let handle: Good = (price: number) => price * 2;
-```
-
-```
-// 定义接口
-interface UserInter {
-	name: string;
-	age: number;
-	isLocked: boolean;
-}
-
-// 对对象约束
-const user: UserInter = {
-	name: "tom",
-	age: 10,
-	isLocked: false,
-};
-
-// 对形参和返回值约束
-function handleLock(user:UserInter, lock: boolean): UserInter{
-	user.isLocked = lock;
-	return user;
-}
-
-handleLock(user, true);
-```
-
-###### 类的接口
+implement 类型约束 class
 
 ```
 interface UserInter {
@@ -800,6 +964,52 @@ class User {
 }
 ```
 
+```
+interface OptionsInt {
+	el: string | HTMLElement;
+}
+
+interface DemoInt {
+	options: OptionsInt;
+	init(): void;
+}
+
+interface AnotherInt {
+	run(): void;
+}
+
+class Animal implements DemoInt, AnotherInt {
+	options: OptionsInt;
+	constructor(options: OptionsInt) {
+		this.options = options;
+		this.init();
+	}
+	init() {}
+	run() {}
+}
+```
+
+###### 泛型 & interface
+
+```
+interface ArticleInter<A, B> {
+	title: string;
+	isLock: A;
+	comments: B[];
+}
+
+type CommentType = {
+	comment: string;
+	author?: string;
+};
+
+const article: ArticleInter<boolean, CommentType> = {
+	title: "how to use ts",
+	isLock: true,
+	comments: [{ comment: "first learning" }],
+};
+```
+
 ###### 接口继承
 
 -   相同接口名会自动合并
@@ -818,7 +1028,7 @@ const obj: User = {
 };
 ```
 
-extends or implements 继承接口
+-   extends 继承接口
 
 ```
 interface ISay {
@@ -833,28 +1043,151 @@ interface IRun {
 interface IMix extends ISay, IRun {}
 ```
 
-class 实现多个接口约束
+### type
+
+声明类型别名
 
 ```
-// class Person implements IMix{}
+type s = string | number;
+type arr = {name: string}[];
 
-class Person implements ISay, IRun {
-	firstName: string;
-	lastName: string;
+// let str:string = 'Tom';
+let str:s = 'Tom';
 
-	constructor(firtname: string, lastname: string) {
-		this.firstName = firtname;
-		this.lastName = lastname;
-	}
-	run() {
-		console.log("我可以跑10公里");
-	}
+
+type userType = { name: string; age: number };
+type addUserFnType = (user: userType) => boolean;
+
+let handleAddUser: addUserFnType = (userObj: userType) => {
+	return true;
+};
+handleAddUser({ name: "tom", age: 10 });
+```
+
+###### type & 交叉类型
+
+```
+type userType = {
+	name: string;
+	age: number;
+	city: string;
+};
+
+type AnimalType = userType & {
+	habit: string;
+};
+
+let dog: AnimalType = {
+	name: "Dan",
+	age: 10,
+	city: "Beijing",
+	habit: "orange",
+};
+```
+
+###### type & interface
+
+-   不能定义相同 type 名称;
+
+-   type 只能使用交叉类型去合并类型
+
+```
+type Name = {
+	name: string
 }
 
-new Person("tom", "k");
+type Age = {
+	age: number
+}
+
+// 交叉类型
+type User = Name & Age;
+const obj: User = {
+	name: 'tom',
+	age: 10
+}
+
+// 联合类型
+type User2 = Name | Age;
+const obj2:User2 = {
+	name: 'jack'
+}
 ```
 
----
+###### type & 泛型
+
+```
+type CustomType<T> = string | number | T;
+let type1: CustomType<boolean> = true;
+
+
+type PageResult<T> = {
+	list: T[];
+	page: number;
+	pageSize: number;
+};
+
+type listItem = {
+	id: string;
+	name: string;
+	age: number;
+};
+
+let res: PageResult<listItem> = axios.get({url: ''});
+```
+
+###### type & pick
+
+```
+type userType = {
+	name: string;
+	age: number;
+	city: string;
+};
+
+type AnimalType = Pick<userType, "name" | "city"> & {
+	habit: string;
+};
+
+let dog: AnimalType = {
+	name: "Dan",
+	city: "Beijing",
+	habit: "orange",
+};
+```
+
+```
+// 声明基本类型别名
+type IsOut = boolean;
+
+// 声明联合类型
+type Sex = "boy" | "girl";
+
+// type userType = {
+// 	name: string;
+// 	age: number;
+// 	sex?: Sex;
+//	isOut: IsOut
+// 	show(): string;
+// 	[key: string]: any;
+// };
+
+interface userType {
+	name: string;
+	age: number;
+	sex?: Sex;
+	show(): string;
+	[key: string]: any;
+}
+
+let obj: userType = {
+	name: "tom",
+	age: 10,
+	sex: "boy",
+	show: () => "have 10$",
+	city: "北京",
+};
+```
 
 ### 泛型
 
@@ -883,28 +1216,32 @@ dump<string>('hello');
 dump<number>(1);
 ```
 
-###### 泛型约束
+###### 约束泛型
+
+-   1. 自动类型推断 number、boolean 没有就会报错；
 
 ```
 function getLength<T>(arg: T): number {
-	// err; string和数组才有length属性；自动推断number、boolean没有报错
-	return arg.length;
+	return arg.length;		// err; string 和 数组才有length属性；
 }
 ```
 
+-   2. 使泛型**继承**字符串或数组 原型上的属性 length 就不会报错，但其他类型依然报错；
+
 ```
-// 定义函数时，使泛型继承字符串或者数组原型上的属性length，也就不会报错，但其他类型依然有问题
 function getLength<T extends string | any[]>(arg: T): number {
 	return arg.length;
 }
 
-console.log(getLength("123")); 	// 3
-console.log(getLength([1, 2, 3])); 	// 3
-console.log(getLength(100)); 		// err
+console.log(getLength("123")); 		// 3
+console.log(getLength([1, 2, 3])); 		// 3
+console.log(getLength(100)); 			// err
 ```
 
+-   3. 定义 type 或 interface, 约束类型的范围，传入参数属性上必须有一个 length 属性；
+
 ```
-// 或者定义一个type；约束在调用时必须传入的参数属性上必须有一个length属性；
+
 type typeLength = { length: number };
 
 function getLength<T extends typeLength>(arg: T): number {
@@ -912,93 +1249,84 @@ function getLength<T extends typeLength>(arg: T): number {
 }
 
 console.log(getLength([1, 2, 3])); 	// 3; 传入的数组本身就是有length属性；
-console.log(getLength(100)); 		// err; 但数值是没有length属性；
+console.log(getLength(100)); 		// err;
 ```
 
-###### 数组约束
-
-如调用者明确知道自己传入的是数组，不会传其他类型导致而错误，T[]约束的是数组的成员类型；
+-   约束对象的 key
 
 ```
-function getArr<T>(arg: T[]):number{
-	return arg.length;
+let obj = {
+	name: "Tom",
+	age: 10,
+};
+
+type Keys = keyof typeof obj;
+
+function getValue<T extends object, K extends keyof T>(obj: T, key: K) {
+	return obj[key];
 }
 
-getArr('hello');		// err;
-getArr<string | number>(['hello', 2, 3]);	// 3
+let res = getValue(obj, "name");
+console.log(res); // Tom
 ```
 
-###### class 约束
+###### 数组 & 泛型
+
+###### 函数 & 泛型
+
+###### class & 泛型
+
+###### interface & 泛型
+
+### 命名空间
+
+-   避免全局污染，隔离变量、函数；
+-   通过 export 暴露出来；
+-   namespace 所有的变量和方法都需要导出才能访问
 
 ```
-class Collection<T> {
-	data: T[] = [];
+namespace ios {
+	export let a = 1;
+	export const sum = (a: number, b: number): number => a + b;
 
-	public push(...args: T[]) {
-		this.data.push(...args);
+	export namespace Test2 {
+		export let aa = 2;
+		export const sum = (a: number, b: number): number => a + b;
 	}
 }
 
-const col = new Collection<string>();
-col.push("hello", "word");
-
-const col2 = new Collection<number>();
-col2.push(1, 2);
-
-type UserType = {
-	name: string;
-	age: number;
-};
-
-const col3 = new Collection<UserType>();
-col3.push({ name: "tom", age: 1 }, { name: "jack", age: 2 });
-```
-
-```
-class User<T> {
-	public constructor(private _user:T) {}
-
-	public get() : T{
-		return this._user;
-	}
+namespace h5 {
+	export let b = 3;
 }
 
-interface UserInter {
-	name: string;
-	age: number;
+// 同名合并
+namespace ios {
+	export let b = 3;
 }
 
-const user1 = new User<UserInter>({ name: "tom", age: 10 });
-console.log(user1.get());
+console.log(ios.Test2.sum(1, 2));	// 3
+console.log(ios.b);			// 3
 ```
-
-###### interface 约束
-
-```
-interface ArticleInter<A, B> {
-	title: string;
-	isLock: A;
-	comments: B[];
-}
-
-type CommentType = {
-	comment: string;
-	author?: string;
-};
-
-const article: ArticleInter<boolean, CommentType> = {
-	title: "how to use ts",
-	isLock: true,
-	comments: [{ comment: "first learning" }],
-};
-```
-
----
 
 ### 装饰器
 
-1. 报错：“作为表达式调用时，无法解析类修饰器的签名”；
-2. 打开 tsconfig.json 修改装饰器配置，将以下两个属性修改为 true；
+装饰器有 类装饰器、方法装饰器，属性装饰器，参数装饰器；
+
+-   类装饰器的只接受一个参数 target，接收到的是构造函数;
+
+-   方法装饰器，属性装饰器，参数装饰器的 target:
+
+    -   如将装饰器修饰静态函数，接收的是构造函数；
+    -   如将装饰器修饰原型函数，接收原型对象；
+
+-   propertyKey: 修饰的方法名/属性名；
+
+> 构造器有什么优势：不去破坏 class 原有的方法和属性，既然能通过 target 读取到构造函数，就可以在构造函数的原型对象上添加方法和属性；
+
+---
+
+1. 直接使用报错：“作为表达式调用时，无法解析类修饰器的签名”；
+2. 需要打开 tsconfig.json 修改装饰器配置，将以下两个属性修改为 true；
 3. 执行命令：tsc -w 根据 json 配置项监测文件；
 
 ```
@@ -1009,12 +1337,6 @@ const article: ArticleInter<boolean, CommentType> = {
 #### 类装饰器
 
 在类的原型链上增加属性和方法；
-
-<!-- -   类装饰器的 target 接收构造函数;
--   方法装饰器，属性装饰器，参数装饰器的 target:
-    -   修饰静态函数，接收的是构造函数；
-    -   修饰原型函数，接收原型对象；
--   propertyKey: 修饰的方法名/属性名； -->
 
 ```
 // 1. 定义一个变量，设置它的装饰器为类装饰器
@@ -1030,7 +1352,7 @@ const moveDecorator: ClassDecorator = (target: Function) => {
 // 2. 放在类上一行表示此类使用这个装饰器
 @moveDecorator
 class Tank {}
-// moveDecorator(Tank);	// 不使用@语法糖方式
+// moveDecorator(Tank);	// 不使用@语法糖方式，放在声明的class以下；
 
 const t = new Tank();
 console.log((t as any).getPosition());	// 类里面没有方法所以报错，断言一下即可；
@@ -1060,6 +1382,8 @@ const t = new Tank();
 ```
 
 ###### 装饰器工厂
+
+意思就是函数颗粒化 或是 闭包；
 
 ```
 const musicFactorDecorator = (type: number): ClassDecorator => {
@@ -1111,9 +1435,9 @@ new Web().login();
 
 ```
 const showDecorator: MethodDecorator = (
-	target: object, 		// 修饰普通方法是原型对象，静态方法是构造函数
+	target: object, 		// 修饰普通方法是原型对象，修饰静态方法是构造函数
 	propertyKey: string, 		// 修饰的方法名
-	descriptor: PropertyDescriptor // 对这个方法的描述（value,可遍历，可修改，可配置）
+	descriptor: PropertyDescriptor // 对这个方法的描述符（value,可遍历，可修改，可配置）
 ) => {
 	descriptor.value = () => {
 		console.log("修改掉修饰的普通方法/静态方法");
@@ -1238,7 +1562,9 @@ class Article {
 new Article().handleAdd();
 ```
 
-#### 属性装饰器 & 参数装饰器
+#### (少) 属性装饰器& 参数装饰器
+
+参数装饰器需要安装`npm i reflect-metadata`存/取数据；- 这里没搞
 
 ```
 // 属性装饰器
@@ -1252,11 +1578,11 @@ const propDecorator: PropertyDecorator = (
 
 // 参数装饰器
 const paramsDecorator: ParameterDecorator = (
-	target: object,
-	propertyKey: string | symbol | undefined,
-	parameterIndex: number
+	target: object,			// 原型对象
+	propertyKey: string | symbol | undefined,	// 处于哪个方法
+	parameterIndex: number	// 修饰的参数下标位置
 ) => {
-	console.log(`${parameterIndex} 参数下标位置`);
+	console.log(`${parameterIndex} 获取参数下标位置`);
 };
 
 class Article {
@@ -1294,4 +1620,133 @@ class Article {
 const a = new Article();
 a.title = 'HELLOW WORLD'
 console.log(a.title);	// hello word
+```
+
+### 声明文件
+
+使用第三方库时，需要引用它的声明文件，才能获得代码不全、提示等功能；
+
+如引用的库红线没有提示：
+
+-   `npm i --save-dev @types/库名称`，ts 社区为活跃的第三方库编写了声明文件
+-   自己添加一个包含"declare module '库名称'"的声明文件`库名称.d.ts`；
+
+```
+// 如 express.d.ts
+declare module "express" {
+	interface Router {
+		get(path: string, cb: (req: any, res: any) => void);
+	}
+
+	interface App {
+		use(path: string, router: any): void;
+		listen(port: number, cb?: () => void);
+	}
+
+	interface Express {
+		(): App;
+		Router(): Router;
+	}
+
+	const express: Express;
+
+	export default express;
+}
+
+// 还可扩充全局变量、函数、class
+declare let hello: string;
+declare function xxx(params: object): void;
+declare class Demo {}
+```
+
+```
+// 引入文件 main.ts
+import express from 'express';
+
+const app = express();
+const router = express.Router();
+app.use('/api', router);
+
+router.get('/api', (req:any, res:any)=>{
+  res.json({code: 200});
+})
+
+app.listen(3000, ()=>{
+  console.log('visit localhost:3000');
+})
+```
+
+### 类型兼容
+
+-   协变
+    子类型的属性能完全兼容主类型的属性称为协变
+
+```
+interface A {
+	name: string;
+	age: number;
+}
+
+interface B {
+	name: string;
+	age: number;
+	sex: string;
+}
+
+let a: A = {
+	name: "Tom",
+	age: 1,
+};
+let b: B = {
+	name: "Jack",
+	age: 1,
+	sex: "male",
+};
+
+a = b;
+```
+
+### 泛型工具
+
+-   Partial: 将所有属性变成可选属性；
+-   Required: 所有属性变成必选；
+-   Pick: 提取部分属性；
+-   Exclude: 排除部分属性 (排除联合类型)；
+-   Omit: 排除部分属性，并返回新的类型；
+
+```
+interface UserInt {
+	name: string,
+	age: number,
+	address: string;
+}
+
+type p = Partial<UserInt>
+
+type p2 = Pick<UserInt, "name" | "age">;
+
+type e = Exclude<"a" | "b" | "c", "b" | "c">;
+```
+
+-   Record: 约束对象 key 和 value；
+
+```
+type Key = "name" | "age" | "sex";
+type Value = "Tom" | 10 | "male";
+
+// 第一个泛型约束键名，第二个泛型约束值可以为其中之一；
+let obj: Record<Key, Value> = {
+	name: "Tom",
+	age: "Tom",
+	sex: "Tom",
+};
+```
+
+-   ReturnType: 获取函数返回类型
+
+```
+let fn = () => [1, "a", true];
+
+type whichType = ReturnType<typeof fn>;
+// type whichType = (string | number | boolean)[]
 ```

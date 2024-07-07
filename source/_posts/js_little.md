@@ -1,17 +1,6 @@
 ---
-title: js
+title: Js
 ---
-
-```
-var likeArray = {
-	0: 1,
-	1: 2,
-	length: 2,
-};
-
-var arr = Array.from(likeArray);
-console.log(arr);       //[1,2]
-```
 
 ###### 包装类
 
@@ -148,9 +137,33 @@ for (var i of obj) {
 }
 ```
 
+###### Array.from
+
+将带有 length 属性的**伪数组转成数组**，然后可调用数组的方法；
+
+```
+var likeArray = {
+	0: 1,
+	1: 2,
+	length: 2,
+};
+
+var arr = Array.from(likeArray);
+console.log(arr);       //[1,2]
+```
+
+```
+var lis = document.querySelectorAll("ul li");
+var arr = [...lis];
+
+console.log(lis instanceof Array); // false
+console.log(arr instanceof Array); // true
+```
+
 ###### Set
 
-接收单个/数组数据，并返回对象；
+-   接收单个/数组数据，并返回对象，支持数组上的方法；
+-   自身带有去重，引用类型除外；
 
 ```
 const s = new Set();
@@ -181,50 +194,40 @@ function unique(arr) {
 }
 ```
 
-###### Array.from
-
-将带有 length 属性的伪数组转成真正的数组，后可调用数组的方法；
-
-```
-var lis = document.querySelectorAll("ul li");
-var arr = [...lis];
-
-console.log(lis instanceof Array); // false
-console.log(arr instanceof Array); // true
-```
-
 ###### Map
 
-键名可以是任意类型基本类型或复杂类型数据（数字，布尔，函数，对象等）存储，并返回对象；
+键名可以是 基本类型 或 引用类型数据存储，并返回对象；
 
 ```
 let m = new Map([
 	["name", "tom"],
 	[{ city: "北京" }, "203321"],
 ]);
+
 m.set(function () {}, "fn");
 m.set(NaN, NaN);
 
-m['age'] = 'tom';
-console.log(m.has('age')); // false; 注意不能直接赋值，虽然对象能添加但get,has,size,forEach将获取不到；
-
-console.log(m.get("name"));	// "tom"
+m['age'] = 10;           	// 不能直接添加属性（虽然也能获取/打印到属性）,
+console.log(m.age)          	// 10; 但get,has,size,forEach将获取不到属性；
+console.log(m.has('age'));  	// false;
 
 console.log(m);
 /**
  {
-    'name' => 'jack',
-    { city: '北京' } => '203321',
-    [Function] => 'fn',
-    NaN => NaN
+	'name' => 'jack',
+	{ city: '北京' } => '203321',
+	[Function] => 'fn',
+	NaN => NaN
+	age: 10
 }
- */
+*/
 ```
 
 ###### Proxy
 
-Object.definedProperty 只能对对象单个属性拦截，且只能是对象；
-创建一个对象的代理，从而实现基本操作的拦截，可以是对象，数组，函数等；
+-   Object.definedProperty 只能对对象单个属性拦截，且只能是对象；
+-   创建一个代理对象，从而实现基本操作的拦截，可以是对象，数组，函数等；
+-   接收的参数只能是引用类型：对象、数组、函数、set、map
 
 ```
 // let obj = {};
@@ -244,9 +247,13 @@ let p = new Proxy(obj, {
 	},
 
 	set(targetObj, key, newValue) {
-		console.log("proxy set");
 		targetObj[key] = newValue;
 	},
+
+	apply() {},	// 拦截函数调用
+	ownKey() {}, // 拦截for in循环
+	construct() {}, // 拦截new操作符
+
 });
 
 // 普通对象; 对普通对象设置属性，走代理对象set；
@@ -294,7 +301,7 @@ p.push(2);
 
 ```
 try {
-    let obj = {};
+	let obj = {};
 	Reflect.defineProperty(obj, "user", {
 		value: "tom",
 		writable: false,
@@ -303,15 +310,20 @@ try {
 	});
 
 	// 2.修改了某些Object方法的返回结果，如失败报错需要try catch捕捉；
+
+	// Reflect失败返回 false；
+	let res = Reflect.defineProperty(obj, "user", { value: "jack" });
+	// defineProperty 失败则捕捉不到；
 	Object.defineProperty(obj, "user", { value: "jack" });
 
-	// Reflect失败返回 false;
-	let res = Reflect.defineProperty(obj, "user", { value: "jack" });
 
 
 	// 3.命令式变函数式
-	console.log("user" in obj);                 // true; 包含原型上属性；
-	console.log(Reflect.has(obj, "user"));      // true; 包含原型上属性；
+	console.log("user" in obj);             	// true; 包含原型上属性；
+	console.log(Reflect.has(obj, "user"));		// true; 包含原型上属性；
+
+	let res = Reflect.set(obj,'age', 11);		// res: true;
+	console.log(Reflect.get(obj, "user"));		// 'jack';
 
 	delete obj.user;
 	Reflect.deleteProperty(obj, "user");

@@ -29,7 +29,7 @@ JavaScript 主线程从“任务队列”中读取异步任务的回调函数，
 js 把异步任务做了进一步的划分，分为 2 类：
 
 -   宏任务：script(整体代码), Ajax, setTimout, setInterval, 文件操作等
--   微任务：Promise.then/catch/finally, MutationObserver, process.nextTick 等
+-   微任务：Promise.then/catch/finally 方法（new Promise()是同步任务）, MutationObserver, process.nextTick 等
 
 ![](/images/interview/3.jpeg)
 
@@ -60,13 +60,163 @@ js 操作数据是同步的，但 vue 操作 js 更新 DOM 是异步的，此时
 ## &lt;tempate&gt;
 
 1. 是 vue 提供的容器标签，只起到包裹的作用，不会被渲染为真正的 DOM 元素。
-   所以在&lt;template&gt;标签上进行当循环的时候，无法绑定 key。
+   所以在&lt;template&gt;标签上进行循环的时候，无法绑定 key。
 
 2. vue2 中 template 节点仅支持单个根节点; vue3 中组件根节点支持了多个根结点。
 
 ---
 
-## 浅拷贝& 深拷贝
+## 防抖
+
+```
+let timer = null;
+function debounce(callback, delay = 500) {
+    // 清除之前的计时;
+	clearTimeout(timer);
+
+	timer = setTimeout(function () {
+		callback();
+	}, delay);
+}
+
+window.onresize = function () {
+	debounce(function () {
+		console.log("debounce");
+	}, 500);
+};
+```
+
+-             解决全局污染
+
+```
+function debounce(callback, delay = 500) {
+	let timer = null;
+
+    // 利用闭包返回新的函数，持有局部作用域下的变量timer
+	return function () {
+		// 清除之前的计时;
+		clearTimeout(timer);
+
+		timer = setTimeout(function () {
+			callback();
+		}, delay);
+	};
+}
+
+let handle = debounce(function () {
+	console.log("debounce");
+}, 500);
+
+window.onresize = function () {
+	handle();
+};
+```
+
+-   防抖传参
+
+```
+function debounce(callback, delay) {
+	let timer = null;
+
+	// 利用闭包返回新的函数，持有局部作用域下的变量timer
+	return function () {
+		// 清除之前的计时;
+		clearTimeout(timer);
+
+		// 接受传递的所有参数
+		let args = arguments;
+
+		timer = setTimeout(function () {
+			callback.apply(null, args);
+		}, delay);
+	};
+}
+
+let handle = debounce(function (first, second) {
+	console.log(first, second);
+}, 500);
+
+window.onresize = function () {
+	let clientWidth = document.documentElement.clientWidth;
+	let clientHeight = document.documentElement.clientHeight;
+	handle(clientWidth, clientHeight);
+};
+```
+
+## 节流
+
+```
+let timer = null;
+
+function throttle(cb, delay) {
+	if (timer) return;
+
+	timer = setTimeout(() => {
+		cb();
+		timer = null;
+	}, delay);
+}
+
+window.onresize = function () {
+	throttle(function () {
+		console.log("throttle");
+	}, 1000);
+};
+```
+
+-   解决全局污染
+
+```
+function throttle(cb, delay) {
+	let timer = null;
+
+	return function () {
+		if (timer) return;
+		timer = setTimeout(() => {
+			cb();
+			timer = null;
+		}, delay);
+	};
+}
+
+let handle = throttle(function () {
+	console.log("throttle");
+}, 1000);
+
+window.onresize = function () {
+	handle();
+};
+```
+
+-   节流穿参
+
+```
+function throttle(callback, delay) {
+	let timer = null;
+
+	return function () {
+		if (timer) return;
+		let args = arguments;
+
+		timer = setTimeout(() => {
+			callback.apply(null, args);
+			timer = null;
+		}, delay);
+	};
+}
+
+let handle = throttle(function (first, second) {
+	console.log(first, second);
+}, 1000);
+
+window.onresize = function () {
+	let clientWidth = document.documentElement.clientWidth;
+	let clientHeight = document.documentElement.clientHeight;
+	handle(clientWidth, clientHeight);
+};
+```
+
+## 浅拷贝 & 深拷贝
 
 浅拷贝只是拷贝第一层, 而像引用类型数组、对象，就只是拷贝引用地址;
 
@@ -91,7 +241,7 @@ function deepClone(obj = {}) {
 	}
 
 	for (let key in obj) {
-		// 对象自身属性中是否有某个属性；否则原型链上的属性也会被复制;
+		// 只获取对象自身属性，否则原型链上的属性也会被复制;
 		if (obj.hasOwnProperty(key)) {
 			result[key] = deepClone(obj[key]);
 		}
@@ -100,20 +250,57 @@ function deepClone(obj = {}) {
 }
 ```
 
+## 性能优化
+
+First Contentful Paint: 首次内容绘制的时间，浏览器第一次绘制 DOM 相关的内容，也是用户第一次看到页面内容的时间。
+Speed Index: 页面各个可见部分的显示平均时间，当我们的页面上存在轮播图或者需要从后段获取内容加载时，这个数据会受到影响。
+Largest Contentful Paint: 最大内容绘制时间，页面最大的元素绘制完成的时间。
+Time to Interactive: 从页面开始渲染到用户可以与页面进行交互的时间（内容渲染完毕，交互元素绑定的事件注册成功）。
+Total Blocking Time: 主进程被阻塞的时间（记录了首次内容绘制到用户可交互之间的时间内，主进程被阻塞导致阻碍用户的无法交互）
+
+![](/images/interview/lighthouse.jpg)
+
+###### 分析打包后的代码体积
+
+需安装插件 npm install rollup-plugin-visualizer 分析打包后的代码体积
+请查看其他别人的文档；
+
+-   vite 可配置优化
+
+`vite.config.ts`
+
+```
+defineConfig({
+	build:{
+		cssCodeSplit: true, // css代码拆分
+		sourcemap: false // 不生成sourcemap
+		minify: false, // 'esbuild'-打包速度快，'terser'-打包体积最小
+		assetsInlineLimit: 4000, // 不会打包小于的图片，小于4000kb的体积将被编译成base64
+	}
+})
+```
+
 ## 首屏加载优化
 
--   路由懒加载
+-   路由懒加载 import 导入组件；
     vue 是单页应用，打包时，所有的 js 都会打包成一个 js 文件会变得非常大，影响页面加载速度，使用 import 导入组件可以把路由对应的组件分割成不同的代码块，用户访问对应的路由才加载对应的组件；
+
 -   vue3 新增 defineAsyncComponent 异步组件，同样可以 npm run build 时将一个包分包，用到这个 js 时才会加载这个包；
+
 -   vuex 状态管理；
--   图片懒加载；
 
-## 生命周期
+-   图片懒加载 和 小图片采用 base64 字符串方式；
 
--   created: 编译模版；
--   mounted: 挂载模版；
--   updated: 在组件的任意 DOM 节点更新后调用；
-    注意：仅限用差值语法使用在页面上的 data 属性，若没有使用在页面上，自身的 updated 或子组件的 updated 都不会触发；
+-   第三方插件采用 CDN 方式引入；
+
+-   虚拟列表（当后端返回上万条数据时）；
+
+-   防抖和节流；
+
+-   PWA；
+
+    需安装 npm install vite-plugin-pwa -D
+    利用 service worker 离线缓存, 利用 service worker 发送通知；
 
 ## vue3 与 vue2 区别
 
@@ -226,47 +413,6 @@ export function useBanner() {
 
 ![](/images/interview/scoped.jpg)
 
-## 性能优化
-
-First Contentful Paint: 首次内容绘制的时间，浏览器第一次绘制 DOM 相关的内容，也是用户第一次看到页面内容的时间。
-Speed Index: 页面各个可见部分的显示平均时间，当我们的页面上存在轮播图或者需要从后段获取内容加载时，这个数据会受到影响。
-Largest Contentful Paint: 最大内容绘制时间，页面最大的元素绘制完成的时间。
-Time to Interactive: 从页面开始渲染到用户可以与页面进行交互的时间（内容渲染完毕，交互元素绑定的事件注册成功）。
-Total Blocking Time: 主进程被阻塞的时间（记录了首次内容绘制到用户可交互之间的时间内，主进程被阻塞导致阻碍用户的无法交互）
-
-![](/images/interview/lighthouse.jpg)
-
-###### 分析打包后的代码体积
-
-需安装插件 npm install rollup-plugin-visualizer 分析打包后的代码体积
-请查看其他别人的文档；
-
--   vite 可配置优化
-
-`vite.config.ts`
-
-```
-defineConfig({
-	build:{
-		cssCodeSplit: true, // css代码拆分
-		sourcemap: false // 不生成sourcemap
-		minify: false, // 'esbuild'-打包速度快，'terser'-打包体积最小
-		assetsInlineLimit: 4000, // 不会打包小于的图片，小于4000kb的体积将被编译成base64
-	}
-})
-```
-
--   PWA
-
-需安装 npm install vite-plugin-pwa -D
-利用 service worker 离线缓存, 利用 service worker 发送通知；
-
--   图片懒加载
-
--   虚拟列表（当后段返回上万条数据时）
-
--   防抖和节流
-
 ## vue-router 跳转实现
 
 1. hash 模式：URL 会带有#，它是通过 BOM 提供的 location.hash 实现的， 通过 window.addEventListener('hashchange',(e)=>{})监听 url 变化
@@ -283,4 +429,27 @@ location.replace("新url")  实现禁止后退      原理: 用新url替换histo
 history.forward()  ==  history.go(1) 前进一步
 history.back()   ==  history.go(-2) 后退两步
 history.go(0) 刷新
+```
+
+## 发布订阅模式
+
+设计模式包含：工厂模式，观察者模式，构造器模式，发布订阅等
+
+-   vue2 的 eventBus 是发布订阅模式，通过$on监听事件，$emit 派发事件；
+-   addEventListener 也是发布订阅模式
+
+```
+const fn = ()=>{
+	console.log('click')
+}
+
+
+document.addEventListener('abc', fn, {		// 添加监听器
+	once: true,	// 只触发一次
+})
+document.removeEventListener('abc', fn)	// 移除监听器
+
+const e = new Event('abc');			// 订阅事件
+
+document.dispatchEvent(e);			// 派发事件
 ```

@@ -1,5 +1,5 @@
 ---
-title: vue3组合式API
+title: vue3
 ---
 
 ## vue3 与 vue2 区别
@@ -449,6 +449,94 @@ onMounted(()=>{
 onMounted(()=>{
     console.log(2)
 })
+</script>
+```
+
+## v-model
+
+```
+<template>
+    <Child v-model:modelValue="count" />
+
+    <!-- 等价于 -->
+
+    <Child v-model="count" />
+</template>
+```
+
+```
+<template>
+	<button @click="$emit('update:modelValue', modelValue + 1)">
+		{{ modelValue }}
+	</button>
+
+	<input
+		type="text"
+		@input="(e) => $emit('update:msgValue', e.target.value)"
+	/>
+</template>
+
+<!-- 选项式 -->
+<script>
+export default {
+	props: ["modelValue"],
+	emits: ["update:modelValue"], // 更新哪个props的属性
+};
+</script>
+
+<!-- 组合式 -->
+<script setup>
+defineProps({ modelValue: Number, msgValue: String });
+
+defineEmits(["update:modelValue", "update:msgValue"]);
+</script>
+```
+
+###### v-model 修饰符
+
+```
+<template>
+    <Child v-model.upper="count" />
+    <Child v-model:title.upper.substr="name" />
+</template>
+```
+
+```
+<template>
+    <!-- <input type="text" :value="modelValue" @input="change" /> -->
+    <input type="text" :value="title" @input="change" />
+</template>
+
+<script>
+export default {
+    props: [
+        // "modelValue",
+        // "modelModifiers",  // 来源 v-model
+        "title",
+        "titleModifiers",     // 来源 v-model:title => 'titleModifiers';
+    ],
+    emits: [
+        // "update:modelValue",
+        "update:title",
+    ],
+    created() {
+        console.log(this.titleModifiers);
+    },
+    methods: {
+        change($event) {
+            let value = $event.target.value;
+
+            if (this.titleModifiers.upper) {
+                value = value.toUpperCase();
+            }
+
+            if (this.titleModifiers.substr) {
+                value = value.substr(0, 3);
+            }
+            this.$emit("update:title", value);
+        },
+    },
+};
 </script>
 ```
 
@@ -1030,94 +1118,6 @@ export default defineComponent({
 		);
 	},
 });
-```
-
-## v-model
-
-```
-<template>
-    <Child v-model:modelValue="count" />
-
-    <!-- 等价于 -->
-
-    <Child v-model="count" />
-</template>
-```
-
-```
-<template>
-	<button @click="$emit('update:modelValue', modelValue + 1)">
-		{{ modelValue }}
-	</button>
-
-	<input
-		type="text"
-		@input="(e) => $emit('update:msgValue', e.target.value)"
-	/>
-</template>
-
-<!-- 选项式 -->
-<script>
-export default {
-	props: ["modelValue"],
-	emits: ["update:modelValue"], // 更新哪个props的属性
-};
-</script>
-
-<!-- 组合式 -->
-<script setup>
-defineProps({ modelValue: Number, msgValue: String });
-
-defineEmits(["update:modelValue", "update:msgValue"]);
-</script>
-```
-
-###### v-model 修饰符
-
-```
-<template>
-    <Child v-model.upper="count" />
-    <Child v-model:title.upper.substr="name" />
-</template>
-```
-
-```
-<template>
-    <!-- <input type="text" :value="modelValue" @input="change" /> -->
-    <input type="text" :value="title" @input="change" />
-</template>
-
-<script>
-export default {
-    props: [
-        // "modelValue",
-        // "modelModifiers",  // 来源 v-model
-        "title",
-        "titleModifiers",     // 来源 v-model:title => 'titleModifiers';
-    ],
-    emits: [
-        // "update:modelValue",
-        "update:title",
-    ],
-    created() {
-        console.log(this.titleModifiers);
-    },
-    methods: {
-        change($event) {
-            let value = $event.target.value;
-
-            if (this.titleModifiers.upper) {
-                value = value.toUpperCase();
-            }
-
-            if (this.titleModifiers.substr) {
-                value = value.substr(0, 3);
-            }
-            this.$emit("update:title", value);
-        },
-    },
-};
-</script>
 ```
 
 ## directive

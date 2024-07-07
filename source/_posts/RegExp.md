@@ -46,7 +46,7 @@ main.innerHTML.replace( /教育/g, `<a href="https://www.baidu.com">$&</a>`);
 ###### 修正符
 
 `i 	忽略大小写`
-`g 	单行的全局匹配,否则只匹配上第一个就停止`
+`g 	全局匹配,否则只匹配上第一个就停止`
 
 ```
 "hds".match(/[a-z]/g);                      ['h','d','s']
