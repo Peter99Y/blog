@@ -8,16 +8,14 @@ title: Eslint
 
 创建 vue 项目
 `npm create vite my-vue-project --template vue-ts`;
+`npm install`安装依赖；
 
-安装 eslint 和 prettier，以及相关插件:
+安装 eslint 和 prettier，以及相关插件: 2. `npm install eslint prettier eslint-config-prettier eslint-plugin-prettier -D`
 
-2. `npm install eslint prettier eslint-plugin-vue eslint-config-prettier eslint-plugin-prettier -D`
+3. `npx eslint --init` 安装 eslint 后，再生成配置文件；
 
-3. `npx eslint --init` 生成配置文件；
-
-4. 安装 typescript 相关插件和声明文件；
-
-`npm install typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin @types/eslint @types/node -D`
+4. 安装 typescript 及 相关解析插件；
+`npm install typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin --legacy-peer-deps -D`
 
 <!-- -   3. eslint - package.json 配置脚本；
 -   4. eslint - 配置 eslint rules 规则；
@@ -33,16 +31,34 @@ title: Eslint
 
 插件安装: `npm i eslint -D`;
 
-选择并生成 eslint.config.js 配置文件: `npx eslint --init` or `npm init @eslint/config@latest`;
+互动式命令选择配置 并 生成 eslint.config.js 配置文件: `npx eslint --init` or `npm init @eslint/config@latest`;
 
 ```
-How would you like to use eslint?
-  To check syntax only
-> To check syntax and find problems
-  To check syntax, find problems and enforce code style (eslint自己的校验规则，如自己配置规则或第三方规则选第二)
+How would you like to use ESLint? problems - eslint检测语法，检测语法并警告，检测语法并警告并修复
+What type of modules does your project use? - 选择 ECMA or CommonJs 模块
+Which framework does your project use? - vue，最后会提示安装 eslint-plugin-vue
+Does your project use Typescript? - 会自动安装typescript插件， 最后会提示安装typescript-eslint
+Where does your code run? - 运行在browser 或 node环境
 ```
 
-## .mjs & .js 区别
+```
+// 根据全部选择的结果，生成eslint-config.js 对应的配置；
+
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import tseslint from "typescript-eslint";
+import pluginVue from "eslint-plugin-vue";
+
+export default [
+  {files: ["**/*.{js,mjs,cjs,ts,vue}"]},
+  {languageOptions: { globals: globals.browser }},
+   pluginJs.configs.recommended,            // 使用 JavaScript 的推荐规则配置
+  ...tseslint.configs.recommended,          // 使用 TypeScript 的推荐规则配置
+  ...pluginVue.configs["flat/essential"],   // 使用 vue 规则配置插件
+];
+```
+
+## .mjs 文件 & .js 文件 区别
 
 -   根据安装 eslint 版本：eslint 9.0 版本前生成 eslint.config.mjs，9.0 版本后生成 eslint.config.js
 
@@ -54,7 +70,7 @@ What type of modules does your project use?
   CommonJS (require/exports)
 ```
 
--   选择 CommonJS 模块，将生成 eslint.config.js
+-   选择 CommonJS 模块，将生成 eslint.config.js 文件
 
 ```
 // eslint.config.js
@@ -64,21 +80,14 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: [
-    'eslint:recommended',
-  ],
-  parserOptions: {
-    ecmaVersion: 12,
-    sourceType: 'module',
-  },
   rules: {
     'no-unused-vars': 'warn',
-    'no-console': 'off',
   },
+  ...
 };
 ```
 
--   选择 JavaScript modules 模块，将生成 eslint.config.mjs
+-   选择 JavaScript modules 模块，将生成 eslint.config.mjs 文件
 
 ```
 // eslint.config.mjs
@@ -88,8 +97,12 @@ export default {
     browser: true,
     es2021: true,
   },
+
+  // extends是扩展eslint检测规范范围，且省略了前缀 'eslint-config-prettier'
   extends: [
-    'eslint:recommended',
+    'eslint:recommended',  // eslint默认推荐的规则
+    'plugin:vue/vue3-strongly-recommended', // 使用 vue3强烈推荐规则
+    'prettier'  // 使用prettier规则
   ],
   parserOptions: {
     ecmaVersion: 12,
@@ -103,23 +116,80 @@ export default {
 ```
 
 ```
-// eslint.config.js
+// eslint.config.js （ESlint 9.0版本后结构）
 
 import globals from "globals";
 import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint"; // 安装ts检测插件
-import pluginVue from "eslint-plugin-vue"; // 安装vue检测插件
+import tseslint from "typescript-eslint";
+import pluginVue from "eslint-plugin-vue";
 
 export default [
-  {languageOptions: { globals: globals.browser }},
+	{
+		// eslint检测应用于src下的js，ts和vue文件
+		files: ["src/**/*.{js,ts,vue}"],
 
-  pluginJs.configs.recommended, // 使用 JavaScript 的推荐规则配置
+		// eslint检测忽略哪些文件
+		ignores: [
+			".config/", // 忽略 .config 目录及其所有内容
+			"**/node_modules/", // 忽略项目中任意位置的 node_modules 目录及其所有内容
+			".git/",  // 忽略 .git 目录及其所有内容
+		],
 
-  ...tseslint.configs.recommended, // 使用 TypeScript 的推荐规则配置
+		// 插件省略了前缀 'eslint-plugin-' > 'eslint-plugin-vue'
+		plugins: ["vue"],
 
-  ...pluginVue.configs["flat/essential"], // 使用 vue 规则配置插件
+		settings: {
+			"import/resolver": {
+				alias: {
+					map: [["@", "./src"]],
+				},
+			},
+		},
+
+                // 自定义规则，会覆盖extends继承的第三方库规则，权限比第三方库高
+		rules: {
+			"example/dollar-sign": "error",
+		},
+
+		// 可配置解析器
+		languageOptions: {
+                  ecmaVersion: 'latest',
+                  sourceType: 'module',
+                  globals: globals.browser,
+                  parser: '@typescript-eslint/parser',
+			// parserOptions: {
+			// 	requireConfigFile: false,
+			// 	babelOptions: {
+			// 		babelrc: false,
+			// 		configFile: false,
+			// 		presets: ["@babel/preset-env"],
+			// 	},
+			// },
+		},
+	},
+  
+	pluginJs.configs.recommended,
+	...tseslint.configs.recommended,
+	...pluginVue.configs["flat/essential"],
 ];
 ```
+
+> ps: ignores 涉及到的符号
+> . 这个点通常表示一个隐藏目录或文件
+> 例如 .git .vscode文件；
+
+> / 匹配目录。
+> 例如 .config/ 就是忽略目录，和它目录下其所有内容；
+
+> \* 匹配任意数量的字符（除了斜杠 /）。
+> 1例如 \*.js: 匹配所有以 .js 结尾的文件,
+> 2例如 .config/\* 忽略.config 目录下的所有文件，但不包括子目录下的内容。如 .config 目录中有子目录不会被忽略。
+
+> \*\* 匹配任意数量的目录和子目录。
+> 1例如 \*\*/node_modules/ 匹配项目中任意位置（如根目录或嵌套在其他目录中）的 node_modules 都会忽略。
+> 2例如 files: ["src/**/*.{js,ts,vue}"]，src/表示匹配 src 目录，\*\*/ 表示匹配 src 目录下的任意层级的子目录，\*.{js,ts,vue} 表示匹配文件名可以是任何字符，只要扩展名是 .js、.ts 或 .vue 之一；
+
+---
 
 ## 命令
 
@@ -134,8 +204,11 @@ export default [
 
 ```
 "scripts": {
-  "lint": "eslint src", // 校验 src 目录下的文件
-  "fix": "eslint src --fix" // 修复 src 目录下的文件
+  // eslint校验 src 目录下的文件
+  "lint": "eslint \"src/**/*.{js,ts,vue}\"", 
+
+  // eslint修复 src 目录下的文件
+  "fix": "eslint \"src/**/*.{js,ts,vue}\" --fix" 
 },
 ```
 
@@ -188,15 +261,16 @@ export default [
 
 ## eslint 与 typescript
 
-```
-npm install
-  typescript
-  @typescript-eslint/parser   // ESLint用来解析typescript,从而检测ts代码；
-  @typescript-eslint/eslint-plugin // ESLint插件，包含各类定义好的检测ts的规范；
-  @types/eslint // ts eslint声明插件；
-  @types/node // ts node声明插件；
--D
-```
+-   @typescript-eslint/parser: ESLint 用来解析 typescript,从而检测 ts 代码；
+-   @typescript-eslint/eslint-plugin: ESLint 插件，包含各类定义好的检测 ts 的规范；
+-   @types/eslint: ts eslint 声明插件；
+-   @types/node: ts node 声明插件；
+
+<!-- npm install typescript -D 是否已选安装过了 -->
+<!-- npm install @types/eslint @types/node - D-->
+<!-- --legacy-peer-deps 安装 @typescript-eslint/parser时会报错，此时加上 -->
+
+`npm install @typescript-eslint/parser  @typescript-eslint/eslint-plugin --legacy-peer-deps -D`
 
 # Prettier
 
@@ -270,17 +344,17 @@ module.exports = {
 
 #### 忽略
 
-在根文件中创建.prettierignore 文件，忽略需要执行格式的文件/目录；
+在根文件中创建.prettierignore 文件，prettier格式化时会忽略需要执行的文件/目录；
 
 ```
 // .prettierignore
 
-/dist/_
-/html/_
+/dist/*
+/html
 .local
-/node*modules/\**
-\*\*/_.svg \*_/\_.sh
-/public/\*
+/node*modules/**
+**/*.svg
+/public/*
 ```
 
 # Husky
