@@ -14,7 +14,7 @@ BFC 是一个独立的布局环境，BFC 内部的元素布局与外部互不影
 
 js 是一门**单线程**执行的编程语言，执行任务队列中同一时间只能执行一件事情。如果前一个任务非常耗时，后面的任务会一直等待，导致程序假死状态。
 
--   为了防止程序假死问题，js 把待执行的任务分为了 2 类： 1.同步任务：在 js 主线程上排队执行的任务。 2.异步任务：由 js 委托给环境(浏览器/node.js)进行执行，当异步任务执行完成后，会通知 js 主线程执行异步任务的回调函数。
+- 为了防止程序假死问题，js 把待执行的任务分为了 2 类： 1.同步任务：在 js 主线程上排队执行的任务。 2.异步任务：由 js 委托给环境(浏览器/node.js)进行执行，当异步任务执行完成后，会通知 js 主线程执行异步任务的回调函数。
 
 ![](/images/interview/1.jpeg)
 
@@ -28,8 +28,8 @@ JavaScript 主线程从“任务队列”中读取异步任务的回调函数，
 
 js 把异步任务做了进一步的划分，分为 2 类：
 
--   宏任务：script(整体代码), Ajax, setTimout, setInterval, 文件操作等
--   微任务：Promise.then/catch/finally 方法（new Promise()是同步任务）, MutationObserver, process.nextTick 等
+- 宏任务：script(整体代码), Ajax, setTimout, setInterval, 文件操作等
+- 微任务：Promise.then/catch/finally 方法（new Promise()是同步任务）, MutationObserver, process.nextTick 等
 
 ![](/images/interview/3.jpeg)
 
@@ -48,10 +48,10 @@ js 操作数据是同步的，但 vue 操作 js 更新 DOM 是异步的，此时
 
 指的是 4 个现代化，对工具、技术、流程等进行规范、标准化。
 
--   模块化：js 的 ES6 模块化，css 的模块化(less,sass)等。
--   组件化：封装可服用的 html、css、js 等
--   规范化：借口规范，文档规范，git 分支管理，编码规范等
--   自动化：自动化构建、部署、测试等
+- 模块化：js 的 ES6 模块化，css 的模块化(less,sass)等。
+- 组件化：封装可服用的 html、css、js 等
+- 规范化：借口规范，文档规范，git 分支管理，编码规范等
+- 自动化：自动化构建、部署、测试等
 
 工程化解决方案：webpack，vite，gurp 等。它提供了前端模块化开发，代码压缩，处理浏览器端兼容性，性能优化等功能。
 
@@ -112,7 +112,7 @@ window.onresize = function () {
 };
 ```
 
--   防抖传参
+- 防抖传参
 
 ```
 function debounce(callback, delay) {
@@ -164,7 +164,7 @@ window.onresize = function () {
 };
 ```
 
--   解决全局污染
+- 解决全局污染
 
 ```
 function throttle(cb, delay) {
@@ -188,7 +188,7 @@ window.onresize = function () {
 };
 ```
 
--   节流穿参
+- 节流穿参
 
 ```
 function throttle(callback, delay) {
@@ -265,7 +265,7 @@ Total Blocking Time: 主进程被阻塞的时间（记录了首次内容绘制�
 需安装插件 npm install rollup-plugin-visualizer 分析打包后的代码体积
 请查看其他别人的文档；
 
--   vite 可配置优化
+- vite 可配置优化
 
 `vite.config.ts`
 
@@ -282,25 +282,25 @@ defineConfig({
 
 ## 首屏加载优化
 
--   路由懒加载 import 导入组件；
-    vue 是单页应用，打包时，所有的 js 都会打包成一个 js 文件会变得非常大，影响页面加载速度，使用 import 导入组件可以把路由对应的组件分割成不同的代码块，用户访问对应的路由才加载对应的组件；
+- 路由懒加载 import 导入组件；
+  vue 是单页应用，打包时，所有的 js 都会打包成一个 js 文件会变得非常大，影响页面加载速度，使用 import 导入组件可以把路由对应的组件分割成不同的代码块，用户访问对应的路由才加载对应的组件；
 
--   vue3 新增 defineAsyncComponent 异步组件，同样可以 npm run build 时将一个包分包，用到这个 js 时才会加载这个包；
+- vue3 新增 defineAsyncComponent 异步组件，同样可以 npm run build 时将一个包分包，用到这个 js 时才会加载这个包；
 
--   vuex 状态管理；
+- vuex 状态管理；
 
--   图片懒加载 和 小图片采用 base64 字符串方式；
+- 图片懒加载 和 小图片采用 base64 字符串方式；
 
--   第三方插件采用 CDN 方式引入；
+- 第三方插件采用 CDN 方式引入；
 
--   虚拟列表（当后端返回上万条数据时）；
+- 虚拟列表（当后端返回上万条数据时）；
 
--   防抖和节流；
+- 防抖和节流；
 
--   PWA；
+- PWA；
 
-    需安装 npm install vite-plugin-pwa -D
-    利用 service worker 离线缓存, 利用 service worker 发送通知；
+  需安装 npm install vite-plugin-pwa -D
+  利用 service worker 离线缓存, 利用 service worker 发送通知；
 
 ## vue3 与 vue2 区别
 
@@ -308,10 +308,10 @@ defineConfig({
 2.  选项式与 ts 结合并不友好，组合式与 ts 结合更友好，比如类型推断；
 
 3.  但 vue3 组合式 api 也造成一个问题，就是它不像 vue2 这种强制的帮你划分了结构，methods 里的方法都在 methods 对象里面，computed 里的方法都在 computed 里面，以及 watch、filter 等等。也就造成了 vue3 代码最后写出来很乱，所有的东西都在一块；解决方案就是拆分业务，根据业务把同一个组件中独立的业务代码抽象封装成函数。一个页面每一块的业务都可以独立成一个函数导入调用。
-    -   按照业务声明以“use”开头的逻辑函数；
-    -   把独立的业务逻辑封装到各个函数内部；
-    -   函数内部把组件中需要用到的数据和方法以对象的形式 return 出去；
-    -   在组件中导入函数，把对应的数据或方法解构使用即可；
+    - 按照业务声明以“use”开头的逻辑函数；
+    - 把独立的业务逻辑封装到各个函数内部；
+    - 函数内部把组件中需要用到的数据和方法以对象的形式 return 出去；
+    - 在组件中导入函数，把对应的数据或方法解构使用即可；
 
 ```
 <script setup>
@@ -435,8 +435,8 @@ history.go(0) 刷新
 
 设计模式包含：工厂模式，观察者模式，构造器模式，发布订阅等
 
--   vue2 的 eventBus 是发布订阅模式，通过$on监听事件，$emit 派发事件；
--   addEventListener 也是发布订阅模式
+- vue2 的 eventBus 是发布订阅模式，通过$on监听事件，$emit 派发事件；
+- addEventListener 也是发布订阅模式
 
 ```
 const fn = ()=>{
@@ -453,3 +453,10 @@ const e = new Event('abc');			// 订阅事件
 
 document.dispatchEvent(e);			// 派发事件
 ```
+
+## 单项数据流
+
+子组件不能修改父组件穿过来的数据，当子组件改变了父组件传递的值时，
+
+1. 利用 emit 触发自定义事件去修改数据；
+2. 或利用 computed 的 setter 和 getter 拦截触发 emit;

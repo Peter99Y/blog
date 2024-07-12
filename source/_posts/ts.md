@@ -1728,6 +1728,20 @@ type p2 = Pick<UserInt, "name" | "age">;
 type e = Exclude<"a" | "b" | "c", "b" | "c">;
 ```
 
+```
+type PageParams = {
+  page?: number
+  pageSize?: number
+}
+
+// 类型定义时，page设置的是可不填，所有page其中一种可能为空undefined，params.page++时自然就会报错；
+// 利用Required将原本的可选变成必选，此时如果缺少字段就会报错；
+const params: Required<PageParams> = {
+  page: 1,
+  pageSize: 10,
+}
+```
+
 -   Record: 约束对象 key 和 value；
 
 ```
