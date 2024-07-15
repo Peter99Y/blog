@@ -13,25 +13,25 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 以下元素会创建内部的 bfc;
 
--   根元素 html;
--   浮动元素 float;
--   绝对定位元素 position: fixed/absolute;
--   overflow 非 visible 的块盒;
+- 根元素 html;
+- 浮动元素 float;
+- 绝对定位元素 position: fixed/absolute;
+- overflow 非 visible 的块盒;
 
 ##### 常规流块元素布局
 
--   在水平方向上撑满包含块，垂直方向上依次摆放;
--   父子关系下，则垂直方向上外边距 margin 塌陷/margin 合并;
--   父子关系下，父元素会无视浮动的子元素产生高度塌陷;
--   兄弟关系下，左侧浮动元素会覆盖右侧常规流元素;
+- 在水平方向上撑满包含块，垂直方向上依次摆放;
+- 父子关系下，则垂直方向上外边距 margin 塌陷/margin 合并;
+- 父子关系下，父元素会无视浮动的子元素产生高度塌陷;
+- 兄弟关系下，左侧浮动元素会覆盖右侧常规流元素;
 
 ##### bfc 解决方案
 
--   bfc 元素和它的子元素不会外边距合并 (父子关系);
-    -   将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
-    -   父元素设置 border 或 padding(不推荐：影响元素);
-    -   父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
-    -   父元素设置 overflow;
+- bfc 元素和它的子元素不会外边距合并 (父子关系);
+  - 将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
+  - 父元素设置 border 或 padding(不推荐：影响元素);
+  - 父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
+  - 父元素设置 overflow;
 
 ```
 <style>
@@ -61,11 +61,11 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 ![](/images/Css/margin-top.jpg)
 
--   bfc 元素的高度计算了子浮动元素 (父子关系);
-    -   父元素::after{clear: both; content: '', display: block};
-    -   将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
-    -   父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
-    -   父元素设置 overflow;
+- bfc 元素的高度计算了子浮动元素 (父子关系);
+  - 父元素::after{clear: both; content: '', display: block};
+  - 将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
+  - 父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
+  - 父元素设置 overflow;
 
 ```
 <style>
@@ -93,10 +93,10 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </div>
 ```
 
--   浮动元素 与 bfc 元素不会重叠 (兄弟关系);
-    -   将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
-    -   父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
-    -   将常规流元素设置成 bfc 元素 overflow: 非 visible 即可(hidden/auto/scroll)
+- 浮动元素 与 bfc 元素不会重叠 (兄弟关系);
+  - 将元素设置成绝对定位或浮动(不推荐：影响元素在页面的布局);
+  - 父元素设置 display: inline-block (不推荐：影响元素在页面的布局);
+  - 将常规流元素设置成 bfc 元素 overflow: 非 visible 即可(hidden/auto/scroll)
 
 ```
 <style>
@@ -130,18 +130,18 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 ## 包含块
 
--   元素的排列是在一块区域中，这个区域包含了这个元素，所以元素的包含块就是元素的排列区域；
+- 元素的排列是在一块区域中，这个区域包含了这个元素，所以元素的包含块就是元素的排列区域；
 
--   浮动元素 or 普通元素的包含块就是父元素的 width 内容区域(不包含父元素 padding、border、margin 宽度)；元素的 width/height 的**百分比**宽度就是相对于父元素的 width/height；
+- 浮动元素 or 普通元素的包含块就是父元素的 width 内容区域(不包含父元素 padding、border、margin 宽度)；元素的 width/height 的**百分比**宽度就是相对于父元素的 width/height；
 
--   绝对定位元素的包含块是带有定位元素 padding+width 区域；绝对定位元素的 left/top 是相对于 padding+width 区域；
+- 绝对定位元素的包含块是带有定位元素 padding+width 区域；绝对定位元素的 left/top 是相对于 padding+width 区域；
 
 ## 粘性布局
 
 position: sticky;
 
--   元素设置了粘性布局之后，会受到两个因素的影响： - 1.包含块； - 2.最近可滚动元素，否则就是适口（body）
-    ps：可滚动元素（overflow: 非 visible，它的意思就是不会出现滚动；hidden, scroll, auto 都是可滚动元素）；
+- 元素设置了粘性布局之后，会受到两个因素的影响： - 1.包含块； - 2.最近可滚动元素，否则就是适口（body）
+  ps：可滚动元素（overflow: 非 visible，它的意思就是不会出现滚动；hidden, scroll, auto 都是可滚动元素）；
 
 ```
     <style>
@@ -178,7 +178,7 @@ position: sticky;
 
 ## 伪元素 ::before/::after
 
--   content 可设置字符串、空白、图片、计数器、attr（通过元素上的属性值设置字符串）;
+- content 可设置字符串、空白、图片、计数器、attr（通过元素上的属性值设置字符串）;
 
 ```
 div::after {
@@ -250,7 +250,7 @@ div::after {
 
 ###### :not
 
--   注意：p:not(.world){...} 如 p :not 中间空格，否则认为是下级元素；
+- 注意：p:not(.world){...} 如 p :not 中间空格，否则认为是下级元素；
 
 ```
     p:not(.world){
@@ -267,7 +267,7 @@ div::after {
 
 ---
 
--   在 p 元素下给 span 元素设置 color
+- 在 p 元素下给 span 元素设置 color
 
 ```
     p span:not(.world){
@@ -289,7 +289,7 @@ div::after {
 
 ---
 
--   div 元素下给既不是 h3 也不是 h5 元素设置 color
+- div 元素下给既不是 h3 也不是 h5 元素设置 color
 
 ```
     div :not(h3):not(h5){
@@ -311,14 +311,14 @@ div::after {
 
 会重绘、会重排
 
--   1. 不会触发 - select-content 内容在 none 的情况下，虽然元素存在，我们也知道这块区域存这块内容，
-       但是无论如何在隐藏的空白区域内点击都不会有反应；
+- 1. 不会触发 - select-content 内容在 none 的情况下，虽然元素存在，我们也知道这块区域存这块内容，
+     但是无论如何在隐藏的空白区域内点击都不会有反应；
 
--   2. 脱离文档流 - div 元素在 none 的情况下，后面会内容顶上来；
+- 2. 脱离文档流 - div 元素在 none 的情况下，后面会内容顶上来；
 
--   3. 子元素受影响 - div 元素在 none 的情况下，里面的子元素也会跟着隐藏（即使子元素又设置了 block）
+- 3. 子元素受影响 - div 元素在 none 的情况下，里面的子元素也会跟着隐藏（即使子元素又设置了 block）
 
--   4. 过渡动画无效；
+- 4. 过渡动画无效；
 
 ```
         .select-wrapper {
@@ -362,10 +362,10 @@ div::after {
 
 会重绘
 
--   1. 不触发事件 - 自身 hidden 情况下，不会触发自身事件；
--   2. 不脱离文档流（即不会重排），后面元素不会顶上来；
--   3. 子元素可设置 visible，从而不受父元素 hidden 的影响；
--   4. 过渡动画效果有效；
+- 1. 不触发事件 - 自身 hidden 情况下，不会触发自身事件；
+- 2. 不脱离文档流（即不会重排），后面元素不会顶上来；
+- 3. 子元素可设置 visible，从而不受父元素 hidden 的影响；
+- 4. 过渡动画效果有效；
 
 ```
     .select-wrapper {
@@ -406,10 +406,10 @@ div::after {
 
 不重排、不重绘
 
--   1. 会触发事件；
--   2. 不会脱离文档流，也不会重绘，只是降低了 alpha 值；
--   3. 子元素设置 opacity:1 显示无效；
--   4. 有过渡动画效果；
+- 1. 会触发事件；
+- 2. 不会脱离文档流，也不会重绘，只是降低了 alpha 值；
+- 3. 子元素设置 opacity:1 显示无效；
+- 4. 有过渡动画效果；
 
 ```
     <div style="
@@ -706,9 +706,9 @@ grid-auto-flow: column;
 
 ###### 合并
 
--   合并了多少个单元格，需要删除多少个单元格，否则会造成看起来有空隙；
+- 合并了多少个单元格，需要删除多少个单元格，否则会造成看起来有空隙；
 
--   指定合并的单元格在 html 排序位置无关；
+- 指定合并的单元格在 html 排序位置无关；
 
 ```
 <style>
@@ -762,3 +762,22 @@ grid-auto-flow: column;
 ```
 
 ![](/images/Css/grid12.png)
+
+## scrollbar
+
+```
+// 滚动条外观
+::-webkit-scrollbar{
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #ddd;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 10px;
+    background-color: #ccc;
+    border-radius: 10px;
+}
+```
