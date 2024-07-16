@@ -671,15 +671,15 @@ m(1, 2);			// 3. err; 字符串无法调用
 ```
 const [n, m] = fn() as [string, Function];
 console.log(m(1, 2));
-```
 
-```
+or 
+
 const [n, m] = fn();
 let sum = (m as Function)(1, 2);
 console.log(sum);
-```
 
-```
+or 
+
 function fn() {
 	let a = "hello";
 	let b = (x: number, y: number) => x + y;
@@ -695,7 +695,7 @@ let res = m(1, 2);
 
 ###### 非空
 
-明确不会为 null;
+自己明确不会为 null;
 
 ```
 const el:HTMLDivElement = document.querySelector('div') as HTMLDivElement;
@@ -1214,6 +1214,14 @@ function dump<T>(arg: T): T {
 dump(true);			// 不传会自动推断
 dump<string>('hello');
 dump<number>(1);
+```
+###### 多个泛型
+```
+function getMsg<T, S>(val: T , str: S): [T,S]{
+    return [val , str]
+}
+
+const arr = getMsg<string, number>('hello', 100)
 ```
 
 ###### 约束泛型

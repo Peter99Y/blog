@@ -86,7 +86,7 @@ window.onresize = function () {
 };
 ```
 
--             解决全局污染
+-	解决全局污染
 
 ```
 function debounce(callback, delay = 500) {
