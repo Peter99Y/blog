@@ -668,32 +668,40 @@ father 实例对象.\_\_proto\_\_ 查找到 father.prototype 原型原型对象�
 
 是一个抽象性的模板，对于该类事物的综合描述，这些描述中分为两种内容，一是属性，二是方法；
 
-实例化: 使用 new 根据类创造出一个实例对象；
-
 consturctor：**是类的构造函数，用于传递参数，返回实例对象**，通过 new 命令生成对象实例时，自动调用该方法。如没有定义，类内部自动创建一个 constructor;
+
+static: 像工具类无需实例化多个对象（订单/顾客/产品类 等这种需要实例化很多对象），就可以使用static定义类的静态属性和方法；
 
 > 注意： 1.类没有声明提升； 2.类中的方法都默认开启了严格模式
 
 ```
-// 创建类
 class Animal {
+	// 静态属性
+	static paws = 4;
+
 	constructor(name) {
 		// 实例对象共有属性
 		this.name = name;
-		this.init();         // 创建实例对象就立即调用;
+		// 创建实例对象就立即调用
+		this.init();         
 	}
+
 	init(){
 		console.log('initial finished');
 	}
+
 	// 实例对象共有方法
 	run(method) {
 		console.log(this.name, `is runing ${method}`);
-	},
+	}
+
 	// 静态方法
 	static eat(){
 		console.log('chips');
 	}
 }
+
+console.log(Animal.paws);  // 4
 
 // 生成实例对象
 var dog = new Animal("dog");
@@ -701,6 +709,7 @@ var cat = new Animal("cat");
 
 console.log(dog.name); // dog
 console.log(cat.name); // cat
+
 dog.run("fast");
 cat.run("slow");
 ```
@@ -711,10 +720,12 @@ cat.run("slow");
 function Animal(name) {
 	this.name = name;
 }
+
 // 静态方法
 Animal.eat = function () {
 	console.log("chips");
 };
+
 // 原型方法
 Animal.prototype = {
 	constructor: Animal,

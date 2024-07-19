@@ -260,7 +260,7 @@ console.log("tall:", tall); 		// 200cm
 
 解构 ------------------------------------------------------------------------------
 
-let [username, age, city, ...rest]: [string, number, string, ...any[]] = 
+let [username, age, city, ...rest]: [string, number, string, ...any[]] =
     ["tom", 10, "Beijing", "200kg", "190cm"];
 
 console.log(rest); 			// ['200kg', '190cm']
@@ -268,7 +268,7 @@ console.log(rest); 			// ['200kg', '190cm']
 
 元祖标签 --------------------------------------------------------------------------
 
-let [username, age, city, ...rest]: [_username:string, _age:number, _city:string, ...rest:any[]] 
+let [username, age, city, ...rest]: [_username:string, _age:number, _city:string, ...rest:any[]]
 	= ["tom", 10, "Beijing", "200kg", "190cm"];
 
 ```
@@ -444,9 +444,9 @@ handleAdd({ name: "tom", age: 10 });
 
 ### 类型断言
 
-###### as 非空断言
+主动判定某种类型了，ts 编译时会绕过类型检查；编译器强制转换成另外一个类型；
 
-主动判定变量是某种类型
+###### as 类型断言
 
 ```
 function fn(arg: number): boolean | number {
@@ -612,214 +612,6 @@ obj.name = 'tom';   				// err; readonly
 
 ---
 
-### class
-
-###### 类 & interface
-
----
-
-public 属性和方法 默认是 public，子类可覆盖属性和方法；
-
-```
-class Animal {
-	public name: string;
-	age: number;
-
-	constructor(name: string, age: number) {
-		this.name = name;
-		this.age = age;
-	}
-	public run() {
-		return `${this.name}跑得很快`;
-	}
-}
-
-const dog = new Animal("dog", 10);
-console.log(dog.name, dog.age); 	// dog 10
-console.log(dog.run()); 		// dog跑得很快
-```
-
-protected 修饰的属性/方法，只能在类访问，子类可访问父类，实例对象无法访问；
-子类不不能覆盖父类 protected 属性/方法；
-
-```
-class Animal {
-	protected name: string;
-	public age: number;
-
-	constructor(name: string, age: number) {
-		this.name = name;
-		this.age = age;
-	}
-	protected run() {
-		return `${this.name}跑得很快`;
-	}
-}
-
-class Dog extends Animal {
-	constructor(a: string, b: number) {
-		super(a, b);
-	}
-	triggerRun() {
-		return this.run();
-	}
-}
-
-const dan = new Dog("Dan", 10);
-
-console.log(dan.age); 			// 10
-console.log(dan.run());		// err; 只能在类“Animal”及其子类中访问
-console.log(dan.triggerRun()); 	// Dan跑得很快
-```
-
-private 修饰私有属性/方法，子类不能继承父类，子类不能覆盖父类，子类相同属性只能改得比父类宽松，实例对象不能访问；
-
-readonly 修饰的属性 只能在 constructor 构造函数中被修改
-
-```
-class Dog extends Animal {
-	readonly site: string = "http://abc.com";
-	static host: string = "http";
-
-	constructor(name: string, age: number, pows: number, site?: string) {
-		super(name, age, pows);
-		this.site = site || this.site;
-	}
-
-	static showSite() {
-		return this.host;
-	}
-}
-```
-
-###### 泛型 & class
-
-```
-class Collection<T> {
-	data: T[] = [];
-
-	public push(...args: T[]) {
-		this.data.push(...args);
-	}
-}
-
-const col = new Collection<string>();
-col.push("hello", "word");
-
-const col2 = new Collection<number>();
-col2.push(1, 2);
-
-type UserType = {
-	name: string;
-	age: number;
-};
-
-const col3 = new Collection<UserType>();
-col3.push({ name: "tom", age: 1 }, { name: "jack", age: 2 });
-```
-
-```
-class User<T> {
-	public constructor(private _user:T) {}
-
-	public get() : T{
-		return this._user;
-	}
-}
-
-interface UserInter {
-	name: string;
-	age: number;
-}
-
-const user1 = new User<UserInter>({ name: "tom", age: 10 });
-console.log(user1.get());
-```
-
-###### 单列模式
-
-如链接数据库,http 请求等只需产生一个对象；
-
-```
-class Axios {
-	private static instance: Axios | null = null;
-
-	private constructor() {}
-
-	static make(): Axios {
-		if (Axios.instance == null) {
-			Axios.instance = new Axios();
-			console.log("创建axios实例成功");
-		}
-
-		return Axios.instance;
-	}
-}
-
-// 给构造函数添加了私有属性，new Axios将不能实例化对象，也就等同于不能在外部生成对象；
-cosnt http = new Axios();	// err;
-const http = Axios.make();
-```
-
-###### get & set
-
-```
-class Animal {
-	private _name: string; // 属性和方法不能同名
-
-	constructor(name: string) {
-		this._name = name;
-	}
-	public get name(): string {
-		return this._name;
-	}
-	public set name(name: string) {
-		this._name = name;
-	}
-	public get firstName(): string {
-		return this._name.substring(0, 1);
-	}
-}
-
-const dog = new Animal("dog");
-```
-
-###### 抽象类（少）
-
-- abstract 加在 class 前面就是抽象类；
-- abstract 类 不能 new 实例化；
-- abstract 类里面的 abstract 属性/方法 必须定义在抽象类中，且 abstract 属性/方法只是定义，不能实现， 子类才必须实现定义父类定义的抽象属性/方法；
-- 它和接口的区别不只有抽象的规范待子类实现，还有自身的属性和方法；
-
-```
-abstract class Animal {
-	abstract name: string;
-
-	abstract run(): void;
-
-	protected getPosition(): number[] {
-		return [10, 20];
-	}
-}
-
-class Dog extends Animal {
-	name: string;
-
-	constructor(name: string) {
-		super();
-		this.name = name;
-	}
-	run(): void {
-		console.log(this.name + "run fast");
-	}
-}
-
-let dog = new Dog("dog");
-dog.run();
-```
-
----
-
 ### interface
 
 - 除了?标记外，接口内所有定义的属性和方法必须实现
@@ -936,7 +728,7 @@ interface fnInter {
 
 let handleTotal: fnInter = (price: number) => price * 2;
 
-or
+or -----------------------------------------------------------
 
 interface UserInter {
 	name: string;
@@ -999,56 +791,9 @@ console.log(findNum(1)); 		// [1]
 console.log(findNum([4, 5])); 		// [1,2,3,4,5]
 ```
 
-###### 类 & interface
+- class & interface
 
-```
-interface DemoInt {
-	options: OptionsInt;
-	init(): void;
-}
-
-interface AnotherInt {
-	run(): void;
-}
-
-interface OptionsInt {
-	el: string | HTMLElement;
-	url: string,
-}
-
-class Animal implements DemoInt, AnotherInt {
-	options: OptionsInt;
-
-	constructor(options: OptionsInt) {
-		this.options = options;
-		this.init();
-	}
-
-	init() {}
-	run() {}
-}
-```
-
-###### 泛型 & interface
-
-```
-interface ArticleInter<A, B> {
-	title: string;
-	isLock: A;
-	comments: B[];
-}
-
-type CommentType = {
-	comment: string;
-	author?: string;
-};
-
-const article: ArticleInter<boolean, CommentType> = {
-	title: "how to use ts",
-	isLock: true,
-	comments: [{ comment: "first learning" }],
-};
-```
+- 泛型 & interface
 
 ### type
 
@@ -1092,26 +837,7 @@ let dog: AnimalType = {
 };
 ```
 
-###### type & 泛型
-
-```
-type CustomType<T> = string | number | T;
-let type1: CustomType<boolean> = true;
-
-------------------------------------------------------------------------
-
-type PageResult<T> = {
-	list: T[];
-	page: number;
-	pageSize: number;
-};
-type listItem = {
-	id: string;
-	name: string;
-	age: number;
-};
-let res: PageResult<listItem> = axios.get({url: ''});
-```
+- type & 泛型
 
 ###### type & pick
 
@@ -1217,7 +943,8 @@ type VehicleType = [Car, Plane]
 
 ### 泛型
 
-动态传递类型
+定义时不明确类型，使用时必须明确具体类型；
+泛型名称可以是任何字母或单词，常用 T 表示；
 
 ```
 function dump(arg: string): string {
@@ -1253,8 +980,6 @@ const arr = getMsg<string, number>('hello', 100)
 ```
 
 ###### 泛型继承
-
-↓
 
 ###### 约束泛型
 
@@ -1312,8 +1037,6 @@ console.log(res); // Tom
 
 ###### 泛型嵌套
 
-↓
-
 ###### 数组 & 泛型
 
 ```
@@ -1361,11 +1084,400 @@ interface resultData {
 axios.get<resultData>("...").then((res) => {});
 ```
 
-###### class & 泛型
-
 ###### interface & 泛型
 
+```
+interface ArticleInter<A, B> {
+	title: string;
+	isLock: A;
+	comments: B[];
+}
+
+type CommentType = {
+	comment: string;
+	author?: string;
+};
+
+const article: ArticleInter<boolean, CommentType> = {
+	title: "how to use ts",
+	isLock: true,
+	comments: [{ comment: "first learning" }],
+};
+```
+
 ###### type & 泛型
+
+```
+type CustomType<T> = string | number | T;
+let type1: CustomType<boolean> = true;
+
+------------------------------------------------------------------------
+
+type PageResult<T> = {
+	list: T[];
+	page: number;
+	pageSize: number;
+};
+type listItem = {
+	id: string;
+	name: string;
+	age: number;
+};
+let res: PageResult<listItem> = axios.get({url: ''});
+```
+
+###### class & 泛型
+
+```
+class Collection<T> {
+	data: T[] = [];
+
+	public push(...args: T[]) {
+		this.data.push(...args);
+	}
+}
+
+const col = new Collection<string>();
+col.push("hello", "word");
+
+const col2 = new Collection<number>();
+col2.push(1, 2);
+
+type UserType = {
+	name: string;
+	age: number;
+};
+
+const col3 = new Collection<UserType>();
+col3.push({ name: "tom", age: 1 }, { name: "jack", age: 2 });
+```
+
+```
+class User<T> {
+	public constructor(private _user:T) {}
+
+	public get() : T{
+		return this._user;
+	}
+}
+
+interface UserInter {
+	name: string;
+	age: number;
+}
+
+const user1 = new User<UserInter>({ name: "tom", age: 10 });
+console.log(user1.get());
+```
+
+---
+
+### class
+
+- ES6 的 class
+
+```
+class Animal {
+	// 静态属性
+	static paws = 4;
+
+	constructor(name) {
+		// 实例对象共有属性
+		this.name = name;
+		// 创建实例对象就立即调用
+		this.init();
+	}
+
+	init(){
+		console.log('initial finished');
+	}
+
+	// 实例对象共有方法
+	run(method) {
+		console.log(this.name, `is runing ${method}`);
+	}
+
+	// 静态方法
+	static eat(){
+		console.log('chips');
+	}
+}
+
+console.log(Animal.paws);  // 4
+
+// 生成实例对象
+var dog = new Animal("dog");
+var cat = new Animal("cat");
+
+console.log(dog.name); // dog
+console.log(cat.name); // cat
+
+dog.run("fast");
+cat.run("slow");
+```
+
+- Ts 中的 class
+
+```
+class Animal {
+  // ts中的类的属性 在类体中必须也有，不像ES6中的类只需有在构造函数中；
+  name: string;
+  age: number;
+
+  /**
+   *  err; 属性addr没有初始化表达式，且未在构造函数中明确赋值;
+   *  要么在这里给可选值   	addr?: string;
+   *  要么忽略必须的初始值 	addr!: string;
+   *  要么在这里给初始值   	addr: string = 'No.10 Street';
+   *  要么在构造函数中赋初始值 	this.addr = _addr;
+   */
+  addr: string;
+
+  // 类的静态属性
+  static paws: number = 0;
+
+  constructor(_name: string, _age: number, _addr: string) {
+    this.name = _name;
+    this.age = _age;
+    this.addr = _addr;
+    Animal.paws++;
+  }
+
+  run() {
+    console.log("run faster");
+    Animal.paws++;
+  }
+}
+
+console.log(Animal.paws); // 0
+
+let dog = new Animal("dog", 1, "Beijing");
+let cat = new Animal("cat", 2, "Beijing");
+
+console.log(dog.name); // dog
+console.log(cat.name); // cat
+cat.run();
+
+console.log(Animal.paws); // 3
+```
+
+- public 属性和方法 默认是 public，子类可覆盖属性和方法；
+
+```
+class Animal {
+	public name: string;
+	age: number;
+
+	constructor(name: string, age: number) {
+		this.name = name;
+		this.age = age;
+	}
+	public run() {
+		return `${this.name}跑得很快`;
+	}
+}
+
+const dog = new Animal("dog", 10);
+console.log(dog.name, dog.age); 	// dog 10
+console.log(dog.run()); 		// dog跑得很快
+```
+
+- protected 修饰的属性方法，只能在类访问；实例对象无法访问；子类可访问父类，但不能覆盖父类 protected 属性方法；
+
+```
+class Animal {
+	protected name: string;
+	public age: number;
+
+	constructor(name: string, age: number) {
+		this.name = name;
+		this.age = age;
+	}
+	protected run() {
+		return `${this.name}跑得很快`;
+	}
+}
+
+class Dog extends Animal {
+	constructor(a: string, b: number) {
+		super(a, b);
+	}
+	triggerRun() {
+		return this.run();
+	}
+}
+
+const dan = new Dog("Dan", 10);
+
+console.log(dan.age); 			// 10
+console.log(dan.run());		// err; 只能在类“Animal”及其子类中访问
+console.log(dan.triggerRun()); 	// Dan跑得很快
+```
+
+- private 修饰私有属性方法，实例对象不能访问；子类不能继承父类 且 不能覆盖父类私有属性方法，子类相同属性只能改得比父类宽松；
+
+- readonly 修饰的属性 只能在 constructor 构造函数中被修改；
+
+```
+class Dog extends Animal {
+	readonly site: string = "http://abc.com";
+	static host: string = "http";
+
+	constructor(name: string, age: number, pows: number, site?: string) {
+		super(name, age, pows);
+		this.site = site || this.site;
+	}
+
+	static showSite() {
+		return this.host;
+	}
+}
+```
+
+###### 单列模式
+
+如链接数据库，http 请求等，类只需产生一个对象；
+
+```
+// static 方式
+
+export default class DateTool {
+  // 无需创建多个对象，只需访问类这个函数的对象上的静态方法；
+  static formateData() {}
+}
+
+DateTool.formateData();			// 调用
+```
+
+```
+// 一个类只允许获取一个实例对象；
+
+class Axios {
+	private static instance: Axios | null = null;
+
+	// 将类的构造函数设为私有，只允许在类的内部调用，外部将不容许实例化对象；
+	private constructor() {}
+
+	static make(): Axios {
+		if (Axios.instance == null) {
+			Axios.instance = new Axios();
+			console.log("创建axios实例成功");
+		}
+
+		return Axios.instance;
+	}
+
+	formateData() {}
+}
+
+// cosnt http = new Axios();			// err; 不能在外部实例化对象；
+const http = Axios.make();
+export default http;
+
+http.formateData();				// 调用
+```
+
+###### get & set
+
+```
+class Animal {
+  private _age!: number;
+  public name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  get age(): number {
+    return this._age;
+  }
+
+  // 可以对某个属性说明 和 对属性值的控制；
+  set age(val: number) {
+    if (val > 0 && val < 120) {
+      this._age = val;
+    } else {
+      throw new Error("年龄不在合适的范围");
+    }
+  }
+}
+
+try {
+  const dog = new Animal("dog");
+  console.log(dog.name);
+  dog.age = -1;
+} catch (err) {
+  console.log(err);
+}
+```
+
+###### class & interface
+
+```
+interface DemoInt {
+	options: OptionsInt;
+	init(): void;
+}
+
+interface AnotherInt {
+	run(): void;
+}
+
+interface OptionsInt {
+	el: string | HTMLElement;
+	url: string,
+}
+
+class Animal implements DemoInt, AnotherInt {
+	options: OptionsInt;
+
+	constructor(options: OptionsInt) {
+		this.options = options;
+		this.init();
+	}
+
+	init() {}
+	run() {}
+}
+```
+
+- class & 泛型
+
+###### 抽象类（少）
+
+- abstract 加在 class 前面就是抽象类；
+- abstract 类 不能 new 实例化；
+- abstract 类里面的 abstract 属性/方法 必须定义在抽象类中，且 abstract 属性/方法只是定义，不能实现， 子类才必须实现定义父类定义的抽象属性/方法；
+- 它和接口的区别不只有抽象的规范待子类实现，还有自身的属性和方法；
+
+```
+abstract class Animal {
+	abstract name: string;
+
+	abstract run(): void;
+
+	protected getPosition(): number[] {
+		return [10, 20];
+	}
+}
+
+class Dog extends Animal {
+	name: string;
+
+	constructor(name: string) {
+		super();
+		this.name = name;
+	}
+	run(): void {
+		console.log(this.name + "run fast");
+	}
+}
+
+let dog = new Dog("dog");
+dog.run();
+```
+
+---
 
 ### 命名空间
 

@@ -23,8 +23,8 @@ temp = null;
 生成独一无二的基础数据类型的值；
 接收一个字符串作为参数，表示对 Symbol 实例的描述；
 
--   优点：作为对象/常量的唯一属性名，避免被覆盖；
--   缺点：for of / Object.keys 无法给出对象的 Symbol 属性名；
+- 优点：作为对象/常量的唯一属性名，避免被覆盖；
+- 缺点：for of / Object.keys 无法给出对象的 Symbol 属性名；
 
 ```
 let keys = {
@@ -162,8 +162,8 @@ console.log(arr instanceof Array); // true
 
 ###### Set
 
--   接收单个/数组数据，并返回对象，支持数组上的方法；
--   自身带有去重，引用类型除外；
+- 接收单个/数组数据，并返回对象，支持数组上的方法；
+- 自身带有去重，引用类型除外；
 
 ```
 const s = new Set();
@@ -225,9 +225,9 @@ console.log(m);
 
 ###### Proxy
 
--   Object.definedProperty 只能对对象单个属性拦截，且只能是对象；
--   创建一个代理对象，从而实现基本操作的拦截，可以是对象，数组，函数等；
--   接收的参数只能是引用类型：对象、数组、函数、set、map
+- Object.definedProperty 只能对对象单个属性拦截，且只能是对象；
+- 创建一个代理对象，从而实现基本操作的拦截，可以是对象，数组，函数等；
+- 接收的参数只能是引用类型：对象、数组、函数、set、map
 
 ```
 // let obj = {};
@@ -294,10 +294,10 @@ p.push(2);
 
 与 Object 类似获取目标对象的行为，但操作更易读；
 
--   1.代替 Object 某些方法；
--   2.修改了某些 Object 方法的返回结果，如 Reflect 失败报错需要 try 捕捉；
--   3.命令式变函数式；
--   4.配合 Proxy 实现拦截；
+- 1.代替 Object 某些方法；
+- 2.修改了某些 Object 方法的返回结果，如 Reflect 失败报错需要 try 捕捉；
+- 3.命令式变函数式；
+- 4.配合 Proxy 实现拦截；
 
 ```
 try {
@@ -330,6 +330,34 @@ try {
 } catch (err) {
     console.log(err)
 }
+```
+
+###### instanceof & in
+
+- instanceof 运算符用于检测 对象的原型链上 是否来自于 某个构造函数的原型对象；
+- in 属性是否在对象或其原型链中；
+
+```
+const arr = [1, 2, 3];
+const set = new Set();
+const map = new Map();
+
+console.log(typeof arr); 		// 'object'
+console.log(typeof set); 		// 'object'
+console.log(typeof map); 		// 'object'
+
+console.log(arr instanceof Array); 	// true
+console.log(set instanceof Set); 	// true
+console.log(map instanceof Map); 	// true
+
+---------------------------------------------------------
+
+let list = new Array(1, 2, 3);
+var obj = { name: "Tom", year: 1998 };
+
+console.log(1 in list);           	// true
+console.log("length" in Array);   	// true
+console.log("name" in obj);       	// true
 ```
 
 ###### string
