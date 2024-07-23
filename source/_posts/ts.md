@@ -4,38 +4,38 @@ title: Ts
 
 ### 编译环境
 
--   tsc --version: 查看版本，检测是否安装成功；
+- tsc --version: 查看版本，检测是否安装成功；
 
--   全局安装
-    npm install typescript -g
--   局部安装
-    限定某个项目的 ts 为特定版本。若全局 ts 不同电脑安装不同版本，从而导致某个特性被废除
-    npm install typescript -D
+- 全局安装
+  npm install typescript -g
+- 局部安装
+  限定某个项目的 ts 为特定版本。若全局 ts 不同电脑安装不同版本，从而导致某个特性被废除
+  npm install typescript -D
 
--   html 页面中引入 ts 文件，需要通过命令 tsc 文件名（Type Script Compile）编译成 js 文件，最后引入编译后的 js 文件。
+- html 页面中引入 ts 文件，需要通过命令 tsc 文件名（Type Script Compile）编译成 js 文件，最后引入编译后的 js 文件。
 
--   编译 ts 文件：tsc demo.ts
+- 编译 ts 文件：tsc demo.ts
 
--   自动编译 ts 文件：tsc demo.ts -w (不会走 tsconfig.json 配置文件，只是编译并监测某个文件)
-    <!-- -   在所处目录中 tsc --init 生成 tsconfig.json 文件;
-    -   tsc 文件名 -w (监视文件变动); -->
--   生成 tsconfig.json 配置文件： tsc --init
+- 自动编译 ts 文件：tsc demo.ts -w (不会走 tsconfig.json 配置文件，只是编译并监测某个文件)
+  <!-- -   在所处目录中 tsc --init 生成 tsconfig.json 文件;
+  -   tsc 文件名 -w (监视文件变动); -->
+- 生成 tsconfig.json 配置文件： tsc --init
 
 ---
 
 ### 类型
 
--   基本类型：number、string、boolean、symbol、null、undefined;
+- 基本类型：number、string、boolean、symbol、null、undefined;
 
--   根类型：Object(约束只能是简单类型 和 引用类型)、{} (Object 的简写);
+- 根类型：Object(约束只能是简单类型 和 引用类型)、{} (Object 的简写);
 
--   对象类型：Array、object(约束只能是对象)、function;
+- 对象类型：Array、object(约束只能是对象)、function;
 
--   枚举：enum;
+- 枚举：enum;
 
--   其他特殊类型：any、unknown、never、void、元祖、可变元祖;
+- 其他特殊类型：any、unknown、never、void、元祖、可变元祖;
 
--   合成类型：联合类型、交叉类型;
+- 合成类型：联合类型、交叉类型;
 
 ---
 
@@ -196,9 +196,9 @@ count = undefined;
 
 ### any 类型 & unknown 类型
 
--   any 类型是任何类型的父类(赋值任何类型)，也可以是其他类型的子类(赋值给其他类型)，可获取 any 类型的属性和方法；
+- any 类型是任何类型的父类(赋值任何类型)，也可以是其他类型的子类(赋值给其他类型)，可获取 any 类型的属性和方法；
 
--   unknown 类型是任何类型的父类，但不能是其他类型的子类；无法获取 unkown 类型的属性和方法；
+- unknown 类型是任何类型的父类，但不能是其他类型的子类；无法获取 unkown 类型的属性和方法；
 
 ```
 1. any & unknown
@@ -224,7 +224,7 @@ let word: string = unk; 		// err；无法把unknown类型赋值给其他类型
 let word2: string = unk as string; 	// 断言这个类型是string类型
 ```
 
--   unknown 一般用作函数参数：用来接受任意类型的变量实参，但在函数内部只用于传递或输出结果，不获取属性的场景
+- unknown 一般用作函数参数：用来接受任意类型的变量实参，但在函数内部只用于传递或输出结果，不获取属性的场景
 
 ```
 function fn(value?: unknown){
@@ -253,9 +253,9 @@ arr.push(1);							// err
 let arr: (string[] | boolean)[] = [["hello"], true];		// 二维数组
 ```
 
--   数组 & 泛型
+- 数组 & 泛型
 
--   数组 & interface
+- 数组 & interface
 
 ### 元祖类型
 
@@ -268,8 +268,8 @@ arr[0] = 99				// err; 可改值，不能更改类型
 let arr: readonly [x: number, y?: boolean] = [1, true];
 ```
 
--   元祖标签：元祖元素类型对应的含义不够明确；
--   可变元祖：有些元素像元祖一些是固定位置、不可修改类型、不可修改值，一些元素像数组具有灵活性可修改；
+- 元祖标签：元祖元素类型对应的含义不够明确；
+- 可变元祖：有些元素像元祖一些是固定位置、不可修改类型、不可修改值，一些元素像数组具有灵活性可修改；
 
 ```
 let info: [string, number, string, ...any[]] = ["tom", 10, "Beijing", "200kg", "190cm"];
@@ -294,7 +294,7 @@ let [username, age, city, ...rest]: [_username:string, _age:number, _city:string
 
 ### 对象类型
 
--   object 类型
+- object 类型
 
 ```
 let obj: object = 1;		// err; 不能将类型“number”分配给类型“object”
@@ -309,7 +309,7 @@ let obj: object = {
 obj.city = 'Beijing'		// err; 类型“object”上不存在属性“city”
 ```
 
--   字面量类型
+- 字面量类型
 
 ```
 let obj: {} = { age: 1 };	// 赋值无效
@@ -328,7 +328,7 @@ obj = {				// err；赋值时缺少age属性
 }
 ```
 
--   对象 & interface
+- 对象 & interface
 
 ### 枚举类型
 
@@ -357,7 +357,7 @@ console.log(
 );
 ```
 
--   数值枚举可反向映射，字符串枚举不能；
+- 数值枚举可反向映射，字符串枚举不能；
 
 ```
 enum Color {
@@ -397,7 +397,7 @@ function bill(status: Status): void {
 }
 ```
 
--   枚举 & interface
+- 枚举 & interface
 
 ```
 enum Sex {
@@ -418,9 +418,9 @@ let user: userInt = {
 
 ### 函数
 
--   约束变量 fn 必须是函数类型、x，y 形参是 number 类型、返回值是 number 类型；
--   类型声明的 x，y 参数名称只是占位，和实际实现函数的 a，b 形参名称可不一致；
--   类型声明已经有了类型检测和提示，实现函数时，可不必再约束一遍；
+- 约束变量 fn 必须是函数类型、x，y 形参是 number 类型、返回值是 number 类型；
+- 类型声明的 x，y 参数名称只是占位，和实际实现函数的 a，b 形参名称可不一致；
+- 类型声明已经有了类型检测和提示，实现函数时，可不必再约束一遍；
 
 ```
 let sum: (x: number, y: number) => number = (a, b) => {
@@ -677,11 +677,79 @@ const obj = {
 obj.name = 'tom';   				// err; readonly
 ```
 
+###### 类型递归
+
+```
+interface UserType {
+  name: string;
+  degree: number;
+  phone: string;
+}
+
+//  in keyof  类型递归，把key和类型都取出来
+type CustKeyValType = {
+  [P in keyof UserType]: UserType[P];
+
+  // [P in 'name' | 'degree' | 'phone'] : UserType[P];  // 等价于
+
+  // ['name']: UserType['name'];    // in 等价于 for...in循环
+  // ['degree']: UserType['degree'];
+  // ['phone']: UserType['phone'];
+};
+
+```
+
+###### 案例 - 为接口增加属性
+
+```
+interface UserType {
+  name: string;
+  phone: string;
+}
+
+type AddAttrToUserType<T, K extends string, V> = {
+  [P in keyof T | K]: P extends keyof T ? T[P] : V;
+};
+
+
+// type Test = { male: string; name: string; phone: string }
+type Test = AddAttrToUserType<UserType, 'male', string>;
+```
+
+###### 条件类型
+
+语法形式为 T extends U ? X : Y
+其中 T 是待判断的类型，U 是基准类型，T extends U 是条件表达式，X 是条件为真时的类型，Y 是条件为假时的类型；
+PS：TypeScript 的基准类型 (boolean、number、string、Array、tuple、enum、any，void、null、undefined、never、object)
+
+```
+type ConType<T> = T extends string | number ? T : never;
+
+type TestType1 = ConType<string | number>; 			// TestType1 = string | number
+
+// 泛型方式传递的参数是将参数循环 与 右侧比较
+type TestType2 = ConType<string | number | boolean>; 		// TestType2 = string | number
+
+// 字面量方式是将 (string | number | boolean) 作为一个整体 与 右侧进行比较
+type TestType3 = string | number | boolean extends string | number	//  TestType3 = never
+  ? string
+  : never;
+```
+
+###### 案例 - 条件类型处理形参
+
+```
+function Fn1<T extends object, K extends object>(obj1: T, obj2: K) {}
+
+type GetType<T> = T extends object ? T : never;
+function Fn2<T, K>(obj1: GetType<T>, obj2: GetType<K>) {}
+```
+
 ---
 
 ### interface
 
--   除了?标记外，接口内所有定义的属性和方法必须实现
+- 除了?标记外，接口内所有定义的属性和方法必须实现
 
 ###### 索引签名 & interface
 
@@ -714,7 +782,7 @@ let obj: UserInter = {
 
 ###### interface 继承
 
--   相同接口名会自动合并
+- 相同接口名会自动合并
 
 ```
 interface User {
@@ -730,7 +798,7 @@ const obj: User = {
 };
 ```
 
--   extends 继承接口
+- extends 继承接口
 
 ```
 interface ISay {
@@ -812,32 +880,35 @@ function handleLock(user:UserInter, lock: boolean): UserInter{
 handleLock(user, true);
 ```
 
--   class & interface
+- class & interface
 
--   泛型 & interface
+- 泛型 & interface
 
 ### type
 
-###### 类型别名
-
 ```
-type User = {name: string}[];
-
+// 声明基本类型别名
 type S = string | number;
 let str: S = 'Tom';
 
----------------------------------------------------------------------------
+// 声明联合类型
+type Sex = "boy" | "girl";
+```
 
-type userType = { name: string; age: number };
+```
+type userType = {
+	name: string;
+	age: number
+};
+
 type addUserFnType = (user: userType) => boolean;
 
 let handleAddUser: addUserFnType = (userObj: userType) => {
 	return true;
 };
+
 handleAddUser({ name: "tom", age: 10 });
 ```
-
-###### type & 交叉类型
 
 ```
 type userType = {
@@ -858,70 +929,15 @@ let dog: AnimalType = {
 };
 ```
 
--   type & 泛型
-
-###### type & pick
-
-```
-type userType = {
-	name: string;
-	age: number;
-	city: string;
-};
-
-type AnimalType = Pick<userType, "name" | "city"> & {
-	habit: string;
-};
-
-let dog: AnimalType = {
-	name: "Dan",
-	city: "Beijing",
-	habit: "orange",
-};
-```
-
-```
-// 声明基本类型别名
-type IsOut = boolean;
-
-// 声明联合类型
-type Sex = "boy" | "girl";
-
-// type userType = {
-// 	name: string;
-// 	age: number;
-// 	sex?: Sex;
-//	isOut: IsOut
-// 	show(): string;
-// 	[key: string]: any;
-// };
-
-interface userType {
-	name: string;
-	age: number;
-	sex?: Sex;
-	show(): string;
-	[key: string]: any;
-}
-
-let obj: userType = {
-	name: "tom",
-	age: 10,
-	sex: "boy",
-	show: () => "have 10$",
-	city: "北京",
-};
-```
-
 ### type & interface 区别
 
 定义对象类型一般采用 interface， 它的优势在于可继承，可命名相同名称合并；
 
-> -   interface 只能定义对象类型或接口当名字的类型函数；
-> -   type 可以定义任何类型，包括类型别名、联合类型、交叉类型、元祖；
+> - interface 只能定义对象类型或接口当名字的类型函数；
+> - type 可以定义任何类型，包括类型别名、联合类型、交叉类型、元祖；
 
-> -   interface 可以 extends 继承多个 interface，也可以继承 type (罕见)，也可以通过定义相同接口名称来合并接口；
-> -   type 没有继承功能，只能使用交叉类型去合并到新的类型中；
+> - interface 可以 extends 继承多个 interface，也可以继承 type (罕见)，也可以通过定义相同接口名称来合并接口；
+> - type 没有继承功能，只能使用交叉类型去合并到新的类型中；
 
 查阅 `interface 继承`
 
@@ -1048,7 +1064,37 @@ console.log(getLength([1, 2, 3])); 		// 3; 传入的数组本身就是有length�
 console.log(getLength(100)); 			// err; 这样当调用时就会有类型检测；
 ```
 
--   约束对象的 key
+```
+interface Person {
+  name: string;
+  age: number;
+}
+
+type Keys = keyof Person;		 // Keys = 'username' | 'age'
+let b: Keys = "age";
+
+------------------------------------------------
+
+let person = { name: "Alice", age: 30 };
+
+type Keys2 = keyof typeof person;	// typeof person 先获得类型，keyof 类型 获取联合类型；
+let c: Keys2 = "age";
+```
+
+- 约束对象的 key
+
+```
+// 第1参 约束泛型T 必须满足object类型（object/Set/Map/函数/Array等），如调用时传string/number等类型检测就会报错；
+// 第2参 约束泛型K 必须是第一个泛型T(object对象)的键名之一；
+function getValue<T extends object, K extends keyof T>(obj: T, key: K): T[K] {
+	return obj[key];
+}
+
+let res = getValue(obj, "name");
+console.log(res); 				// Tom
+```
+
+- 解决 keyof 不能直观看到联合类型；
 
 ```
 type Obj = {
@@ -1056,28 +1102,9 @@ type Obj = {
 	age: 1;
 };
 
-type ObjKeys = keyof Obj; 		// ObjKeys = 'username' | 'age'; 获取所有key组成的联合类型
-
-let user1: ObjKeys = "username";
-let user2: ObjKeys = "age";
-```
-
-```
-let obj = {
-	name: "Tom",
-	age: 10,
-};
-
-type Keys = keyof typeof obj;		// 获取obj对象所有key的联合类型
-
-// 约束泛型第1个参必须满足object类型（object/Set/Map/函数/Array等），如传入string/number等，在调用时就会类型检测报错；
-// 约束泛型第2个参数必须是第一个object对象的属性；
-function getValue<T extends object, K extends keyof T>(obj: T, key: K) {
-	return obj[key];
-}
-
-let res = getValue(obj, "name");
-console.log(res); 			// Tom
+// extends 会将左侧循环与右侧进行比较，所以能够ObjKeys2能直接看到key联合类型
+type ViewKeys<T> = T extends any ? T : never;
+type ObjKeys2 = ViewKeys<keyof Obj>;    	// ObjKeys2 = "username" | "age"
 ```
 
 ###### 泛型嵌套
@@ -1194,11 +1221,9 @@ const user1 = new User<UserInter>({ name: "tom", age: 10 });
 console.log(user1.get());
 ```
 
----
-
 ### class
 
--   ES6 的 class
+- ES6 的 class
 
 ```
 class Animal {
@@ -1240,7 +1265,7 @@ dog.run("fast");
 cat.run("slow");
 ```
 
--   Ts 中的 class
+- Ts 中的 class
 
 ```
 class Animal {
@@ -1285,7 +1310,7 @@ cat.run();
 console.log(Animal.paws); // 3
 ```
 
--   public 属性和方法 默认是 public，子类可覆盖属性和方法；
+- public 属性和方法 默认是 public，子类可覆盖属性和方法；
 
 ```
 class Animal {
@@ -1306,7 +1331,7 @@ console.log(dog.name, dog.age); 	// dog 10
 console.log(dog.run()); 		// dog跑得很快
 ```
 
--   protected 修饰的属性方法，只能在类访问；实例对象无法访问；子类可访问父类，但不能覆盖父类 protected 属性方法；
+- protected 修饰的属性方法，只能在类访问；实例对象无法访问；子类可访问父类，但不能覆盖父类 protected 属性方法；
 
 ```
 class Animal {
@@ -1338,9 +1363,9 @@ console.log(dan.run());		// err; 只能在类“Animal”及其子类中访问
 console.log(dan.triggerRun()); 	// Dan跑得很快
 ```
 
--   private 修饰私有属性方法，实例对象不能访问；子类不能继承父类 且 不能覆盖父类私有属性方法，子类相同属性只能改得比父类宽松；
+- private 修饰私有属性方法，实例对象不能访问；子类不能继承父类 且 不能覆盖父类私有属性方法，子类相同属性只能改得比父类宽松；
 
--   readonly 修饰的属性 只能在 constructor 构造函数中被修改；
+- readonly 修饰的属性 只能在 constructor 构造函数中被修改；
 
 ```
 class Dog extends Animal {
@@ -1465,14 +1490,14 @@ class Animal implements DemoInt, AnotherInt {
 }
 ```
 
--   class & 泛型
+- class & 泛型
 
 ###### 抽象类（少）
 
--   abstract 加在 class 前面就是抽象类；
--   abstract 类 不能 new 实例化；
--   abstract 类里面的 abstract 属性/方法 必须定义在抽象类中，且 abstract 属性/方法只是定义，不能实现， 子类才必须实现定义父类定义的抽象属性/方法；
--   它和接口的区别不只有抽象的规范待子类实现，还有自身的属性和方法；
+- abstract 加在 class 前面就是抽象类；
+- abstract 类 不能 new 实例化；
+- abstract 类里面的 abstract 属性/方法 必须定义在抽象类中，且 abstract 属性/方法只是定义，不能实现， 子类才必须实现定义父类定义的抽象属性/方法；
+- 它和接口的区别不只有抽象的规范待子类实现，还有自身的属性和方法；
 
 ```
 abstract class Animal {
@@ -1505,9 +1530,9 @@ dog.run();
 
 ### 命名空间
 
--   避免全局污染，隔离变量、函数；
--   通过 export 暴露出来；
--   namespace 所有的变量和方法都需要导出才能访问
+- 避免全局污染，隔离变量、函数；
+- 通过 export 暴露出来；
+- namespace 所有的变量和方法都需要导出才能访问
 
 ```
 namespace ios {
@@ -1537,14 +1562,14 @@ console.log(ios.b);			// 3
 
 装饰器有 类装饰器、方法装饰器，属性装饰器，参数装饰器；
 
--   类装饰器的只接受一个参数 target，接收到的是构造函数;
+- 类装饰器的只接受一个参数 target，接收到的是构造函数;
 
--   方法装饰器，属性装饰器，参数装饰器的 target:
+- 方法装饰器，属性装饰器，参数装饰器的 target:
 
-    -   如将装饰器修饰静态函数，接收的是构造函数；
-    -   如将装饰器修饰原型函数，接收原型对象；
+  - 如将装饰器修饰静态函数，接收的是构造函数；
+  - 如将装饰器修饰原型函数，接收原型对象；
 
--   propertyKey: 修饰的方法名/属性名；
+- propertyKey: 修饰的方法名/属性名；
 
 > 构造器有什么优势：不去破坏 class 原有的方法和属性，既然能通过 target 读取到构造函数，就可以在构造函数的原型对象上添加方法和属性；
 
@@ -1847,20 +1872,221 @@ a.title = 'HELLOW WORLD'
 console.log(a.title);	// hello word
 ```
 
-### 声明文件
+### infer
 
-使用第三方库时，需要引用它的声明文件，才能获得代码不全、提示等功能；
-
-如引用的库红线没有提示：
-
--   `npm i --save-dev @types/库名称`，ts 社区为活跃的第三方库编写了声明文件
--   自己添加一个包含"declare module '库名称'"的声明文件`库名称.d.ts`；
+- infer 表示在 extends 条件语句中以占位符出现，等使用时才推断出来的数据类型，infer + 任意字母占位符；
 
 ```
-// 如 express.d.ts
+interface User {
+    name: string
+    age:number
+}
+
+type Fn = (params: User) => number;
+
+// 获取函数的参数类型
+// Fn 函数返回值与这里继承的函数返回类型一致，就返回infer获取到的参数类型，否则返回Fn函数；
+type ParamsType1 = Fn extends (params: infer P) => number ? P : Fn;
+type ParamsType2 = Fn extends (params: infer P) => string ? P : Fn;
+
+let user1: ParamsType1 = {
+    name: 'Tom',
+    age: 1,
+}
+
+let userFn: ParamsType2 = (user: User) => {
+    return user.age;
+}
+
+----------------------------------------------------------------------
+
+// 获取函数的返回值类型
+type ReturnNumberType = Fn extends (params: User) => infer R ? R : Fn;
+let num: ReturnNumberType = 10;
+
+
+----------------------------------------------------------------------
+
+// 通用型
+type ReturnNumberType<T> = T extends (params: any) => infer R ? R : never;
+let num: ReturnNumberType<Fn> = 10;
+
+----------------------------------------------------------------------
+
+// infer可作泛型占位符，获取泛型类型
+type TypeOfArr<T> = T extends Array<infer P> ? P : never;
+let a: TypeOfArr<Array<number>> = 1;
+let b: TypeOfArr<Array<{ name: string }>> = { name: "Tom" };
+```
+
+### 工具类型
+
+- Partial: 将所有属性变成可选属性；
+- Required: 所有属性变成必选；
+- Pick: 从 interface\type\class 中提取部分属性，并组成新的对象类型；
+- Exclude: 排除部分属性 (排除联合类型)；
+- Omit: 排除部分属性，并返回新的类型；
+- Extract: 条件类型，用于从两个类型中提取它们的交集部分；
+- Record: 用于创建一个对象类型，约束对象的 key 名称 和 值类型（适合替代 type 或 interface 情况下）；
+
+---
+
+- readonly
+
+```
+type UserType = {
+  readonly name: string;
+};
+
+type NoReadonly<T> = {
+  readonly [K in keyof T]: T[K];	// 添加readonly
+  -readonly [K in keyof T]: T[K];	// 去除readonly
+};
+
+let user: NoReadonly<UserType> = {name: 'Tom'}
+user.name = 'Jack'
+```
+
+- Partial
+
+```
+type PageParams = {
+  page: number;
+  pageSize: number;
+};
+
+type p = Partial<PageParams>
+
+源码实现 -------------------------------------------
+
+type OriginPartial<T> = {
+  [K in keyof T]?: T[K];
+};
+
+let p: OriginPartial<PageParams> = {};
+```
+
+```
+interface UserInt {
+	name: string,
+	age: number,
+	address: string;
+}
+
+type e = Exclude<"a" | "b" | "c", "b" | "c">;		//  e = "a"
+
+type e = Extract<string | number | boolean, string | number>;	// e = string | number
+```
+
+- Pick
+
+```
+type userType = {
+	name: string;
+	age: number;
+	city: string;
+};
+
+type AnimalType = Pick<userType, "name" | "city"> & {
+	habit: string;
+};
+
+let dog: AnimalType = {
+	name: "Dan",
+	city: "Beijing",
+	habit: "orange",
+};
+```
+
+- Required
+
+```
+type PageParams = {
+  page?: number
+  pageSize?: number
+}
+
+// 利用Required将原本的可选变成必选，此时如果缺少字段就会报错；
+const params: Required<PageParams> = {
+  page: 1,
+  pageSize: 10,
+}
+
+
+源码实现 ----------------------------------------------------
+
+type OriginRequired<T> = {
+  [K in keyof T]-?: T[K];
+};
+
+type PageParams = {
+  page?: number;
+  pageSize?: number;
+};
+
+let p: OriginRequired<PageParams> = { page: 1, pageSize: 10};
+```
+
+- Record: 约束对象 key 和 value；
+
+```
+type Key = "name" | "age" | "sex";
+type Value = "Tom" | 10 | "male";
+
+// 第一个泛型约束键名，第二个泛型约束值可以为其中之一；
+let obj: Record<Key, Value> = {
+	name: "Tom",
+	age: "Tom",
+	sex: "Tom",
+};
+
+-----------------------------------------------------------
+
+function fn(info: Record<'name' | 'age', string | number>){}
+fn({name: 'Tom', age: 1})
+```
+
+- ReturnType: 获取函数返回类型
+
+```
+let fn = () => [1, "a", true];
+
+type whichType = ReturnType<typeof fn>;	// whichType = (string | number | boolean)[]
+```
+
+---
+
+### 声明文件
+
+> 在TS文件编码，在编译成JS文件时会自动生成声明文件d.ts; 声明文件只对类型定义，不进行任何的赋值和实现。
+
+使用第三方库时，需要引用它的声明文件，才能获得代码补全、结构提示等功能；
+
+如引用的第三方库显示红线且没有提示，需引入其声明文件 或 自己添加声明文件；
+
+> - ts 社区为活跃的第三方库编写了声明文件：`npm i --save-dev @types/库名称`
+> - 自己添加声明文件：`库名称.d.ts`
+> PS: ts会自动在tsconfig.json > include 指定的文件下寻找到对应的声明文件；
+
+```
+// 实现声明文件
+
+declare let/const	// 声明全局变量
+declare function	// 声明全局方法 (declare声明的函数可重名)
+declare class		// 声明全局类
+declare enum		// 声明全局枚举
+declare namespace	// 声明命名空间
+interface/type		// 声明全局类型和接口 (无需declare关键字)
+```
+
+```
+// 模块声明定义声明文件 declare module '模块名称'，如 express.d.ts；
+
 declare module "express" {
-	interface Router {
-		get(path: string, cb: (req: any, res: any) => void);
+
+	interface Express {
+		(): App;
+		Router(): Router;
 	}
 
 	interface App {
@@ -1868,25 +2094,20 @@ declare module "express" {
 		listen(port: number, cb?: () => void);
 	}
 
-	interface Express {
-		(): App;
-		Router(): Router;
+	interface Router {
+		get(path: string, cb: (req: any, res: any) => void);
 	}
+
 
 	const express: Express;
 
-	export default express;
+	export default express;		// 导出模块
 }
-
-// 还可扩充全局变量、函数、class
-declare let hello: string;
-declare function xxx(params: object): void;
-declare class Demo {}
 ```
 
 ```
-// 引入文件 main.ts
-import express from 'express';
+// main.ts
+import express from 'express';		// 导入第三方库（会自动寻找express.d.ts声明文件）
 
 const app = express();
 const router = express.Router();
@@ -1903,8 +2124,8 @@ app.listen(3000, ()=>{
 
 ### 类型兼容
 
--   协变
-    子类型的属性能完全兼容主类型的属性称为协变
+- 协变
+  子类型的属性能完全兼容主类型的属性称为协变
 
 ```
 interface A {
@@ -1929,63 +2150,4 @@ let b: B = {
 };
 
 a = b;
-```
-
-### 泛型工具
-
--   Partial: 将所有属性变成可选属性；
--   Required: 所有属性变成必选；
--   Pick: 提取部分属性；
--   Exclude: 排除部分属性 (排除联合类型)；
--   Omit: 排除部分属性，并返回新的类型；
-
-```
-interface UserInt {
-	name: string,
-	age: number,
-	address: string;
-}
-
-type p = Partial<UserInt>
-
-type p2 = Pick<UserInt, "name" | "age">;
-
-type e = Exclude<"a" | "b" | "c", "b" | "c">;
-```
-
-```
-type PageParams = {
-  page?: number
-  pageSize?: number
-}
-
-// 类型定义时，page设置的是可不填，所有page其中一种可能为空undefined，params.page++时自然就会报错；
-// 利用Required将原本的可选变成必选，此时如果缺少字段就会报错；
-const params: Required<PageParams> = {
-  page: 1,
-  pageSize: 10,
-}
-```
-
--   Record: 约束对象 key 和 value；
-
-```
-type Key = "name" | "age" | "sex";
-type Value = "Tom" | 10 | "male";
-
-// 第一个泛型约束键名，第二个泛型约束值可以为其中之一；
-let obj: Record<Key, Value> = {
-	name: "Tom",
-	age: "Tom",
-	sex: "Tom",
-};
-```
-
--   ReturnType: 获取函数返回类型
-
-```
-let fn = () => [1, "a", true];
-
-type whichType = ReturnType<typeof fn>;
-// type whichType = (string | number | boolean)[]
 ```
