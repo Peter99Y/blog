@@ -262,8 +262,9 @@ let arr: (string[] | boolean)[] = [["hello"], true];		// 二维数组
 元祖类型在定义时，限制了数据的类型/位置/长度;
 
 ```
-let arr: [string, number, boolean] = ["1", 2, false];
-arr[0] = 99				// err; 可改值，不能更改类型
+let arr: [string, number, boolean] = ["hello", 2, false];
+arr[0] = 99;				// err; 不能更改类型
+arr[0] = 'hello world';		// 可改值
 
 let arr: readonly [x: number, y?: boolean] = [1, true];
 ```
@@ -299,13 +300,15 @@ let [username, age, city, ...rest]: [_username:string, _age:number, _city:string
 ```
 let obj: object = 1;		// err; 不能将类型“number”分配给类型“object”
 
-let obj: object = [];		// 约束只能是引用类型；
+let obj: object = [];		// object约束必须是引用类型；
+
 let obj: object = () => 123;
 
 let obj: object = {
   name: "Tom",
   age: 10,
 }
+
 obj.city = 'Beijing'		// err; 类型“object”上不存在属性“city”
 ```
 
@@ -313,13 +316,13 @@ obj.city = 'Beijing'		// err; 类型“object”上不存在属性“city”
 
 ```
 let obj: {} = { age: 1 };	// 赋值无效
-obj.age = 2;		// err; 类型“{}”上不存在属性“age”
+obj.age = 2;			// err; 类型 {} 上不存在属性 'age'
 
 
 let obj: {			// 约束obj为对象类型，同时约束只能多少个属性，以及是哪些属性， 并且约束属性值的类型
 	name: string;
 	age: number;
-	hobbit?: string; 	// 有or没有属性都可
+	hobbit?: string;
 };
 
 obj = {				// err；赋值时缺少age属性
@@ -355,23 +358,12 @@ console.log(
   Color.green,      // 1
   Color.orange      // orange
 );
-```
 
-- 数值枚举可反向映射，字符串枚举不能；
-
-```
-enum Color {
-	yes,
-	no,
-	fail = 'err'		// 字符串枚举时，无法反向映射
-}
-
-let value = Color.yes;
-console.log(value)  		// 0; 通过key取值；
-
+let value = Color.green;
+console.log(value)  		// 1; 通过key取值；
 
 let key = Color[value];
-console.log(key);   		// yes; 通过值反向取key；
+console.log(key);   		// green; 通过值反向取key；
 ```
 
 ```
@@ -511,7 +503,7 @@ console.log(findNum([4, 5])); 		// [1,2,3,4,5]
 
 ### 类型断言
 
-主动判定某种类型了，ts 编译时会绕过类型检查；编译器强制转换成另外一个类型；
+主动判定为某种类型，ts 编译时会绕过类型检查，编译器强制转换成另外一个类型；
 
 ###### as 类型断言
 
@@ -541,7 +533,7 @@ interface B {
 
 let fn = (type: A | B): void => {
 	let res = (<A>type).run;    // 类型断言泛型方式；断定type此时调用传递的就是A
-    console.log(res)
+	console.log(res)
 };
 
 fn({ run: "1" }); 		    // 1
@@ -561,17 +553,17 @@ function fn() {
 const [n, m] = fn();
 m(1, 2);			// err; m可能是字符串，所以无法调用；
 
-解决方案 ---------------------------------------------------------------
+解决方案 ---------------------------------------------
 
 const [n, m] = fn() as [string, Function];
-console.log(m(1, 2));
+m(1, 2);
 
-or
+or --------------------------------------------------
 
 const [n, m] = fn();
 let sum = (m as Function)(1, 2);
 
-or
+or --------------------------------------------------
 
 function fn() {
 	let a = "hello";
@@ -594,8 +586,8 @@ let res = m(1, 2);
 function fn(data?: string){
     // data.toString();     	// err; 'data' is possibly 'undefined'
 
-    data?.toString();
-    data!.toString();       	// 非空断言，主动去除undefined or null情况，编译正常，如果有错只是结果才会报错；
+    data?.toString();		// 没有不会执行也就不会报错
+    data!.toString();       	// 非空断言，主动去除undefined or null情况，编译时没有了类型检测，运行时才会报错；
     if(data) data.toString();
     (data as string).toString();
 }
@@ -628,12 +620,10 @@ const objj = new Animal(ell);
 
 ###### as unknown
 
-值没有问题的，转换类型
-
 ```
 let str: string = "99";
 
-let a: number = str as number; 			// err; string不能直接转成number类型
+let a: number = str as number; 		// err; string不能直接转成number类型
 
 let b: number = str as unknown as number;   	// 但可以先转成未知类型，再把未知类型转成number类型
 console.log(b, typeof b);   			// 99 string
@@ -648,11 +638,11 @@ console.log(res, typeof res);			// 3	number
 
 ###### as const
 
-简单类型转换后，宽泛类型转值类型
-引用类型转换后，宽泛类型转只读宽泛类型
+简单类型转换后，转成值类型
+引用类型转换后，转成只读宽泛类型
 
 ```
-let user1 = "tom" as const;		// user1: "tom" 从string宽泛类型 转 'tom' 值类型
+let user1 = "tom" as const;		// user1: "tom"；从string宽泛类型 转 'tom' 值类型
 let user1 = <const>"tom";		// 泛型方式
 
 let user2: user1 = "tom";
@@ -665,13 +655,12 @@ let url: string = "www.abc.com";
 
 const arr = [true, 1, "a"];			// arr: (boolean | number | string)[]; 这是数组;
 let arr2 = [url, true, count] as const;	// arr2: readonly [string, true, 99]; // 这是元祖;
-arr2[0] = 'hello';				// err;
+arr2[0] = 'hello';				// err; readonly
 
 
-let str: string = "look";
 const obj = {
-	name: str, 	        		// string, readonly
-	age: 10 as const,   			// 10, readonly
+	name: 'Tom',
+	age: 10 as const,
 } as const;
 
 obj.name = 'tom';   				// err; readonly
@@ -688,11 +677,11 @@ interface UserType {
 
 //  in keyof  类型递归，把key和类型都取出来
 type CustKeyValType = {
-  [P in keyof UserType]: UserType[P];
+    [K in keyof UserType]: UserType[K];
 
-  // [P in 'name' | 'degree' | 'phone'] : UserType[P];  // 等价于
+  // [K in 'name' | 'degree' | 'phone'] : UserType[K];  // 等价于
 
-  // ['name']: UserType['name'];    // in 等价于 for...in循环
+  // ['name']: UserType['name'];    			 // in 等价于 for...in循环
   // ['degree']: UserType['degree'];
   // ['phone']: UserType['phone'];
 };
@@ -727,7 +716,7 @@ type ConType<T> = T extends string | number ? T : never;
 
 type TestType1 = ConType<string | number>; 			// TestType1 = string | number
 
-// 泛型方式传递的参数是将参数循环 与 右侧比较
+// 泛型方式是将参数循环每个 与 右侧比较
 type TestType2 = ConType<string | number | boolean>; 		// TestType2 = string | number
 
 // 字面量方式是将 (string | number | boolean) 作为一个整体 与 右侧进行比较
@@ -1006,6 +995,27 @@ dump<string>('hello');
 dump<number>(1);
 ```
 
+###### type & 泛型
+
+```
+type CustomType<T> = string | number | T;
+let type1: CustomType<boolean> = true;
+
+------------------------------------------------------------------------
+
+type PageResult<T> = {
+	list: T[];
+	page: number;
+	pageSize: number;
+};
+type listItem = {
+	id: string;
+	name: string;
+	age: number;
+};
+let res: PageResult<listItem> = axios.get({url: ''});
+```
+
 ###### interface & 泛型
 
 ```
@@ -1154,27 +1164,6 @@ interface resultData {
 }
 
 axios.get<resultData>("...").then((res) => {});
-```
-
-###### type & 泛型
-
-```
-type CustomType<T> = string | number | T;
-let type1: CustomType<boolean> = true;
-
-------------------------------------------------------------------------
-
-type PageResult<T> = {
-	list: T[];
-	page: number;
-	pageSize: number;
-};
-type listItem = {
-	id: string;
-	name: string;
-	age: number;
-};
-let res: PageResult<listItem> = axios.get({url: ''});
 ```
 
 ###### class & 泛型
@@ -2058,7 +2047,7 @@ type whichType = ReturnType<typeof fn>;	// whichType = (string | number | boolea
 
 ### 声明文件
 
-> 在TS文件编码，在编译成JS文件时会自动生成声明文件d.ts; 声明文件只对类型定义，不进行任何的赋值和实现。
+> 在 TS 文件编码，在编译成 JS 文件时会自动生成声明文件 d.ts; 声明文件只对类型定义，不进行任何的赋值和实现。
 
 使用第三方库时，需要引用它的声明文件，才能获得代码补全、结构提示等功能；
 
@@ -2066,7 +2055,7 @@ type whichType = ReturnType<typeof fn>;	// whichType = (string | number | boolea
 
 > - ts 社区为活跃的第三方库编写了声明文件：`npm i --save-dev @types/库名称`
 > - 自己添加声明文件：`库名称.d.ts`
-> PS: ts会自动在tsconfig.json > include 指定的文件下寻找到对应的声明文件；
+>   PS: ts 会自动在 tsconfig.json > include 指定的文件下寻找到对应的声明文件；
 
 ```
 // 实现声明文件
