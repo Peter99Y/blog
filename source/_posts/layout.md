@@ -2,6 +2,115 @@
 title: Layout
 ---
 
+## 垂直居中
+
+-   padding
+    缺点：父元素高度是通过子元素决定，需要计算高度；
+
+```
+.container{
+    border: 1px solid orange;
+    width: 300px;
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.container span{
+    font-size: 18px;
+}
+```
+
+-   line-height
+
+缺点：可以允许父元素设置高度，但多行文字会溢出父元素；
+
+```
+.container{
+    border: 1px solid orange;
+    width: 300px;
+    height: 100px;
+    text-align: center;
+}
+
+.container span{
+    line-height: 100px;
+}
+```
+
+-   flex
+
+缺点：IE9 版本以上兼容；
+
+```
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    border: 1px solid orange;
+}
+
+.container div.box{
+    width: 100px;
+    height: 100px;
+    background-color: orange;
+}
+```
+
+```
+.container{
+    border: 1px solid orange;
+    width: 300px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.container span{
+    line-height: 100px;
+}
+```
+
+-   grid
+
+```
+.container {
+    border: 1px solid orange;
+    width: 300px;
+    height: 100px;
+
+    display: grid;
+    /* 这里是根据3个li，等份排列 */
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    justify-content: center;
+}
+```
+
+-   position
+
+```
+.container{
+    border: 1px solid orange;
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.container div.box{
+    width: 100px;
+    height: 100px;
+    background-color: orange;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+```
+
 ## 自适应宽
 
 ###### 左，右定宽布局
