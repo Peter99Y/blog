@@ -181,7 +181,7 @@ let res: string = sum(1, 2);
 
 ### undefined & null 类型
 
-undefined & null 可以被赋值给其他类型
+undefined & null 可以赋值给其他类型
 
 ```
 let nu: null = null;
@@ -854,6 +854,22 @@ let handleTotal: fnInter = (price: number) => price * 2;
 
 or -----------------------------------------------------------
 
+interface AnotherInt {
+	init(): void;
+	run(): void;
+}
+
+class Animal implements DemoInt, AnotherInt {
+	constructor() {
+		this.init();
+	}
+
+	init() {}
+	run() {}
+}
+```
+
+```
 interface UserInter {
 	name: string;
 	age: number;
@@ -1454,10 +1470,10 @@ try {
 ```
 interface DemoInt {
 	options: OptionsInt;
-	init(): void;
 }
 
 interface AnotherInt {
+	init(): void;
 	run(): void;
 }
 

@@ -218,7 +218,7 @@ div::after {
 
 ![](/images/Css/has.png)
 
-###### :is/:where
+###### :is / :where
 
 ```
     <style>
@@ -230,7 +230,15 @@ div::after {
             }
         */
 
+        等价于
+
         :is(.line1, .line2, .line3) h4 {
+            color: orange;
+        }
+
+        等价于
+
+        :where(.line1, .line2, .line3) h4{
             color: orange;
         }
     </style>
@@ -240,9 +248,11 @@ div::after {
     <div class="line1">
         <h4>hello</h4>
     </div>
+
     <div class="line2">
         <h4>hello</h4>
     </div>
+    
     <div class="line2">
         <h4>hello</h4>
     </div>
