@@ -331,6 +331,27 @@ obj = {				// err；赋值时缺少age属性
 }
 ```
 
+- 对象取值
+
+```
+let obj = {username: 'Tom', age: 1};
+
+// let username = 'username';  // 变量会被修改值；采用常亮
+const username = 'username';
+let name1 = obj[username];
+
+or -------------------------------------------------
+
+interface User {
+  username: string;
+  age: number;
+}
+
+let obj: User = { username: "Tom", age: 1 };
+let username = "username";
+let name1 = obj[username as keyof User];
+```
+
 - 对象 & interface
 
 ### 枚举类型
