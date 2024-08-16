@@ -204,7 +204,7 @@ title: Layout
 }
 .content{
     overflow: hidden;
-    /* 自适应内容高度 || 最低高度  */
+    /* 注意：永远不要加 width !!!  */
     height: 300px;
     background-color: orange;
 }
@@ -336,6 +336,7 @@ title: Layout
     background-color: yellowgreen;
 }
 .content .main{
+    // 永远不要加 width !!!
     height: 100%;
     padding: 20px;
     overflow: auto;
