@@ -323,7 +323,8 @@ title: Layout
 .content{
     width: 100%;
     height: 100%;
-    margin-top: 60px;
+    // 不能用 margin-top，子元素如果是定位元素 会多 height: 60px 这部分高度；
+    padding-top: 60px;
 }
 
 .content .aside{
