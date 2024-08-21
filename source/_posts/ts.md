@@ -2177,3 +2177,41 @@ let b: B = {
 
 a = b;
 ```
+
+### tsconfig.json
+
+```
+{
+	// 编译选项
+	"compilerOption": {
+		"lib": ["esnext",  "DOM"],		// 哪个库, 如 New Set() 是es6出来的，console方法是 'DOM'提供的;
+		"target": "ESNext", 	// ts按照哪个版本编译成js，如 "es2015" 按照es5编译，   "es2016" 按照es6编译;
+		"module": "CommonJS", // 编译成js使用哪种规范
+		"rootDir": "./demo", // 指定编译输入目录
+		"outDir": "./dist", // 指定编译后输出目录
+		"resolveJsonModule": true, // ts中，允许引入json文件
+		"allowJs": true, // ts中，允许引入js文件
+		"checkJs": true, // ts中，如果引入了js，会把js文件当成ts，是否使其被语法检测
+		"declaration": true, // ts生成声明文件，输入目录中会多一个对应的 文件.d.ts 声明文件
+
+		"strict": true, // 是否开启严格模式
+		"noImplicitAny": true, // 是否允许 不能有any类型
+		"strictNullChecks": true, // 是否允许 不能赋值 null 和 undefined 类型
+		<!-- "strictPropertyInitialization": true, // 属性声明时必须要初始值 -->
+		"noUnusedLocals": true, // 是否允许 不能有未使用的变量
+		"noUnusedParameters": true, // 是否允许 不能有未使用的形参
+
+		"skipLibCheck": true, // 是否跳过声明文件作了实现的检测（声明文件只声明，不实现）
+		"jsx": "preserve", // 是否允许jsx
+		typeRoots: ["node_modules/@types"], // 引入第三方插件时，指定它们的声明文件地址在哪儿
+
+		// 注意：这里设置的@别名只是ts编译没问题，而运行别名 需要在vite.config.js中配置别名
+		"baseUrl": "./", // 基础路径，.代表工程根目录；
+		"paths": {	// 映射路径，path设置的路径会根据baseUrl查找子目录
+			"@/*": ["./src/*"], // import a from '@/components/index.vue' 表示 './src/components/index.vue';
+			"~component/*": ["./src/components"/*], //  import a from '~components/index.vue' 表示 './src/components/index.vue'
+		},
+	},
+	"include": [], // 指定哪些文件和目录被ts编译
+}
+```
