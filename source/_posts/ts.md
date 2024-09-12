@@ -334,11 +334,12 @@ obj = {				// err；赋值时缺少age属性
 - 对象取值
 
 ```
-let obj = {username: 'Tom', age: 1};
+let obj = { username: "tom" };
 
-// let username = 'username';  // 变量会被修改值；采用常亮
-const username = 'username';
-let name1 = obj[username];
+// let key = "username";   // err; 可变的变量作为obj的索引是不固定的，而对象的这个索引是固定的；
+const key = "username";
+
+let n = obj[key];
 
 or -------------------------------------------------
 
@@ -635,6 +636,37 @@ const obj = new Animal(el);
 const ell = document.querySelector(".ccc")!; // ell: Element
 const objj = new Animal(ell);
 // err; !只是主动去除了null情况, 而constructor(el: HTMLDivElement) 接收的必须是HTMLDivElement标签；
+```
+
+###### 案例
+
+not assignable to type 'never[]'
+
+```
+import type { Ref } from 'vue';
+const cartList = ref([]);       // 数组未定义类型，此时是 never[] 类型；
+const cartList = ref([] as CartItem[]); // 采用断言方式
+
+const getData = async () => {
+  const res = await getMemberCartApi()  // api处理过返回的是 CartItem[] 结构的数组;
+  cartList.value = res.result;      // err; Type 'CartItem[]' is not assignable to type 'never[]'
+}
+```
+
+###### 案例
+
+```
+const profile = ref<ProfileDetail>();   // err; 只做了类型标注，但没有默认值，此时v-model没有绑定到属性 而报错;
+const profile = ref<ProfileDetail>({}); // err; 设置空对象，此时类型报错，因为 {} 空对象不满足 ProfileDetail类型;
+
+const profile = ref<ProfileDetail>({} as ProfileDetail);     // 断言空对象结构为ProfileDetail类型;
+const profile = ref({} as ProfileDetail);   // 断言后可不用泛型约束同样有提示;
+
+
+<input
+    class="input"
+    v-model="profile.nickname"      // err; 设置ref<ProfileDetail>()时, '__VLS_ctx.profile' is possibly 'undefined';
+/>
 ```
 
 ### 类型转换
