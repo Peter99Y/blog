@@ -2,6 +2,66 @@
 title: Css
 ---
 
+## css 属性值计算过程
+
+- 1.确定声明值 (将两样式表中**没有冲突的 css 属性**，作为最终的 css 属性值)
+
+  - 浏览器默认样式表 (user agent stylesheet)
+  - 用户自定义样式表 (element.style)
+
+- 2.层叠冲突 (对两种样式表中冲突的 css 属性使用层叠规则，确定 css 属性值)
+
+  - 比较重要性（作者样式表权重高于浏览器样式表并覆盖相同属性的值）
+  - 比较 css 选择器权重
+  - 比较 css 选择器内的相同属性次序
+
+- 3.使用继承
+  对仍然没有值的 css 属性，继承父元素的值 （文字相关属性 color,fontSize,fontFamily,textAlign 等; 不能继承 display）
+- 4.使用默认值
+  对仍然没有值的 css 属性，使用默认值（backgroundColor:transparent 等）
+
+```
+<style> .container{color: red } </style>
+
+<div class="container">
+    <a> click </a>
+    <h1> p </h1>
+</div>
+
+h1元素
+1. 自定义样式表没有对h1元素设置color;
+   浏览器默认样式表没设置color，但有 h1 {
+        font-weight: bold,
+        font-size: 2em;
+        margin-block-start: 0.67em;
+        margin-block-end: 0.67em;
+    };
+
+2. h1的样式表中没有color属性冲突;
+3. 继承父元素的color红色;
+
+a元素
+1. 自定义样式表没有对a元素直接设置color;
+   浏览器默认样式表没设置color，但有 a:-webkit-any-link {
+        color: -webkit-link; // 默认颜色
+        cursor: pointer;
+        text-decoration: underline;
+   }
+
+由于第1步骤 浏览器默认样式表 中就确定了color属性，也就不会走第2,3,4步骤了;
+设置用户自定义样式表color:inherit or 其他颜色; color就会在第2步骤 **比较重要性** 中覆盖颜色;
+```
+
+## 包含块
+
+- 元素的排列是在一块区域中，这个区域包含了这个元素，所以元素的包含块就是元素的排列区域；
+
+- 普通元素 和 浮动元素 的包含块就是父元素的 width 内容区域 (不包含父元素 padding、border、margin 宽度)；
+  元素的 width/height 的百分比，是相对于父元素的内容区域；
+
+- 绝对定位元素的包含块是带有定位父级元素的 padding 区域 (padding + width)；
+  绝对定位元素的 left/top 的值，width/height 的百分比，是相对于父级绝对定位元素的 padding 区域；
+
 ## bfc
 
 Block Formatting Context 块级格式化上下文，它是一块**独立的渲染区域**，它规定了在该区域中，常规流**块元素**的布局;
@@ -128,14 +188,6 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 ---
 
-## 包含块
-
-- 元素的排列是在一块区域中，这个区域包含了这个元素，所以元素的包含块就是元素的排列区域；
-
-- 浮动元素 or 普通元素的包含块就是父元素的 width 内容区域(不包含父元素 padding、border、margin 宽度)；元素的 width/height 的**百分比**宽度就是相对于父元素的 width/height；
-
-- 绝对定位元素的包含块是带有定位元素 padding+width 区域；绝对定位元素的 left/top 是相对于 padding+width 区域；
-
 ## 粘性布局
 
 position: sticky;
@@ -252,7 +304,7 @@ div::after {
     <div class="line2">
         <h4>hello</h4>
     </div>
-    
+
     <div class="line2">
         <h4>hello</h4>
     </div>
@@ -319,14 +371,13 @@ div::after {
 
 ## display
 
-会重绘、会重排
+移除 DOM 元素（导致会重绘、会重排）
 
-- 1. 不会触发 - select-content 内容在 none 的情况下，虽然元素存在，我们也知道这块区域存这块内容，
-     但是无论如何在隐藏的空白区域内点击都不会有反应；
+- 1. 事件不会触发；
 
-- 2. 脱离文档流 - div 元素在 none 的情况下，后面会内容顶上来；
+- 2. 脱离文档流；
 
-- 3. 子元素受影响 - div 元素在 none 的情况下，里面的子元素也会跟着隐藏（即使子元素又设置了 block）
+- 3. 子元素受影响；
 
 - 4. 过渡动画无效；
 
@@ -372,10 +423,10 @@ div::after {
 
 会重绘
 
-- 1. 不触发事件 - 自身 hidden 情况下，不会触发自身事件；
+- 1. visibility: hidden 时，元素不会触发事件；
 - 2. 不脱离文档流（即不会重排），后面元素不会顶上来；
 - 3. 子元素可设置 visible，从而不受父元素 hidden 的影响；
-- 4. 过渡动画效果有效；
+- 4. 有过渡动画效果；
 
 ```
     .select-wrapper {
@@ -414,11 +465,12 @@ div::after {
 
 ## opacity
 
-不重排、不重绘
+只是改变元素透明度（不重排、不重绘），改变元素内所有子元素(文字、背景色等)透明度；
+使用 rgba 设置更精细，只改变单个属性（文字，背景等）的透明度；
 
-- 1. 会触发事件；
+- 1. opacity:0 时，点击元素会触发事件；
 - 2. 不会脱离文档流，也不会重绘，只是降低了 alpha 值；
-- 3. 子元素设置 opacity:1 显示无效；
+- 3. 子元素自身设置 opacity:1，也会被父元素的 opacity 透明度影响；
 - 4. 有过渡动画效果；
 
 ```

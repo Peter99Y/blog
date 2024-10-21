@@ -86,7 +86,7 @@ window.onresize = function () {
 };
 ```
 
--	解决全局污染
+- 解决全局污染
 
 ```
 function debounce(callback, delay = 500) {
@@ -282,25 +282,32 @@ defineConfig({
 
 ## 首屏加载优化
 
-- 路由懒加载 import 导入组件；
-  vue 是单页应用，打包时，所有的 js 都会打包成一个 js 文件会变得非常大，影响页面加载速度，使用 import 导入组件可以把路由对应的组件分割成不同的代码块，用户访问对应的路由才加载对应的组件；
+### 路由懒加载；
 
-- vue3 新增 defineAsyncComponent 异步组件，同样可以 npm run build 时将一个包分包，用到这个 js 时才会加载这个包；
+vue 是单页应用，打包时，所有的 js 都会打包成一个 js 文件会变得非常大，影响页面加载速度，使用 import 导入组件可以把路由对应的组件分割成不同的代码块，用户访问对应的路由才加载对应的组件；
 
-- vuex 状态管理；
+### defineAsyncComponent 异步组件 ，
 
-- 图片懒加载 和 小图片采用 base64 字符串方式；
+vue3 新增，可以 npm run build 时将一个包分包，用到这个 js 时才会加载这个包；
 
-- 第三方插件采用 CDN 方式引入；
+### vuex 状态管理；
 
-- 虚拟列表（当后端返回上万条数据时）；
+### 图片懒加载 和 小图片采用 base64 字符串方式；
 
-- 防抖和节流；
+### 第三方插件采用 CDN 方式引入；
 
-- PWA；
+### 虚拟列表（当后端返回上万条数据时）；
 
-  需安装 npm install vite-plugin-pwa -D
-  利用 service worker 离线缓存, 利用 service worker 发送通知；
+### 防抖和节流；
+
+### PWA；
+
+需安装 npm install vite-plugin-pwa -D
+利用 service worker 离线缓存, 利用 service worker 发送通知；
+
+### Object.freeze
+
+当数据只做展示作用，不需要响应式修改时；避免 vue Object.defineProperty 设置 get 和 set 设置响应式数据消耗性能，但数据也同时丢失了响应式；
 
 ## vue3 与 vue2 区别
 

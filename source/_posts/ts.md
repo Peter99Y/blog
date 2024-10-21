@@ -367,12 +367,7 @@ enum Color {
   orange = "orange",
 }
 
-let c: Color = Color.orange;
-
-console.log(
-  Color[0],     // red
-  Color[5]      // yellow
-);
+let c: Color = Color.orange;	// 6
 
 console.log(
   c,                // 6
@@ -384,7 +379,7 @@ console.log(
 let value = Color.green;
 console.log(value)  		// 1; 通过key取值；
 
-let key = Color[value];
+let key = Color[value];		// Color[1]
 console.log(key);   		// green; 通过值反向取key；
 ```
 
@@ -396,11 +391,7 @@ enum Status {
 }
 
 // 形参status为number/string等类型，它属于宽泛类型，仍然不够直观语义化表达具体类型，降低可读性和维护性；
-// function bill(status: number): void {
-//   if (status === Status.SUCCESS) {
-//     console.log("成功");
-//   }
-// }
+// function bill(status: number): void {}
 
 function bill(status: Status): void {
   if (status === Status.SUCCESS) {
@@ -437,22 +428,15 @@ let user: userInt = {
 - 类型声明已经有了类型检测和提示，实现函数时，可不必再约束一遍；
 
 ```
-let sum: (x: number, y: number) => number = (a, b) => {
-  return a + b;
-};
-
-sum(1, 2);
+let sum: (x: number, y: number) => number = (a, b) => a + b;
+sum(1, 2);				// 3
 
 --------------------------------------------------------------------------
 
 type SumFnType = (x: number, y: number, ...r: any) => any[];
 
-let sum: SumFnType = (a, b, ...rest: any[]) => {
-  console.log("The sum is", a + b);
-  return rest;
-};
-
-console.log(sum(1, 2, 3, 4));		// [3, 4]
+let sum: SumFnType = (a, b, ...rest: any[]) => rest;
+sum(1, 2, 3, 4);			// [3, 4]
 ```
 
 ###### 函数解构
@@ -462,9 +446,7 @@ type UserType = { name: string; age: number };
 
 type AddFnType = (user: UserType) => string;
 
-let handleAdd: AddFnType = ({ name }: UserType) => {
-  return `The username is ${name}`;
-};
+let handleAdd: AddFnType = ({ name }: UserType) => `The username is ${name}`;
 
 handleAdd({ name: "tom", age: 10 });
 ```
@@ -512,9 +494,9 @@ function findNum(ids?: number | number[]): number[] {
 	}
 }
 
-console.log(findNum());		// [1,2,3]
-console.log(findNum(1)); 		// [1]
-console.log(findNum([4, 5])); 		// [1,2,3,4,5]
+findNum();			// [1,2,3]
+findNum(1); 			// [1]
+findNum([4, 5]); 		// [1,2,3,4,5]
 ```
 
 ###### 函数 & interface
@@ -566,7 +548,6 @@ fn({ build: "1" }); 		    // undefined
 function fn() {
 	let b = (x: number, y: number) => x + y;
 	let a = "hello";
-
 	return [a, b];
 }
 
@@ -606,12 +587,12 @@ let res = m(1, 2);
 
 ```
 function fn(data?: string){
-    // data.toString();     	// err; 'data' is possibly 'undefined'
+    // data.toString();     		// err; 'data' is possibly 'undefined'
 
-    data?.toString();		// 没有不会执行也就不会报错
-    data!.toString();       	// 非空断言，主动去除undefined or null情况，编译时没有了类型检测，运行时才会报错；
-    if(data) data.toString();
-    (data as string).toString();
+    if(data) data.toString();		// 没有不会执行也就不会报错
+    data?.toString();
+    data!.toString();       		// 非空断言，主动去除undefined or null情况，编译时没有了类型检测，运行时没值才报错；
+    (data as string).toString();	// as类型断言
 }
 
 fn('11');
@@ -630,26 +611,24 @@ class Animal {
   }
 }
 
-const el = document.querySelector("div") as HTMLDivElement; // el: HTMLDivElement
+const el = document.querySelector("div") as HTMLDivElement; 	// el: HTMLDivElement
 const obj = new Animal(el);
 
-const ell = document.querySelector(".ccc")!; // ell: Element
-const objj = new Animal(ell);
-// err; !只是主动去除了null情况, 而constructor(el: HTMLDivElement) 接收的必须是HTMLDivElement标签；
+const ell = document.querySelector(".ccc")!; 			// ell: Element
+const objj = new Animal(ell);	// err; !只是主动去除HTML的null情况, 而constructor(el: HTMLDivElement) 已经指定了类型为HTMLDivElement；
 ```
 
 ###### 案例
 
-not assignable to type 'never[]'
-
 ```
 import type { Ref } from 'vue';
-const cartList = ref([]);       // 数组未定义类型，此时是 never[] 类型；
-const cartList = ref([] as CartItem[]); // 采用断言方式
+
+const cartList = ref([]);       		// 赋值空数组，类型推断是never[]；
+const cartList = ref([] as CartItem[]); 	// 采用断言方式
 
 const getData = async () => {
-  const res = await getMemberCartApi()  // api处理过返回的是 CartItem[] 结构的数组;
-  cartList.value = res.result;      // err; Type 'CartItem[]' is not assignable to type 'never[]'
+  const res = await getMemberCartApi()  	// api处理过返回的是 CartItem[] 结构的数组;
+  cartList.value = res.result;      		// err; Type 'CartItem[]' is not assignable to type 'never[]'
 }
 ```
 
@@ -703,9 +682,6 @@ let user2: "tom" = "tom";		// 等价于
 ```
 
 ```
-let count = 99 as const;			// count: 99;	number宽泛类型 转 99值类型
-let url: string = "www.abc.com";
-
 const arr = [true, 1, "a"];			// arr: (boolean | number | string)[]; 这是数组;
 let arr2 = [url, true, count] as const;	// arr2: readonly [string, true, 99]; // 这是元祖;
 arr2[0] = 'hello';				// err; readonly
@@ -1986,6 +1962,7 @@ let b: TypeOfArr<Array<{ name: string }>> = { name: "Tom" };
 - Omit: 排除部分属性，并返回新的类型；
 - Extract: 条件类型，用于从两个类型中提取它们的交集部分；
 - Record: 用于创建一个对象类型，约束对象的 key 名称 和 值类型（适合替代 type 或 interface 情况下）；
+- ReturnType: 返回函数返回值类型；
 
 ---
 
@@ -2024,6 +2001,9 @@ type OriginPartial<T> = {
 let p: OriginPartial<PageParams> = {};
 ```
 
+- Exclude
+- Extract
+
 ```
 interface UserInt {
 	name: string,
@@ -2031,9 +2011,9 @@ interface UserInt {
 	address: string;
 }
 
-type e = Exclude<"a" | "b" | "c", "b" | "c">;		//  e = "a"
+type e = Exclude<"a" | "b" | "c", "b" | "c">;			// type e = "a"
 
-type e = Extract<string | number | boolean, string | number>;	// e = string | number
+type e = Extract<string | number | boolean, string | number>;	// type e = string | number
 ```
 
 - Pick
