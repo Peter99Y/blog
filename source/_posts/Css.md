@@ -188,9 +188,19 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 ---
 
-## 粘性布局
+## position
 
-position: sticky;
+所有浮动元素和定位元素都会默认变成块元素；
+
+#### absolute
+
+基于有定位的父元素
+
+#### fixed
+
+基于视口 viewport
+
+#### sticky
 
 - 元素设置了粘性布局之后，会受到两个因素的影响： - 1.包含块； - 2.最近可滚动元素，否则就是适口（body）
   ps：可滚动元素（overflow: 非 visible，它的意思就是不会出现滚动；hidden, scroll, auto 都是可滚动元素）；
@@ -230,6 +240,8 @@ position: sticky;
 
 ## 伪元素 ::before/::after
 
+伪元素默认是行元素，无法设置宽高；
+
 - content 可设置字符串、空白、图片、计数器、attr（通过元素上的属性值设置字符串）;
 
 ```
@@ -246,6 +258,24 @@ div::after {
 ![](/images/Css/content_attr.png)
 
 ## 伪类
+
+| 伪类              | 含义                                                         |
+| ----------------- | ------------------------------------------------------------ |
+| :link             | 选中未访问过的**超链接**                                     |
+| :visited          | 选中已访问过的**超链接**                                     |
+| :hover            | 选中鼠标悬停的元素                                           |
+| :acitve           | 选中鼠标按下的元素                                           |
+| \*                | \*                                                           |
+| :focus            | 选中获得焦点的**表单元素**                                   |
+| :disabled         | 选中被禁用的**表单元素**                                     |
+| :checked          | 选中被选中的**表单元素**                                     |
+| \*                | \*                                                           |
+| nth-child(an+b)   | 选中第 an+b 个子元素，a 和 b 是常亮，n 从 0 开始递增         |
+| first-child       | 选中第一个子元素                                             |
+| last-child        | 选中最后一个子元素                                           |
+| first-of-type     | 选中第一个指定类型的子元素                                   |
+| last-of-type      | 选中最后一个指定类型的子元素                                 |
+| nth-of-type(an+b) | 选中第 an+b 个指定类型子元素，a 和 b 是常亮，n 从 0 开始递增 |
 
 ###### :has
 
