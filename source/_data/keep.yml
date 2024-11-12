@@ -14,7 +14,7 @@ base_info:
   title: Peter's blog
 
   # Your blog website author name
-  author: Peter yu
+  author: Peter Yu
 
 # ---------------------------------------------------------------------------------------
 # Theme style settings
@@ -51,17 +51,17 @@ style:
 
   # First screen style settings
   first_screen:
-    enable: false  # Option values: true | false
+    enable: true  # Option values: true | false
 
     # Set transparent background for header
     header_transparent: true  # Option values: true | false
 
     # First screen background image (You can use local image or image external link)
-    background_img: /images/bg.svg
+    background_img: https://keep.xpoet.cn/images/bg.svg
 
     # First screen description
     # You can use the "||" to begin a newline, maximum is two lines.
-    description: Keep writing and Keep loving.
+    description: Keep going and Keep loving.
 
     # If you want to customize the first screen font color, you can fill in here (e.g. "#0066CC")
     # Otherwise use the theme default font color
@@ -73,7 +73,7 @@ style:
   # Page scroll style settings
   scroll:
     # Show progress bar in top when page scroll
-    progress_bar: false # Option values: true | false
+    progress_bar: true # Option values: true | false
 
     # Show percent when page scroll
     percent: false      # Option values: true | false

@@ -2,6 +2,70 @@
 title: Dom & Bom
 ---
 
+### 浏览器渲染原理
+
+#### 解析 HTML
+
+浏览器从网络或本地文件获取到 HTML 源代码，然后从上到下逐行解析代码；
+若解析过程中，读取到 css 和 js （不包含图片/视频/音频）就会停止解析，转而解析 css 和 js，解析完成后再继续之前的解析；
+
+> 1.为什么要将 css 写到 &lt;head&gt;中，js 写到最后？
+> css 写到开头：是为了让浏览器尽快读取并解析样式，让用户先看到漂亮的页面，同时也是为了避免页面闪烁；如果样式放在元素后面，元素会按默认样式先渲染，然后读取新的样式覆盖了之前读取的样式就会造成闪烁
+> js 写到结尾：js 获取 DOM 元素，需要先等待 DOM 元素加载完成才能获取；js 是做交互作用，交互一般是等待 DOM 加载完成才执行；
+
+#### 生成 DOM
+
+浏览器一边解析 HTML，一边生成 DOM 树，在 js 中获取到的 dom 就是这里的 DOM 节点；
+
+#### 生成渲染树
+
+浏览器一边生成 DOM 树，一边计算 DOM 树中每个节点的样式规则，最终形成渲染树，css 属性的计算过程发生在这一步；
+
+#### reflow 重排 (回流; 就是排列顺序)
+
+浏览器一遍生成渲染树，一边计算每个元素最终的尺寸和位置。完成后，页面中的素有元素的位置和尺寸确定下来了，即将被渲染到页面中。
+这个步骤会在页面之后的运行过程中不断地重复。
+
+浏览器为了提升性能，对 js 中连续导致 reflow 的代码，把 reflow 的时间点延迟到结束后进行，在此过程中，如果遇到了获取尺寸和位置的代码，浏览器会立即 reflow；会导致 reflow：
+
+- 获取元素的尺寸和位置;
+- 直接或间接改变元素的尺寸和位置;
+
+```
+dom.style.width = '100px';
+dom.style.height = '50px';
+// dom.clientHeight;   若读取，会强行执行reflow;
+dom.style.top = '50px';
+最后重排只会执行一次
+```
+
+#### repaint 重绘
+
+浏览器一边 reflow，一边生成对应的图形绘制到页面，绘制过程称为 repaint，所有会导致 reflow 都会 repaint;
+不影响盒子排列，仅影响盒子外观的代码不会导致 reflow，一些会导致 repaint 如：
+
+- 改变背景颜色
+- 变更字体颜色
+- 背景图
+- 圆角边框
+
+#### 扩展
+
+```
+// js放在上面先加载js资源，此时需要两种方式避免js获取不到元素而加载错误；
+<head>
+<script>
+	document.addEventListener('DOMContentLoaded', function(){
+		console.log('DOM树全部加载完成');
+	})
+
+	window/img/video.addEventListener('load', function(){
+		console.log('1.页面上所有资源（包含图片资源）加载完成触发, 2.此事件是注册在window/img等上');
+	})
+</script>
+</head>
+```
+
 ### DOM
 
 (Document Object Model)文档对象模型, 通过 DOM 可以改变页面内容、结构和样式.
@@ -10,11 +74,11 @@ title: Dom & Bom
 
 ###### nodeType 节点类型
 
--   9：document;
--   1：element(元素节点);
--   2：attribute;
--   3：text(文本&空格);
--   8：comment(注释);
+- 9：document;
+- 1：element(元素节点);
+- 2：attribute;
+- 3：text(文本&空格);
+- 8：comment(注释);
 
 ```
 ul.firstElementChild.nodeType;  // 1
@@ -650,6 +714,7 @@ window.onresize = function(){
    history.go(0) == location.reload()     1. 普通刷新: 优先从浏览器本地缓存中获取资源。缓存中没有或过期，才去服务器下载新的。
    location.reload(true)                  2. 强制刷新: 跳过浏览器缓存，总是从服务器下载最新的资源
 ```
+
 ```
 window.addEventListener('hashChange', (e)=>{
 	console.log('hash地址改变', e)
