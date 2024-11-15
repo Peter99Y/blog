@@ -1,5 +1,5 @@
 ---
-title: "SVG"
+title: "svg"
 ---
 
 ## svg

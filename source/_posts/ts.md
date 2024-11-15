@@ -41,17 +41,17 @@ title: Ts
 
 ### 联合类型
 
-```
-const arr: boolean | number[] = true; 	// 要么是布尔类型，要么是数值数组类型
+```typescript
+const arr: boolean | number[] = true; // 要么是布尔类型，要么是数值数组类型
 
 let fn = function (val: number | string): number | string {
-	return val;
+  return val;
 };
 ```
 
 ### 交叉类型
 
-```
+```typescript
 type UserType = {
     name: string,
     age: number
@@ -88,7 +88,7 @@ usr({ name: "Tom", age: 1 });
 
 ### 值/字面量类型
 
-```
+```typescript
 type Flag = 1 | 2;
 
 function fn(type: Flag) {
@@ -104,18 +104,18 @@ function fn(type: Flag) {
 
 没有设置类型时，默认会推断类型
 
-```
-let any; 				// any: any
+```typescript
+let any; // any: any
 
-let isShown = 1 > 2;			// isShown: boolean
+let isShown = 1 > 2; // isShown: boolean
 isShown = true;
 
-let greet = ["hello", 99];		// greet:(string|number)[]
+let greet = ["hello", 99]; // greet:(string|number)[]
 ```
 
 ### js 内置对象
 
-```
+```typescript
 let num: Number = new Number(1);
 let date: Date = new Date();
 let str: String = new String();
@@ -126,11 +126,11 @@ let xhr: XMLHttpRequest = new XMLHttpRequest();
 // Promise比较特殊，它接收一个返回类型；
 let prm: Promise<string> = new Promise((r) => r("hi"));
 prm.then((res) => {
-	console.log(res.length); 	// 2
+  console.log(res.length); // 2
 });
 ```
 
-```
+```typescript
 let d1: HTMLDivElement = document.querySelector("div")!; //  div: HTMLDivElement | null
 
 let d2 = document.querySelector("section/header/footer"); // sct: HTMLElement | null
@@ -142,16 +142,16 @@ let d4 = document.querySelector(".demo") as Element; // test: Element
 let d5: NodeList = document.querySelectorAll("li");
 
 let d6: NodeListOf<HTMLDivElement | HTMLElement> =
-	document.querySelectorAll("div");
+  document.querySelectorAll("div");
 ```
 
 ### never 类型
 
 什么值都没有
 
-```
-function run(): never{
-	throw new Error('错误');
+```typescript
+function run(): never {
+  throw new Error("错误");
 }
 
 run();
@@ -161,20 +161,20 @@ run();
 
 常用于函数返回值；此类型的值只能是 null 或 undefined;
 
-```
-let str:void = null;			// 非严格模式可赋值为null;
+```typescript
+let str: void = null; // 非严格模式可赋值为null;
 str = undefined;
 
-function show():void{
-	return null;			// err; 不能将类型“null”分配给类型“void”
+function show(): void {
+  return null; // err; 不能将类型“null”分配给类型“void”
 }
 
-function run():void | string{
-	return 'faster';
+function run(): void | string {
+  return "faster";
 }
 
 let sum = (a: number, b: number): string => {
-	return `a+b=${a + b}`;
+  return `a+b=${a + b}`;
 };
 let res: string = sum(1, 2);
 ```
@@ -183,9 +183,9 @@ let res: string = sum(1, 2);
 
 undefined & null 可以赋值给其他类型
 
-```
+```typescript
 let nu: null = null;
-let und: undefined = undefined;	  // 非严格模式下，null和undefined可互相赋值
+let und: undefined = undefined; // 非严格模式下，null和undefined可互相赋值
 
 let flag: boolean = true;
 flag = null;
@@ -200,7 +200,7 @@ count = undefined;
 
 - unknown 类型是任何类型的父类，但不能是其他类型的子类；无法获取 unkown 类型的属性和方法；
 
-```
+```typescript
 1. any & unknown
 2. Object
 3. Number & String & Boolean
@@ -209,7 +209,7 @@ count = undefined;
 6. never
 ```
 
-```
+```typescript
 let obj: any = { isShown: true, open: () => 123 };
 obj.isShown; 		// 可读取已有属性和方法
 
@@ -226,7 +226,7 @@ let word2: string = unk as string; 	// 断言这个类型是string类型
 
 - unknown 一般用作函数参数：用来接受任意类型的变量实参，但在函数内部只用于传递或输出结果，不获取属性的场景
 
-```
+```typescript
 function fn(value?: unknown){
     return createFn(value)
 }
@@ -238,19 +238,19 @@ function createFn(data){... }
 
 与元祖相比，不限制长度和位置，只限制里面的类型
 
-```
-const arr: string[];					// 字符串数组
+```typescript
+const arr: string[]; // 字符串数组
 
-const arr: number[] = [1, 2, 3];			// 数值数组
+const arr: number[] = [1, 2, 3]; // 数值数组
 
-const arr: boolean | number[] = true; 			// 要么是布尔类型，要么是数值数组类型
+const arr: boolean | number[] = true; // 要么是布尔类型，要么是数值数组类型
 
-const arr: (string | boolean)[] = ['hello', true];	// 数组里可包含 字符串和布尔值
+const arr: (string | boolean)[] = ["hello", true]; // 数组里可包含 字符串和布尔值
 
-let arr: { id: number }[] = [{ id: 1 }];			// 对象数组
-arr.push(1);							// err
+let arr: { id: number }[] = [{ id: 1 }]; // 对象数组
+arr.push(1); // err
 
-let arr: (string[] | boolean)[] = [["hello"], true];		// 二维数组
+let arr: (string[] | boolean)[] = [["hello"], true]; // 二维数组
 ```
 
 - 数组 & 泛型
@@ -261,10 +261,10 @@ let arr: (string[] | boolean)[] = [["hello"], true];		// 二维数组
 
 元祖类型在定义时，限制了数据的类型/位置/长度;
 
-```
+```typescript
 let arr: [string, number, boolean] = ["hello", 2, false];
-arr[0] = 99;				// err; 不能更改类型
-arr[0] = 'hello world';		// 可改值
+arr[0] = 99; // err; 不能更改类型
+arr[0] = "hello world"; // 可改值
 
 let arr: readonly [x: number, y?: boolean] = [1, true];
 ```
@@ -272,7 +272,7 @@ let arr: readonly [x: number, y?: boolean] = [1, true];
 - 元祖标签：元祖元素类型对应的含义不够明确；
 - 可变元祖：有些元素像元祖一些是固定位置、不可修改类型、不可修改值，一些元素像数组具有灵活性可修改；
 
-```
+```typescript
 let info: [string, number, string, ...any[]] = ["tom", 10, "Beijing", "200kg", "190cm"];
 info[4] = "200cm"; 			// 可修改，具有数组灵活性
 let tall = info[4];
@@ -297,43 +297,44 @@ let [username, age, city, ...rest]: [_username:string, _age:number, _city:string
 
 - object 类型
 
-```
-let obj: object = 1;		// err; 不能将类型“number”分配给类型“object”
+```typescript
+let obj: object = 1; // err; 不能将类型“number”分配给类型“object”
 
-let obj: object = [];		// object约束必须是引用类型；
+let obj: object = []; // object约束必须是引用类型；
 
 let obj: object = () => 123;
 
 let obj: object = {
   name: "Tom",
   age: 10,
-}
+};
 
-obj.city = 'Beijing'		// err; 类型“object”上不存在属性“city”
+obj.city = "Beijing"; // err; 类型“object”上不存在属性“city”
 ```
 
 - 字面量类型
 
-```
-let obj: {} = { age: 1 };	// 赋值无效
-obj.age = 2;			// err; 类型 {} 上不存在属性 'age'
+```typescript
+let obj: {} = { age: 1 }; // 赋值无效
+obj.age = 2; // err; 类型 {} 上不存在属性 'age'
 
-
-let obj: {			// 约束obj为对象类型，同时约束只能多少个属性，以及是哪些属性， 并且约束属性值的类型
-	name: string;
-	age: number;
-	hobbit?: string;
+let obj: {
+  // 约束obj为对象类型，同时约束只能多少个属性，以及是哪些属性， 并且约束属性值的类型
+  name: string;
+  age: number;
+  hobbit?: string;
 };
 
-obj = {				// err；赋值时缺少age属性
-	name: 'tom',
-	test: true,		// err；obj字面量没有设置test属性
-}
+obj = {
+  // err；赋值时缺少age属性
+  name: "tom",
+  test: true, // err；obj字面量没有设置test属性
+};
 ```
 
 - 对象取值
 
-```
+```typescript
 let obj = { username: "tom" };
 
 // let key = "username";   // err; 可变的变量作为obj的索引是不固定的，而对象的这个索引是固定的；
@@ -359,7 +360,7 @@ let name1 = obj[username as keyof User];
 
 里面每个元素都有自己的编号，编号从 0 递增，可手动赋值；
 
-```
+```typescript
 enum Color {
   red,
   green,
@@ -367,23 +368,23 @@ enum Color {
   orange = "orange",
 }
 
-let c: Color = Color.orange;	// 6
+let c: Color = Color.orange; // 6
 
 console.log(
-  c,                // 6
-  Color.red,        // 0
-  Color.green,      // 1
-  Color.orange      // orange
+  c, // 6
+  Color.red, // 0
+  Color.green, // 1
+  Color.orange // orange
 );
 
 let value = Color.green;
-console.log(value)  		// 1; 通过key取值；
+console.log(value); // 1; 通过key取值；
 
-let key = Color[value];		// Color[1]
-console.log(key);   		// green; 通过值反向取key；
+let key = Color[value]; // Color[1]
+console.log(key); // green; 通过值反向取key；
 ```
 
-```
+```typescript
 enum Status {
   FAIL = 0,
   SUCCESS = 1,
@@ -404,20 +405,20 @@ function bill(status: Status): void {
 
 - 枚举 & interface
 
-```
+```typescript
 enum Sex {
-	male = "男",
-	female = "女",
+  male = "男",
+  female = "女",
 }
 
 interface userInt {
-	name: string;
-	habit: Sex;
+  name: string;
+  habit: Sex;
 }
 
 let user: userInt = {
-	name: "Tom",
-	habit: Sex.male,
+  name: "Tom",
+  habit: Sex.male,
 };
 ```
 
@@ -427,7 +428,7 @@ let user: userInt = {
 - 类型声明的 x，y 参数名称只是占位，和实际实现函数的 a，b 形参名称可不一致；
 - 类型声明已经有了类型检测和提示，实现函数时，可不必再约束一遍；
 
-```
+```typescript
 let sum: (x: number, y: number) => number = (a, b) => a + b;
 sum(1, 2);				// 3
 
@@ -441,7 +442,7 @@ sum(1, 2, 3, 4);			// [3, 4]
 
 ###### 函数解构
 
-```
+```typescript
 type UserType = { name: string; age: number };
 
 type AddFnType = (user: UserType) => string;
@@ -453,17 +454,17 @@ handleAdd({ name: "tom", age: 10 });
 
 ###### 约束 this
 
-```
+```typescript
 interface ObjInter {
-	user: string[];
-	add: (this: ObjInter, name: string) => void;
+  user: string[];
+  add: (this: ObjInter, name: string) => void;
 }
 
 let obj: ObjInter = {
-	user: ["tom"],
-	add: function (this: ObjInter, name: string) {
-		this.user.push(name);
-	},
+  user: ["tom"],
+  add: function (this: ObjInter, name: string) {
+    this.user.push(name);
+  },
 };
 
 obj.add("jack");
@@ -473,7 +474,7 @@ obj.add("jack");
 
 一个函数通过参数实现多个方法
 
-```
+```typescript
 let arr: number[] = [1, 2, 3];
 
 function findNum(): number[]; // 如没传就是查询全部
@@ -484,19 +485,19 @@ function findNum(add: number[]): number[]; // 传数值数组就是添加
 
 // 实现签名；实现签名的形参和返回参类型都必须满足所有的重载签名类型要求；
 function findNum(ids?: number | number[]): number[] {
-	if (typeof ids === "number") {
-		return arr.filter((i) => i === ids);
-	} else if (Array.isArray(ids)) {
-		arr.push(...ids);
-		return arr;
-	} else {
-		return arr;
-	}
+  if (typeof ids === "number") {
+    return arr.filter((i) => i === ids);
+  } else if (Array.isArray(ids)) {
+    arr.push(...ids);
+    return arr;
+  } else {
+    return arr;
+  }
 }
 
-findNum();			// [1,2,3]
-findNum(1); 			// [1]
-findNum([4, 5]); 		// [1,2,3,4,5]
+findNum(); // [1,2,3]
+findNum(1); // [1]
+findNum([4, 5]); // [1,2,3,4,5]
 ```
 
 ###### 函数 & interface
@@ -511,7 +512,7 @@ findNum([4, 5]); 		// [1,2,3,4,5]
 
 ###### as 类型断言
 
-```
+```typescript
 function fn(arg: number): boolean | number {
 	return arg ? true : 0;
 }
@@ -526,25 +527,25 @@ fn("123"); 			// 确定传的会有length属性就能做断言
 fn(123); 			// undefined；否则编辑时丢失检测类型，运行时会报错
 ```
 
-```
+```typescript
 interface A {
-	run: string;
+  run: string;
 }
 
 interface B {
-	build: string;
+  build: string;
 }
 
 let fn = (type: A | B): void => {
-	let res = (<A>type).run;    // 类型断言泛型方式；断定type此时调用传递的就是A
-	console.log(res)
+  let res = (<A>type).run; // 类型断言泛型方式；断定type此时调用传递的就是A
+  console.log(res);
 };
 
-fn({ run: "1" }); 		    // 1
-fn({ build: "1" }); 		    // undefined
+fn({ run: "1" }); // 1
+fn({ build: "1" }); // undefined
 ```
 
-```
+```typescript
 function fn() {
 	let b = (x: number, y: number) => x + y;
 	let a = "hello";
@@ -585,22 +586,22 @@ let res = m(1, 2);
 
 主动明确不会为 undefined 或 null;
 
-```
-function fn(data?: string){
-    // data.toString();     		// err; 'data' is possibly 'undefined'
+```typescript
+function fn(data?: string) {
+  // data.toString();     		// err; 'data' is possibly 'undefined'
 
-    if(data) data.toString();		// 没有不会执行也就不会报错
-    data?.toString();
-    data!.toString();       		// 非空断言，主动去除undefined or null情况，编译时没有了类型检测，运行时没值才报错；
-    (data as string).toString();	// as类型断言
+  if (data) data.toString(); // 没有不会执行也就不会报错
+  data?.toString();
+  data!.toString(); // 非空断言，主动去除undefined or null情况，编译时没有了类型检测，运行时没值才报错；
+  (data as string).toString(); // as类型断言
 }
 
-fn('11');
+fn("11");
 ```
 
 ###### ! & as 区别
 
-```
+```typescript
 class Animal {
   el: HTMLDivElement;
   constructor(el: HTMLDivElement) {
@@ -611,61 +612,62 @@ class Animal {
   }
 }
 
-const el = document.querySelector("div") as HTMLDivElement; 	// el: HTMLDivElement
+const el = document.querySelector("div") as HTMLDivElement; // el: HTMLDivElement
 const obj = new Animal(el);
 
-const ell = document.querySelector(".ccc")!; 			// ell: Element
-const objj = new Animal(ell);	// err; !只是主动去除HTML的null情况, 而constructor(el: HTMLDivElement) 已经指定了类型为HTMLDivElement；
+const ell = document.querySelector(".ccc")!; // ell: Element
+const objj = new Animal(ell); // err; !只是主动去除HTML的null情况, 而constructor(el: HTMLDivElement) 已经指定了类型为HTMLDivElement；
 ```
 
 ###### 案例
 
-```
-import type { Ref } from 'vue';
+```typescript
+import type { Ref } from "vue";
 
-const cartList = ref([]);       		// 赋值空数组，类型推断是never[]；
-const cartList = ref([] as CartItem[]); 	// 采用断言方式
+const cartList = ref([]); // 赋值空数组，类型推断是never[]；
+const cartList = ref([] as CartItem[]); // 采用断言方式
 
 const getData = async () => {
-  const res = await getMemberCartApi()  	// api处理过返回的是 CartItem[] 结构的数组;
-  cartList.value = res.result;      		// err; Type 'CartItem[]' is not assignable to type 'never[]'
-}
+  const res = await getMemberCartApi(); // api处理过返回的是 CartItem[] 结构的数组;
+  cartList.value = res.result; // err; Type 'CartItem[]' is not assignable to type 'never[]'
+};
 ```
 
 ###### 案例
 
-```
-const profile = ref<ProfileDetail>();   // err; 只做了类型标注，但没有默认值，此时v-model没有绑定到属性 而报错;
+```typescript
+const profile = ref<ProfileDetail>(); // err; 只做了类型标注，但没有默认值，此时v-model没有绑定到属性 而报错;
 const profile = ref<ProfileDetail>({}); // err; 设置空对象，此时类型报错，因为 {} 空对象不满足 ProfileDetail类型;
 
-const profile = ref<ProfileDetail>({} as ProfileDetail);     // 断言空对象结构为ProfileDetail类型;
-const profile = ref({} as ProfileDetail);   // 断言后可不用泛型约束同样有提示;
-
+const profile = ref<ProfileDetail>({} as ProfileDetail); // 断言空对象结构为ProfileDetail类型;
+const profile = ref({} as ProfileDetail); // 断言后可不用泛型约束同样有提示;
 
 <input
-    class="input"
-    v-model="profile.nickname"      // err; 设置ref<ProfileDetail>()时, '__VLS_ctx.profile' is possibly 'undefined';
-/>
+  class="input"
+  v-model="profile.nickname" // err; 设置ref<ProfileDetail>()时, '__VLS_ctx.profile' is possibly 'undefined';
+/>;
 ```
 
 ### 类型转换
 
 ###### as unknown
 
-```
+```typescript
 let str: string = "99";
 
-let a: number = str as number; 		// err; string不能直接转成number类型
+let a: number = str as number; // err; string不能直接转成number类型
 
-let b: number = str as unknown as number;   	// 但可以先转成未知类型，再把未知类型转成number类型
-console.log(b, typeof b);   			// 99 string
+let b: number = str as unknown as number; // 但可以先转成未知类型，再把未知类型转成number类型
+console.log(b, typeof b); // 99 string
 ```
 
-```
-let fn = (a: number, b: number): number => { return a + b };
+```typescript
+let fn = (a: number, b: number): number => {
+  return a + b;
+};
 
 let res: string = fn(1, 2) as unknown as string;
-console.log(res, typeof res);			// 3	number
+console.log(res, typeof res); // 3	number
 ```
 
 ###### as const
@@ -673,31 +675,30 @@ console.log(res, typeof res);			// 3	number
 简单类型转换后，转成值类型
 引用类型转换后，转成只读宽泛类型
 
-```
-let user1 = "tom" as const;		// user1: "tom"；从string宽泛类型 转 'tom' 值类型
-let user1 = <const>"tom";		// 泛型方式
+```typescript
+let user1 = "tom" as const; // user1: "tom"；从string宽泛类型 转 'tom' 值类型
+let user1 = <const>"tom"; // 泛型方式
 
 let user2: user1 = "tom";
-let user2: "tom" = "tom";		// 等价于
+let user2: "tom" = "tom"; // 等价于
 ```
 
-```
-const arr = [true, 1, "a"];			// arr: (boolean | number | string)[]; 这是数组;
-let arr2 = [url, true, count] as const;	// arr2: readonly [string, true, 99]; // 这是元祖;
-arr2[0] = 'hello';				// err; readonly
-
+```typescript
+const arr = [true, 1, "a"]; // arr: (boolean | number | string)[]; 这是数组;
+let arr2 = [url, true, count] as const; // arr2: readonly [string, true, 99]; // 这是元祖;
+arr2[0] = "hello"; // err; readonly
 
 const obj = {
-	name: 'Tom',
-	age: 10 as const,
+  name: "Tom",
+  age: 10 as const,
 } as const;
 
-obj.name = 'tom';   				// err; readonly
+obj.name = "tom"; // err; readonly
 ```
 
 ###### 类型递归
 
-```
+```typescript
 interface UserType {
   name: string;
   degree: number;
@@ -706,7 +707,7 @@ interface UserType {
 
 //  in keyof  类型递归，把key和类型都取出来
 type CustKeyValType = {
-    [K in keyof UserType]: UserType[K];
+  [K in keyof UserType]: UserType[K];
 
   // [K in 'name' | 'degree' | 'phone'] : UserType[K];  // 等价于
 
@@ -714,12 +715,11 @@ type CustKeyValType = {
   // ['degree']: UserType['degree'];
   // ['phone']: UserType['phone'];
 };
-
 ```
 
 ###### 案例 - 为接口增加属性
 
-```
+```typescript
 interface UserType {
   name: string;
   phone: string;
@@ -729,9 +729,8 @@ type AddAttrToUserType<T, K extends string, V> = {
   [P in keyof T | K]: P extends keyof T ? T[P] : V;
 };
 
-
 // type Test = { male: string; name: string; phone: string }
-type Test = AddAttrToUserType<UserType, 'male', string>;
+type Test = AddAttrToUserType<UserType, "male", string>;
 ```
 
 ###### 条件类型
@@ -740,23 +739,23 @@ type Test = AddAttrToUserType<UserType, 'male', string>;
 其中 T 是待判断的类型，U 是基准类型，T extends U 是条件表达式，X 是条件为真时的类型，Y 是条件为假时的类型；
 PS：TypeScript 的基准类型 (boolean、number、string、Array、tuple、enum、any，void、null、undefined、never、object)
 
-```
+```typescript
 type ConType<T> = T extends string | number ? T : never;
 
-type TestType1 = ConType<string | number>; 			// TestType1 = string | number
+type TestType1 = ConType<string | number>; // TestType1 = string | number
 
 // 泛型方式是将参数循环每个 与 右侧比较
-type TestType2 = ConType<string | number | boolean>; 		// TestType2 = string | number
+type TestType2 = ConType<string | number | boolean>; // TestType2 = string | number
 
 // 字面量方式是将 (string | number | boolean) 作为一个整体 与 右侧进行比较
-type TestType3 = string | number | boolean extends string | number	//  TestType3 = never
+type TestType3 = string | number | boolean extends string | number //  TestType3 = never
   ? string
   : never;
 ```
 
 ###### 案例 - 条件类型处理形参
 
-```
+```typescript
 function Fn1<T extends object, K extends object>(obj1: T, obj2: K) {}
 
 type GetType<T> = T extends object ? T : never;
@@ -771,7 +770,7 @@ function Fn2<T, K>(obj1: GetType<T>, obj2: GetType<K>) {}
 
 ###### 索引签名 & interface
 
-```
+```typescript
 /**
 let obj: {
 	name: string;
@@ -781,20 +780,19 @@ let obj: {
 }
 */
 
-
 interface UserInter {
-	name: string;
-	show?(): string;
-	[key: string]: any;
+  name: string;
+  show?(): string;
+  [key: string]: any;
 }
 
 let obj: UserInter = {
-	name: "tom",
-	age: 10,
-	show() {
-		return "hello";
-	},
-	city: "Beijing",
+  name: "tom",
+  age: 10,
+  show() {
+    return "hello";
+  },
+  city: "Beijing",
 };
 ```
 
@@ -802,79 +800,79 @@ let obj: UserInter = {
 
 - 相同接口名会自动合并
 
-```
+```typescript
 interface User {
-	name: string;
+  name: string;
 }
 interface User {
-	age: number;
+  age: number;
 }
 
 const obj: User = {
-	name: "tom",
-	age: 10,
+  name: "tom",
+  age: 10,
 };
 ```
 
 - extends 继承接口
 
-```
+```typescript
 interface ISay {
-	name: string;
+  name: string;
 }
 interface IRun {
-	run();
+  run();
 }
 
 interface IMix extends ISay, IRun {
-	sex: string,
-	say(): void,
+  sex: string;
+  say(): void;
 }
 ```
 
 ###### 枚举 & interface
 
-```
+```typescript
 enum Sex {
-	male = "男",
-	female = "女",
+  male = "男",
+  female = "女",
 }
 
 interface userInt {
-	name: string;
-	habit: Sex;
+  name: string;
+  habit: Sex;
 }
 
 let user: userInt = {
-	name: "Tom",
-	habit: Sex.male,
+  name: "Tom",
+  habit: Sex.male,
 };
 ```
 
 ###### 数组 & interface
 
-```
+```typescript
 enum SexType {
-	Girl,
-	Boy
+  Girl,
+  Boy,
 }
 
 interface UserInter {
-	name: string;
-	sex: SexType
+  name: string;
+  sex: SexType;
 }
 
 let user1: UserInter = {
-	name: "tom",
-	sex: SexType.Boy
+  name: "tom",
+  sex: SexType.Boy,
 };
 
-const userArr: UserInter[] = [user1, {name: 'Jack', sex: SexType.Boy}];
+const userArr: UserInter[] = [user1, { name: "Jack", sex: SexType.Boy }];
 ```
 
 ###### 函数 & interface
 
-```
+```typescript
 interface fnInter {
 	(price: number): number;
 }
@@ -898,17 +896,17 @@ class Animal implements DemoInt, AnotherInt {
 }
 ```
 
-```
+```typescript
 interface UserInter {
-	name: string;
-	age: number;
-	isLocked: boolean;
+  name: string;
+  age: number;
+  isLocked: boolean;
 }
 
 // interface约束形参 和 返回值
-function handleLock(user:UserInter, lock: boolean): UserInter{
-	user.isLocked = lock;
-	return user;
+function handleLock(user: UserInter, lock: boolean): UserInter {
+  user.isLocked = lock;
+  return user;
 }
 
 handleLock(user, true);
@@ -920,46 +918,46 @@ handleLock(user, true);
 
 ### type
 
-```
+```typescript
 // 声明基本类型别名
 type S = string | number;
-let str: S = 'Tom';
+let str: S = "Tom";
 
 // 声明联合类型
 type Sex = "boy" | "girl";
 ```
 
-```
+```typescript
 type userType = {
-	name: string;
-	age: number
+  name: string;
+  age: number;
 };
 
 type addUserFnType = (user: userType) => boolean;
 
 let handleAddUser: addUserFnType = (userObj: userType) => {
-	return true;
+  return true;
 };
 
 handleAddUser({ name: "tom", age: 10 });
 ```
 
-```
+```typescript
 type userType = {
-	name: string;
-	age: number;
-	city: string;
+  name: string;
+  age: number;
+  city: string;
 };
 
 type AnimalType = userType & {
-	habit: string;
+  habit: string;
 };
 
 let dog: AnimalType = {
-	name: "Dan",
-	age: 10,
-	city: "Beijing",
-	habit: "orange",
+  name: "Dan",
+  age: 10,
+  city: "Beijing",
+  habit: "orange",
 };
 ```
 
@@ -975,7 +973,7 @@ let dog: AnimalType = {
 
 查阅 `interface 继承`
 
-```
+```typescript
 type num = number;
 
 type Name = {
@@ -1017,7 +1015,7 @@ type VehicleType = [Car, Plane]
 定义时不明确类型，使用时必须明确具体类型；
 泛型形参名称可以是任何字母或单词，常用 T 表示，多个泛型用逗号隔开；
 
-```
+```typescript
 function dump(arg: string): string {
 	return arg;
 }
@@ -1042,7 +1040,7 @@ dump<number>(1);
 
 ###### type & 泛型
 
-```
+```typescript
 type CustomType<T> = string | number | T;
 let type1: CustomType<boolean> = true;
 
@@ -1063,22 +1061,22 @@ let res: PageResult<listItem> = axios.get({url: ''});
 
 ###### interface & 泛型
 
-```
+```typescript
 interface ArticleInter<A, B> {
-	title: string;
-	isLock: A;
-	comments: B[];
+  title: string;
+  isLock: A;
+  comments: B[];
 }
 
 type CommentType = {
-	comment: string;
-	author?: string;
+  comment: string;
+  author?: string;
 };
 
 const article: ArticleInter<boolean, CommentType> = {
-	title: "how to use ts",
-	isLock: true,
-	comments: [{ comment: "first learning" }],
+  title: "how to use ts",
+  isLock: true,
+  comments: [{ comment: "first learning" }],
 };
 ```
 
@@ -1086,7 +1084,7 @@ const article: ArticleInter<boolean, CommentType> = {
 
 ###### 泛型约束
 
-```
+```typescript
 function getLength<T>(arg: T): number {
 	return arg.length;			// err; string 和 数组才有length属性；
 }
@@ -1119,7 +1117,7 @@ console.log(getLength([1, 2, 3])); 		// 3; 传入的数组本身就是有length�
 console.log(getLength(100)); 			// err; 这样当调用时就会有类型检测；
 ```
 
-```
+```typescript
 interface Person {
   name: string;
   age: number;
@@ -1138,74 +1136,72 @@ let c: Keys2 = "age";
 
 - 约束对象的 key
 
-```
+```typescript
 // 第1参 约束泛型T 必须满足object类型（object/Set/Map/函数/Array等），如调用时传string/number等类型检测就会报错；
 // 第2参 约束泛型K 必须是第一个泛型T(object对象)的键名之一；
 function getValue<T extends object, K extends keyof T>(obj: T, key: K): T[K] {
-	return obj[key];
+  return obj[key];
 }
 
 let res = getValue(obj, "name");
-console.log(res); 				// Tom
+console.log(res); // Tom
 ```
 
 - 解决 keyof 不能直观看到联合类型；
 
-```
+```typescript
 type Obj = {
-	username: "Tom";
-	age: 1;
+  username: "Tom";
+  age: 1;
 };
 
 // extends 会将左侧循环与右侧进行比较，所以能够ObjKeys2能直接看到key联合类型
 type ViewKeys<T> = T extends any ? T : never;
-type ObjKeys2 = ViewKeys<keyof Obj>;    	// ObjKeys2 = "username" | "age"
+type ObjKeys2 = ViewKeys<keyof Obj>; // ObjKeys2 = "username" | "age"
 ```
 
 ###### 泛型嵌套
 
 ###### 数组 & 泛型
 
-```
+```typescript
 let arr: Array<number | string | object> = [1, "2", {}];
-let arr: (number | string | object)[] = [1, 'hello', {id: 1}];	// 等价于
+let arr: (number | string | object)[] = [1, "hello", { id: 1 }]; // 等价于
 
 let arr: Array<Array<{ id: number }> | boolean> = [[{ id: 1 }], true];
-let arr: ({id: number}[] | boolean)[] = [[{id: 1}, {id: 2}], true];		// 等价于
+let arr: ({ id: number }[] | boolean)[] = [[{ id: 1 }, { id: 2 }], true]; // 等价于
 ```
 
 ###### 函数 & 泛型
 
-```
-function add<T, K = boolean>(a:T, b: K): Array<T | K> {
-	return [a, b]
+```typescript
+function add<T, K = boolean>(a: T, b: K): Array<T | K> {
+  return [a, b];
 }
 
-add(1, true)
+add(1, true);
 ```
 
 ###### Promise & 泛型
 
-```
+```typescript
 const axios = {
-	get<T>(url: string): Promise<T> {
-
-		return new Promise((resolve) => {
-			let xhr: XMLHttpRequest = new XMLHttpRequest();
-			xhr.open("GET", url);
-			xhr.onreadystatechange = () => {
-				if (xhr.readyState === 4 && xhr.status === 200) {
-					resolve(JSON.parse(xhr.responseText));
-				}
-			};
-		});
-
-	},
+  get<T>(url: string): Promise<T> {
+    return new Promise((resolve) => {
+      let xhr: XMLHttpRequest = new XMLHttpRequest();
+      xhr.open("GET", url);
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          resolve(JSON.parse(xhr.responseText));
+        }
+      };
+    });
+  },
 };
 
 interface resultData {
-	code: number;
-	message: string;
+  code: number;
+  message: string;
 }
 
 axios.get<resultData>("...").then((res) => {});
@@ -1213,13 +1209,13 @@ axios.get<resultData>("...").then((res) => {});
 
 ###### class & 泛型
 
-```
+```typescript
 class Collection<T> {
-	data: T[] = [];
+  data: T[] = [];
 
-	public push(...args: T[]) {
-		this.data.push(...args);
-	}
+  public push(...args: T[]) {
+    this.data.push(...args);
+  }
 }
 
 const col = new Collection<string>();
@@ -1229,26 +1225,26 @@ const col2 = new Collection<number>();
 col2.push(1, 2);
 
 type UserType = {
-	name: string;
-	age: number;
+  name: string;
+  age: number;
 };
 
 const col3 = new Collection<UserType>();
 col3.push({ name: "tom", age: 1 }, { name: "jack", age: 2 });
 ```
 
-```
+```typescript
 class User<T> {
-	public constructor(private _user:T) {}
+  public constructor(private _user: T) {}
 
-	public get() : T{
-		return this._user;
-	}
+  public get(): T {
+    return this._user;
+  }
 }
 
 interface UserInter {
-	name: string;
-	age: number;
+  name: string;
+  age: number;
 }
 
 const user1 = new User<UserInter>({ name: "tom", age: 10 });
@@ -1259,34 +1255,34 @@ console.log(user1.get());
 
 - ES6 的 class
 
-```
+```typescript
 class Animal {
-	// 静态属性
-	static paws = 4;
+  // 静态属性
+  static paws = 4;
 
-	constructor(name) {
-		// 实例对象共有属性
-		this.name = name;
-		// 创建实例对象就立即调用
-		this.init();
-	}
+  constructor(name) {
+    // 实例对象共有属性
+    this.name = name;
+    // 创建实例对象就立即调用
+    this.init();
+  }
 
-	init(){
-		console.log('initial finished');
-	}
+  init() {
+    console.log("initial finished");
+  }
 
-	// 实例对象共有方法
-	run(method) {
-		console.log(this.name, `is runing ${method}`);
-	}
+  // 实例对象共有方法
+  run(method) {
+    console.log(this.name, `is runing ${method}`);
+  }
 
-	// 静态方法
-	static eat(){
-		console.log('chips');
-	}
+  // 静态方法
+  static eat() {
+    console.log("chips");
+  }
 }
 
-console.log(Animal.paws);  // 4
+console.log(Animal.paws); // 4
 
 // 生成实例对象
 var dog = new Animal("dog");
@@ -1301,7 +1297,7 @@ cat.run("slow");
 
 - Ts 中的 class
 
-```
+```typescript
 class Animal {
   // ts中的类的属性 在类体中必须也有，不像ES6中的类只需有在构造函数中；
   name: string;
@@ -1346,74 +1342,74 @@ console.log(Animal.paws); // 3
 
 - public 属性和方法 默认是 public，子类可覆盖属性和方法；
 
-```
+```typescript
 class Animal {
-	public name: string;
-	age: number;
+  public name: string;
+  age: number;
 
-	constructor(name: string, age: number) {
-		this.name = name;
-		this.age = age;
-	}
-	public run() {
-		return `${this.name}跑得很快`;
-	}
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+  public run() {
+    return `${this.name}跑得很快`;
+  }
 }
 
 const dog = new Animal("dog", 10);
-console.log(dog.name, dog.age); 	// dog 10
-console.log(dog.run()); 		// dog跑得很快
+console.log(dog.name, dog.age); // dog 10
+console.log(dog.run()); // dog跑得很快
 ```
 
 - protected 修饰的属性方法，只能在类访问；实例对象无法访问；子类可访问父类，但不能覆盖父类 protected 属性方法；
 
-```
+```typescript
 class Animal {
-	protected name: string;
-	public age: number;
+  protected name: string;
+  public age: number;
 
-	constructor(name: string, age: number) {
-		this.name = name;
-		this.age = age;
-	}
-	protected run() {
-		return `${this.name}跑得很快`;
-	}
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+  protected run() {
+    return `${this.name}跑得很快`;
+  }
 }
 
 class Dog extends Animal {
-	constructor(a: string, b: number) {
-		super(a, b);
-	}
-	triggerRun() {
-		return this.run();
-	}
+  constructor(a: string, b: number) {
+    super(a, b);
+  }
+  triggerRun() {
+    return this.run();
+  }
 }
 
 const dan = new Dog("Dan", 10);
 
-console.log(dan.age); 			// 10
-console.log(dan.run());		// err; 只能在类“Animal”及其子类中访问
-console.log(dan.triggerRun()); 	// Dan跑得很快
+console.log(dan.age); // 10
+console.log(dan.run()); // err; 只能在类“Animal”及其子类中访问
+console.log(dan.triggerRun()); // Dan跑得很快
 ```
 
 - private 修饰私有属性方法，实例对象不能访问；子类不能继承父类 且 不能覆盖父类私有属性方法，子类相同属性只能改得比父类宽松；
 
 - readonly 修饰的属性 只能在 constructor 构造函数中被修改；
 
-```
+```typescript
 class Dog extends Animal {
-	readonly site: string = "http://abc.com";
-	static host: string = "http";
+  readonly site: string = "http://abc.com";
+  static host: string = "http";
 
-	constructor(name: string, age: number, pows: number, site?: string) {
-		super(name, age, pows);
-		this.site = site || this.site;
-	}
+  constructor(name: string, age: number, pows: number, site?: string) {
+    super(name, age, pows);
+    this.site = site || this.site;
+  }
 
-	static showSite() {
-		return this.host;
-	}
+  static showSite() {
+    return this.host;
+  }
 }
 ```
 
@@ -1421,7 +1417,7 @@ class Dog extends Animal {
 
 如链接数据库，http 请求等，类只需产生一个对象；
 
-```
+```typescript
 // static 方式
 
 export default class DateTool {
@@ -1429,40 +1425,40 @@ export default class DateTool {
   static formateData() {}
 }
 
-DateTool.formateData();			// 调用
+DateTool.formateData(); // 调用
 ```
 
-```
+```typescript
 // 一个类只允许获取一个实例对象；
 
 class Axios {
-	private static instance: Axios | null = null;
+  private static instance: Axios | null = null;
 
-	// 将类的构造函数设为私有，只允许在类的内部调用，外部将不容许实例化对象；
-	private constructor() {}
+  // 将类的构造函数设为私有，只允许在类的内部调用，外部将不容许实例化对象；
+  private constructor() {}
 
-	static make(): Axios {
-		if (Axios.instance == null) {
-			Axios.instance = new Axios();
-			console.log("创建axios实例成功");
-		}
+  static make(): Axios {
+    if (Axios.instance == null) {
+      Axios.instance = new Axios();
+      console.log("创建axios实例成功");
+    }
 
-		return Axios.instance;
-	}
+    return Axios.instance;
+  }
 
-	formateData() {}
+  formateData() {}
 }
 
 // cosnt http = new Axios();			// err; 不能在外部实例化对象；
 const http = Axios.make();
 export default http;
 
-http.formateData();				// 调用
+http.formateData(); // 调用
 ```
 
 ###### get & set
 
-```
+```typescript
 class Animal {
   private _age!: number;
   public name: string;
@@ -1496,31 +1492,31 @@ try {
 
 ###### class & interface
 
-```
+```typescript
 interface DemoInt {
-	options: OptionsInt;
+  options: OptionsInt;
 }
 
 interface AnotherInt {
-	init(): void;
-	run(): void;
+  init(): void;
+  run(): void;
 }
 
 interface OptionsInt {
-	el: string | HTMLElement;
-	url: string,
+  el: string | HTMLElement;
+  url: string;
 }
 
 class Animal implements DemoInt, AnotherInt {
-	options: OptionsInt;
+  options: OptionsInt;
 
-	constructor(options: OptionsInt) {
-		this.options = options;
-		this.init();
-	}
+  constructor(options: OptionsInt) {
+    this.options = options;
+    this.init();
+  }
 
-	init() {}
-	run() {}
+  init() {}
+  run() {}
 }
 ```
 
@@ -1533,27 +1529,27 @@ class Animal implements DemoInt, AnotherInt {
 - abstract 类里面的 abstract 属性/方法 必须定义在抽象类中，且 abstract 属性/方法只是定义，不能实现， 子类才必须实现定义父类定义的抽象属性/方法；
 - 它和接口的区别不只有抽象的规范待子类实现，还有自身的属性和方法；
 
-```
+```typescript
 abstract class Animal {
-	abstract name: string;
+  abstract name: string;
 
-	abstract run(): void;
+  abstract run(): void;
 
-	protected getPosition(): number[] {
-		return [10, 20];
-	}
+  protected getPosition(): number[] {
+    return [10, 20];
+  }
 }
 
 class Dog extends Animal {
-	name: string;
+  name: string;
 
-	constructor(name: string) {
-		super();
-		this.name = name;
-	}
-	run(): void {
-		console.log(this.name + "run fast");
-	}
+  constructor(name: string) {
+    super();
+    this.name = name;
+  }
+  run(): void {
+    console.log(this.name + "run fast");
+  }
 }
 
 let dog = new Dog("dog");
@@ -1568,28 +1564,28 @@ dog.run();
 - 通过 export 暴露出来；
 - namespace 所有的变量和方法都需要导出才能访问
 
-```
+```typescript
 namespace ios {
-	export let a = 1;
-	export const sum = (a: number, b: number): number => a + b;
+  export let a = 1;
+  export const sum = (a: number, b: number): number => a + b;
 
-	export namespace Test2 {
-		export let aa = 2;
-		export const sum = (a: number, b: number): number => a + b;
-	}
+  export namespace Test2 {
+    export let aa = 2;
+    export const sum = (a: number, b: number): number => a + b;
+  }
 }
 
 namespace h5 {
-	export let b = 3;
+  export let b = 3;
 }
 
 // 同名合并
 namespace ios {
-	export let b = 3;
+  export let b = 3;
 }
 
-console.log(ios.Test2.sum(1, 2));	// 3
-console.log(ios.b);			// 3
+console.log(ios.Test2.sum(1, 2)); // 3
+console.log(ios.b); // 3
 ```
 
 ### 装饰器
@@ -1613,7 +1609,7 @@ console.log(ios.b);			// 3
 2. 需要打开 tsconfig.json 修改装饰器配置，将以下两个属性修改为 true；
 3. 执行命令：tsc -w 根据 json 配置项监测文件；
 
-```
+```typescript
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true,
 ```
@@ -1622,15 +1618,15 @@ console.log(ios.b);			// 3
 
 在类的原型链上增加属性和方法；
 
-```
+```typescript
 // 1. 定义一个变量，设置它的装饰器为类装饰器
 const moveDecorator: ClassDecorator = (target: Function) => {
-	// 3. target参数就是装饰器所接收到的类
-	console.log(target); 	// [class Tank] 类的构造函数
+  // 3. target参数就是装饰器所接收到的类
+  console.log(target); // [class Tank] 类的构造函数
 
-	target.prototype.getPosition = (): { x: number; y: number } => {
-		return { x: 100, y: 100 };
-	};
+  target.prototype.getPosition = (): { x: number; y: number } => {
+    return { x: 100, y: 100 };
+  };
 };
 
 // 2. 放在类上一行表示此类使用这个装饰器
@@ -1639,22 +1635,22 @@ class Tank {}
 // moveDecorator(Tank);	// 不使用@语法糖方式，放在声明的class以下；
 
 const t = new Tank();
-console.log((t as any).getPosition());	// 类里面没有方法所以报错，断言一下即可；
+console.log((t as any).getPosition()); // 类里面没有方法所以报错，断言一下即可；
 ```
 
 ###### 装饰器叠加
 
-```
+```typescript
 const moveDecorator: ClassDecorator = (target: Function) => {
-	target.prototype.getPosition = (): { x: number; y: number } => {
-		return { x: 100, y: 100 };
-	};
+  target.prototype.getPosition = (): { x: number; y: number } => {
+    return { x: 100, y: 100 };
+  };
 };
 
 const musicDecorator: ClassDecorator = (target: Function) => {
-	target.prototype.pause = (): void => {
-		console.log("播放音乐");
-	};
+  target.prototype.pause = (): void => {
+    console.log("播放音乐");
+  };
 };
 
 @moveDecorator
@@ -1669,19 +1665,19 @@ const t = new Tank();
 
 意思就是函数颗粒化 或是 闭包；
 
-```
+```typescript
 const musicFactorDecorator = (type: number): ClassDecorator => {
-	return (target: Function) => {
-		if (type === 0) {
-			target.prototype.play = (): void => {
-				console.log("战争");
-			};
-		} else {
-			target.prototype.play = (): void => {
-				console.log("呐喊");
-			};
-		}
-	};
+  return (target: Function) => {
+    if (type === 0) {
+      target.prototype.play = (): void => {
+        console.log("战争");
+      };
+    } else {
+      target.prototype.play = (): void => {
+        console.log("呐喊");
+      };
+    }
+  };
 };
 
 @musicFactorDecorator(0)
@@ -1695,19 +1691,19 @@ new Player().play(); // 呐喊
 
 ###### 案例 - 处理统一信息
 
-```
+```typescript
 const messageDecorator: ClassDecorator = (target: Function) => {
-	target.prototype.message = (content: string) => {
-		console.log(content);
-	};
+  target.prototype.message = (content: string) => {
+    console.log(content);
+  };
 };
 
 @messageDecorator
 class Web {
-	public login() {
-		// console.log("登陆成功");
-		(this as any).message("登陆成功");
-	}
+  public login() {
+    // console.log("登陆成功");
+    (this as any).message("登陆成功");
+  }
 }
 
 new Web().login();
@@ -1717,46 +1713,46 @@ new Web().login();
 
 放在方法上方就是方法装饰器;
 
-```
+```typescript
 const showDecorator: MethodDecorator = (
-	target: object, 		// 修饰普通方法是原型对象，修饰静态方法是构造函数
-	propertyKey: string, 		// 修饰的方法名
-	descriptor: PropertyDescriptor // 对这个方法的描述符（value,可遍历，可修改，可配置）
+  target: object, // 修饰普通方法是原型对象，修饰静态方法是构造函数
+  propertyKey: string, // 修饰的方法名
+  descriptor: PropertyDescriptor // 对这个方法的描述符（value,可遍历，可修改，可配置）
 ) => {
-	descriptor.value = () => {
-		console.log("修改掉修饰的普通方法/静态方法");
-	};
+  descriptor.value = () => {
+    console.log("修改掉修饰的普通方法/静态方法");
+  };
 };
 
 class User {
-	@showDecorator
-	public show() {
-		console.log("不会被打印");
-	}
+  @showDecorator
+  public show() {
+    console.log("不会被打印");
+  }
 }
 
-new User().show();	// 修改掉...
+new User().show(); // 修改掉...
 ```
 
 ###### 案例 - 高亮文字
 
-```
+```typescript
 const highlightDecorator: MethodDecorator = (
-	target: object,
-	propertyKey: string,
-	descriptor: PropertyDescriptor
+  target: object,
+  propertyKey: string,
+  descriptor: PropertyDescriptor
 ) => {
-	const method = descriptor.value;
-	descriptor.value = () => {
-		return `<div style="color:red;">${method()}</div>`;
-	};
+  const method = descriptor.value;
+  descriptor.value = () => {
+    return `<div style="color:red;">${method()}</div>`;
+  };
 };
 
 class User {
-	@highlightDecorator
-	public response() {
-		return "开发人员A";
-	}
+  @highlightDecorator
+  public response() {
+    return "开发人员A";
+  }
 }
 
 let u = new User();
@@ -1765,27 +1761,27 @@ document.body.insertAdjacentHTML("beforeend", u.response());
 
 ###### 案例 - 统一错误处理
 
-```
+```typescript
 const ErrorDecorator: MethodDecorator = (
-	target: Object,
-	propertyKey: string | symbol,
-	descriptor: PropertyDescriptor
+  target: Object,
+  propertyKey: string | symbol,
+  descriptor: PropertyDescriptor
 ) => {
-	let method = descriptor.value;
-	descriptor.value = () => {
-		try {
-			method();
-		} catch (err) {
-			console.log(`%c ${err.message}", "color:green;font-size:33px;`);
-		}
-	};
+  let method = descriptor.value;
+  descriptor.value = () => {
+    try {
+      method();
+    } catch (err) {
+      console.log(`%c ${err.message}", "color:green;font-size:33px;`);
+    }
+  };
 };
 
 class User {
-	@ErrorDecorator
-	findUser() {
-		throw new Error("您查找的用户不存在");
-	}
+  @ErrorDecorator
+  findUser() {
+    throw new Error("您查找的用户不存在");
+  }
 }
 
 new User().findUser();
@@ -1795,52 +1791,52 @@ new User().findUser();
 
 装饰器工厂
 
-```
+```typescript
 type userType = {
-	name: string;
-	isLogin: boolean;
-	permissions: string[];
+  name: string;
+  isLogin: boolean;
+  permissions: string[];
 };
 
 const user: userType = {
-	name: "tom",
-	isLogin: true,
-	permissions: ["add", "edit", "remove", "list"],
+  name: "tom",
+  isLogin: true,
+  permissions: ["add", "edit", "remove", "list"],
 };
 
 const AccessDecorator = (keys: string[]): MethodDecorator => {
-	return (
-		target: Object,
-		propertyKey: string | symbol,
-		descriptor: PropertyDescriptor
-	) => {
-		let method = descriptor.value;
-		const validate = () => {
-			return keys.every((it) => {
-				return user.permissions.includes(it);
-			});
-		};
-		descriptor.value = () => {
-			if (user.isLogin === true && validate()) {
-				console.log("操作成功");
-				return method();
-			} else {
-				location.href = "login.html";
-			}
-		};
-	};
+  return (
+    target: Object,
+    propertyKey: string | symbol,
+    descriptor: PropertyDescriptor
+  ) => {
+    let method = descriptor.value;
+    const validate = () => {
+      return keys.every((it) => {
+        return user.permissions.includes(it);
+      });
+    };
+    descriptor.value = () => {
+      if (user.isLogin === true && validate()) {
+        console.log("操作成功");
+        return method();
+      } else {
+        location.href = "login.html";
+      }
+    };
+  };
 };
 
 class Article {
-	@AccessDecorator(["edit"])
-	public handleEdit() {
-		console.log("修改操作");
-	}
+  @AccessDecorator(["edit"])
+  public handleEdit() {
+    console.log("修改操作");
+  }
 
-	@AccessDecorator(["add"])
-	public handleAdd() {
-		console.log("添加操作");
-	}
+  @AccessDecorator(["add"])
+  public handleAdd() {
+    console.log("添加操作");
+  }
 }
 
 new Article().handleAdd();
@@ -1850,67 +1846,66 @@ new Article().handleAdd();
 
 参数装饰器需要安装`npm i reflect-metadata`存/取数据；- 这里没搞
 
-```
+```typescript
 // 属性装饰器
 const propDecorator: PropertyDecorator = (
-	target: object,
-	propertyKey: string | symbol
+  target: object,
+  propertyKey: string | symbol
 ) => {
-	console.log(target);
-	console.log(propertyKey);
+  console.log(target);
+  console.log(propertyKey);
 };
 
 // 参数装饰器
 const paramsDecorator: ParameterDecorator = (
-	target: object,			// 原型对象
-	propertyKey: string | symbol | undefined,	// 处于哪个方法
-	parameterIndex: number	// 修饰的参数下标位置
+  target: object, // 原型对象
+  propertyKey: string | symbol | undefined, // 处于哪个方法
+  parameterIndex: number // 修饰的参数下标位置
 ) => {
-	console.log(`${parameterIndex} 获取参数下标位置`);
+  console.log(`${parameterIndex} 获取参数下标位置`);
 };
 
 class Article {
+  @propDecorator
+  public title: string | undefined;
 
-	@propDecorator
-	public title: string | undefined;
-
-	public show(id: number, @paramsDecorator content: string) {}
+  public show(id: number, @paramsDecorator content: string) {}
 }
 ```
 
 ###### 案例 - 文字处理成小写
 
-```
+```typescript
 const lowerWordPropDecorator: PropertyDecorator = (
-	target: Object,
-	propertyKey: string | symbol
+  target: Object,
+  propertyKey: string | symbol
 ) => {
-	let value: string;
-	Object.defineProperty(target, propertyKey, {
-		get: () => {
-			return value.toLocaleLowerCase();
-		},
-		set: (v) => {
-			value = v;
-		},
-	});
+  let value: string;
+  Object.defineProperty(target, propertyKey, {
+    get: () => {
+      return value.toLocaleLowerCase();
+    },
+    set: (v) => {
+      value = v;
+    },
+  });
 };
 
 class Article {
-	@lowerWordDecorator
-	public title: string | undefined;
+  @lowerWordDecorator
+  public title: string | undefined;
 }
 
 const a = new Article();
-a.title = 'HELLOW WORLD'
-console.log(a.title);	// hello word
+a.title = "HELLOW WORLD";
+console.log(a.title); // hello word
 ```
 
 ### infer
 
 - infer 表示在 extends 条件语句中以占位符出现，等使用时才推断出来的数据类型，infer + 任意字母占位符；
 
-```
+```typescript
 interface User {
     name: string
     age:number
@@ -1968,7 +1963,7 @@ let b: TypeOfArr<Array<{ name: string }>> = { name: "Tom" };
 
 - readonly
 
-```
+```typescript
 type UserType = {
   readonly name: string;
 };
@@ -1984,7 +1979,7 @@ user.name = 'Jack'
 
 - Partial
 
-```
+```typescript
 type PageParams = {
   page: number;
   pageSize: number;
@@ -2004,41 +1999,41 @@ let p: OriginPartial<PageParams> = {};
 - Exclude
 - Extract
 
-```
+```typescript
 interface UserInt {
-	name: string,
-	age: number,
-	address: string;
+  name: string;
+  age: number;
+  address: string;
 }
 
-type e = Exclude<"a" | "b" | "c", "b" | "c">;			// type e = "a"
+type e = Exclude<"a" | "b" | "c", "b" | "c">; // type e = "a"
 
-type e = Extract<string | number | boolean, string | number>;	// type e = string | number
+type e = Extract<string | number | boolean, string | number>; // type e = string | number
 ```
 
 - Pick
 
-```
+```typescript
 type userType = {
-	name: string;
-	age: number;
-	city: string;
+  name: string;
+  age: number;
+  city: string;
 };
 
 type AnimalType = Pick<userType, "name" | "city"> & {
-	habit: string;
+  habit: string;
 };
 
 let dog: AnimalType = {
-	name: "Dan",
-	city: "Beijing",
-	habit: "orange",
+  name: "Dan",
+  city: "Beijing",
+  habit: "orange",
 };
 ```
 
 - Required
 
-```
+```typescript
 type PageParams = {
   page?: number
   pageSize?: number
@@ -2067,7 +2062,7 @@ let p: OriginRequired<PageParams> = { page: 1, pageSize: 10};
 
 - Record: 约束对象 key 和 value；
 
-```
+```typescript
 type Key = "name" | "age" | "sex";
 type Value = "Tom" | 10 | "male";
 
@@ -2086,10 +2081,10 @@ fn({name: 'Tom', age: 1})
 
 - ReturnType: 获取函数返回类型
 
-```
+```typescript
 let fn = () => [1, "a", true];
 
-type whichType = ReturnType<typeof fn>;	// whichType = (string | number | boolean)[]
+type whichType = ReturnType<typeof fn>; // whichType = (string | number | boolean)[]
 ```
 
 ---
@@ -2117,47 +2112,44 @@ declare namespace	// 声明命名空间
 interface/type		// 声明全局类型和接口 (无需declare关键字)
 ```
 
-```
+```typescript
 // 模块声明定义声明文件 declare module '模块名称'，如 express.d.ts；
 
 declare module "express" {
+  interface Express {
+    (): App;
+    Router(): Router;
+  }
 
-	interface Express {
-		(): App;
-		Router(): Router;
-	}
+  interface App {
+    use(path: string, router: any): void;
+    listen(port: number, cb?: () => void);
+  }
 
-	interface App {
-		use(path: string, router: any): void;
-		listen(port: number, cb?: () => void);
-	}
+  interface Router {
+    get(path: string, cb: (req: any, res: any) => void);
+  }
 
-	interface Router {
-		get(path: string, cb: (req: any, res: any) => void);
-	}
+  const express: Express;
 
-
-	const express: Express;
-
-	export default express;		// 导出模块
+  export default express; // 导出模块
 }
 ```
 
-```
-// main.ts
-import express from 'express';		// 导入第三方库（会自动寻找express.d.ts声明文件）
+```typescript main.ts
+import express from "express"; // 导入第三方库（会自动寻找express.d.ts声明文件）
 
 const app = express();
 const router = express.Router();
-app.use('/api', router);
+app.use("/api", router);
 
-router.get('/api', (req:any, res:any)=>{
-  res.json({code: 200});
-})
+router.get("/api", (req: any, res: any) => {
+  res.json({ code: 200 });
+});
 
-app.listen(3000, ()=>{
-  console.log('visit localhost:3000');
-})
+app.listen(3000, () => {
+  console.log("visit localhost:3000");
+});
 ```
 
 ### 类型兼容
@@ -2165,26 +2157,26 @@ app.listen(3000, ()=>{
 - 协变
   子类型的属性能完全兼容主类型的属性称为协变
 
-```
+```typescript
 interface A {
-	name: string;
-	age: number;
+  name: string;
+  age: number;
 }
 
 interface B {
-	name: string;
-	age: number;
-	sex: string;
+  name: string;
+  age: number;
+  sex: string;
 }
 
 let a: A = {
-	name: "Tom",
-	age: 1,
+  name: "Tom",
+  age: 1,
 };
 let b: B = {
-	name: "Jack",
-	age: 1,
-	sex: "male",
+  name: "Jack",
+  age: 1,
+  sex: "male",
 };
 
 a = b;
@@ -2192,7 +2184,7 @@ a = b;
 
 ### tsconfig.json
 
-```
+```json
 {
 	// 编译选项
 	"compilerOption": {

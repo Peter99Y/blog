@@ -1165,11 +1165,14 @@ export default meshModel;
 
 ![](/images/three/geometry/point0.png)
 
-```typescript
+```javascript
 <template>
   <div class="btn-wrapper">
     <button class="btn2" @click="switchFullscreen(true)">全屏</button>
     <button class="btn2" @click="switchFullscreen(false)">退出全屏</button>
+    <button class="btn1" @click="onChangeColor('#f00')">red</button>
+    <button class="btn2" @click="onChangeColor('#00f')">blue</button>
+    <button class="btn2" @click="onDownLoad">下载</button>
   </div>
 
   <div ref="containerRef" style="width: 100%; height: 100vh"></div>
@@ -1236,6 +1239,7 @@ const init = () => {
   renderer.setSize(width, height);
   renderer.setPixelRatio(window.devicePixelRatio); // 设置屏幕像素比，防止绘图模糊
   renderer.setClearColor(0x444444, 1); //设置背景颜色
+
   containerRef.value.appendChild(renderer.domElement);
 
   addMeshToScene();
@@ -1259,7 +1263,7 @@ const addMeshToScene = () => {
   scene.add(mesh);
 
   /**
- * lookAt
+ * lookAt 
  * 相机观察目标，默认朝向坐标系原点，观察物体处于视野(画布)的中心点；
  * 也可以读取网格模型 并指向 目标位置；
 
@@ -1292,7 +1296,7 @@ const addToolsToScene = () => {
   /**
   * controls.change事件：轨道控制器被用户手动改变时，需要重新渲染器渲染三维场景，否则视图上没有改变
   * controls.addEventListener("change", function () {
-      renderer.render(scene, camera); // 执行渲染操作
+      renderer.render(scene, camera); // 执行渲染操作 
       controls.update(); // 必须执行 or setRender函数中调用 controls.update()
     });
   */
@@ -1303,15 +1307,15 @@ const addToolsToScene = () => {
   * 	controls.update();
 
   * 例如：设置轨道控制器基于哪个坐标旋转/缩放；
-  * 	controls.target.set(0, 0, 0);
+  * 	controls.target.set(0, 0, 0); 
   * 	controls.update();
-
+  
   * 例如：设置轨道控制器是否自动旋转/阻尼等；
   * 	controls.autoRotate = true;
-  * 	controls.dampingFactor = 0.1;
-  *
+  * 	controls.dampingFactor = 0.1; 
+  * 
       function animate() {
-        controls.update();
+        controls.update(); 		
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
       }
@@ -1432,6 +1436,21 @@ const setGui = () => {
     .max(1000)
     .step(5);
 };
+
+// 改变颜色
+const onChangeColor = (val: string) => {
+  mesh.material.color.set(val);
+};
+
+// 下载canvas图片
+const onDownLoad = () => {
+  const link = document.createElement("a");
+  const canvas = renderer.domElement;
+  link.href = canvas.toDataURL("image/png");
+  link.download = "three.png";
+  link.click();
+};
+
 
 function setRender() {
   stats.update();
