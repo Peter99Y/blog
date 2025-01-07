@@ -52,6 +52,12 @@ a元素
 设置用户自定义样式表color:inherit or 其他颜色; color就会在第2步骤 **比较重要性** 中覆盖颜色;
 ```
 
+## width & height
+
+- width 能被子元素继承，height 不能被子元素继承；
+- min/max-height 只对当前元素生效，不能被子元素继承，它只是约束条件；
+  ...
+
 ## 包含块
 
 - 元素的排列是在一块区域中，这个区域包含了这个元素，所以元素的包含块就是元素的排列区域；
@@ -592,13 +598,14 @@ circle - 圆形; inset - 矩形; ellipse - 椭圆; polygon - 多边形
 
 > 当设置 display: grid; 相当于元素被设置成了块元素；inline-grid
 
-```
-* {
+```html
+<style>
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-.grid {
+  }
+  .grid {
     display: grid;
     width: 500px;
     height: 500px;
@@ -610,7 +617,22 @@ circle - 圆形; inset - 矩形; ellipse - 椭圆; polygon - 多边形
     */
     grid-template-columns: 100px 100px 100px 100px;
     grid-template-rows: 50px 50px 50px;
-}
+  }
+</style>
+
+<body>
+  <div class="grid">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+    <div>5</div>
+    <div>6</div>
+    <div>7</div>
+    <div>8</div>
+    <div>9</div>
+  </div>
+</body>
 ```
 
 ![](/images/Css/grid1.png)
@@ -798,13 +820,15 @@ grid-auto-flow: column;
 
 ###### 合并
 
+- 合并起始位置默认从 1 开始；
+
 - 合并了多少个单元格，需要删除多少个单元格，否则会造成看起来有空隙；
 
 - 指定合并的单元格在 html 排序位置无关；
 
-```
+```html
 <style>
-.grid {
+  .grid {
     display: grid;
     width: 500px;
     height: 500px;
@@ -815,45 +839,95 @@ grid-auto-flow: column;
     grid-template-rows: repeat(3, 1fr);
 
     gap: 10px;
-}
+  }
 
-.item-1 {
+  .grid > div {
+    background-color: yellowgreen;
+  }
+
+  .row-1 {
+    grid-column-start: 1;
+    grid-column-end: 4;
+  }
+
+  .row-2 {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+
+  .row-3 {
+    grid-column-start: 1;
+    grid-column-end: 2;
+  }
+</style>
+
+<body>
+  <div class="grid">
+    <div class="row-1">1</div>
+    <div class="row-2">2</div>
+    <div class="row-3">3</div>
+  </div>
+</body>
+```
+
+![](/images/Css/grid12.png)
+
+```html
+<style>
+  .grid {
+    display: grid;
+    width: 500px;
+    height: 500px;
+    border: 3px solid orange;
+    margin: 100px auto;
+
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+
+    gap: 10px;
+  }
+
+  .row-1 {
     /* 列合并的开始/结束位置 */
-    /*
+    /* 
         grid-column-start: 2;
-        grid-column-end: 4;
+        grid-column-end: 4; 
     */
+    grid-column: 2/4;
 
     /* 行合并的开始/结束位置 */
     /*
         grid-row-start: 1;
         grid-row-end: 3;
     */
-
-    grid-column: 2/4;
     grid-row: 1/3;
-}
+  }
 
-.item-2 {
+  .row-3 {
     grid-column: 1/3;
     grid-row: 3/4;
-}
+  }
 
-.grid>div {
+  .grid > div {
     background-color: yellowgreen;
-}
+  }
 </style>
 
-<div class="grid">
-    <div></div>
-    <div></div>
-    <div class="item-1"></div>
-    <div class="item-2"></div>
-    <div></div>
-</div>
+<body>
+  <div class="grid">
+    <div>1</div>
+    <div class="row-1">row-1</div>
+
+    <!-- 单元格的html位置可随意 -->
+    <div>2</div>
+
+    <div class="row-3">row-3</div>
+    <div>3</div>
+  </div>
+</body>
 ```
 
-![](/images/Css/grid12.png)
+![](/images/Css/grid13.png)
 
 ## scrollbar
 

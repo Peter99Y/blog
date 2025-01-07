@@ -291,7 +291,7 @@ toRaw 将响应式对象转成普通对象
 
 默认不开放给父组件访问，通过 defineExpose 暴露组件内的属性和方法
 
-```
+```TYPESCRIPT
 <template>
     <Hello ref="child" />
 </template>
@@ -305,7 +305,7 @@ console.log(child.value?.changeMsg);
 </script>
 ```
 
-```
+```TYPESCRIPT
 <script setup lang="ts">
 let msg = 'hello';
 
