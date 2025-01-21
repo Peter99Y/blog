@@ -58,6 +58,17 @@ a元素
 - min/max-height 只对当前元素生效，不能被子元素继承，它只是约束条件；
   ...
 
+## 权重
+
+| 属性                | 大小 |
+| ------------------- | ---- |
+| !important          |      |
+| style               | 1000 |
+| id                  | 100  |
+| class、伪类、[属性] | 10   |
+| 标签、伪元素        | 1    |
+| \*                  | 0    |
+
 ## 包含块
 
 - 元素的排列是在一块区域中，这个区域包含了这个元素，所以元素的包含块就是元素的排列区域；
@@ -192,17 +203,16 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 ![](/images/Css/overflow.jpg)
 
----
-
 ## position
 
 所有浮动元素和定位元素都会默认变成块元素；
+如果给行元素添加定位，那么就会变成块元素，并且会脱离文档流；
 
-#### absolute
+##### absolute
 
 基于有定位的父元素
 
-#### fixed
+##### fixed
 
 基于视口 viewport
 
@@ -244,24 +254,59 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 ![](/images/Css/sticky.png)
 
+---
+
 ## 伪元素 ::before/::after
 
-伪元素默认是行元素，无法设置宽高；
+- 伪元素默认是行元素，无法设置宽高；变块元素，需要设置 display: block 或 position: absolute (会将行颜色设置为块元素)
 
 - content 可设置字符串、空白、图片、计数器、attr（通过元素上的属性值设置字符串）;
 
-```
-div::after {
+```html
+<style>
+  div::after {
     content: attr(label-suffix);
     /* content: "："; */
-}
-```
+  }
+</style>
 
-```
 <div label-suffix="：">名称</div>
 ```
 
 ![](/images/Css/content_attr.png)
+
+```html
+<style>
+  .heart {
+    width: 100px;
+    height: 100px;
+    background-color: #e74c3c;
+    transform: rotate(45deg);
+  }
+  .heart::before {
+    content: "";
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: #e74c3c;
+    transform: translateX(-50%);
+  }
+  .heart::after {
+    content: "";
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: #e74c3c;
+    transform: translateY(-50%);
+  }
+</style>
+```
+
+![](/images/Css/heart.png)
+
+---
 
 ## 伪类
 
