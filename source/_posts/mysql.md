@@ -444,4 +444,86 @@ select a.user, b.user from tb_user as a, tb_user as b where a.superior_id = b.id
 select a.user '员工', b.user '上级' from tb_user as a left outer join tb_user as b on a.superior_id = b.id;
 ```
 
+#### 联合查询
+
+把多次查询的结果合并起来，形成一个新的查询结果集；
+union all 返回合集, 有重复部分；union 返回交集，数据会去重；
+select \* 查询的显示字段数需要保持一致；
+
+```sql
+select * from A表... union [all] select * from B表...;
+
+select * from tb_user where salary > 5000
+union all
+select * from tb_user where age > 20;
+```
+
+#### 子查询/嵌套查询
+
+子查询外部的语句可以是 select、insert、update、delete；
+查询位置：select 之后、from 之后、where 之后；
+
+| 操作符 | 描述                             |
+| ------ | -------------------------------- |
+| IN     | 在指定的范围之内，多选 1         |
+| NOT IN | 不在指定的范围之内               |
+| ANY    | 子查询返回的列表中，满足任意一个 |
+| some   | 子查询返回的列表中，满足任意一个 |
+| ALL    | 子查询返回的列表中，满足全部     |
+
+- 标量子查询 (子查询结果为单个值)
+
+```sql
+从员工表中查询某个部门的所有员工信息（1.查询某个部门的id，2.根据部门id查询所有员工信息）
+
+select id from tb_department where name = '研发部';
+select * from tb_user where department_id = 3;
+// 等价于
+select * from tb_user where department_id = (select id from tb_department where name = '研发部');
+
+
+查询tom之后创建的员工信息（1.查询tom的创建时间，2.查询创建时间之后的员工信息）
+
+select create_time from tb_user where user = 'Tom';
+select * from tb_user where create_time > '2024-11-20';
+// 等价于
+select * from tb_user where create_time > (select create_time from tb_user where user = 'Tom');
+```
+
+- 列子查询 (子查询结果为一列)
+
+```sql
+查询研发部和财务部的所有员工信息（1.查询这2个部门id，2.根据部门id查询所有员工信息）
+
+select id from tb_department where name = '研发部' or name = '财务部';
+select * from tb_user where department_id in (2,3);
+// 等价于
+select * from tb_user where department_id in (select id from tb_department where name = '研发部' or name = '财务部');
+
+
+查询比研发部所有人工资都高的员工信息（1.查询研发部的id，2.根据财务部id查询财务部所有人工资，3.查询大于财务部所有人的工资的所有员工）
+
+select salary from tb_user where department_id = (select id from tb_department where name = '研发部');
+select * from tb_user where salary > 7000;
+// 等价于
+select * from tb_user where salary > all ( select salary from tb_user where department_id = (select id from tb_department where name = '研发部') );
+```
+
+- 行子查询 (子查询结果为一行多列)
+
+```sql
+查询与相同工资 且 相同上司的员工信息（1.查询员工的工资和上级id）
+
+select salary, superior_id from tb_user where username = 'Mary';
+select * from tb_user where salary = 6000 and superior_id = 1;
+
+// 等价于；(将salary, superior_id组合作为一个条件)
+select * from tb_user where (salary, superior_id) = (6000, 1)
+
+// 等价于；
+select * from tb_user where (salary, superior_id) = (select salary, superior_id from tb_user where username = 'Mary');
+```
+
+- 表子查询 (子查询结果为多行多列)
+
 ## 事务
