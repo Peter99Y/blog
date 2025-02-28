@@ -2,31 +2,39 @@
 title: java_se
 ---
 
-## 单位
+## 概念
+
+核心类库：java 自身写好的程序，如：System、String、Math、Scanner 等 (一个类 等同于 一个 java 文件；类库就是存放多个 java 文件的仓库)；
+JVM (java Virtual Machine)： java 虚拟机 (真正运行 java 程序的地方)；
+JRE (java Runtime Environment)： java 运行环境，包含 JVM 虚拟机 和 java 核心类库 (如不开发只运行 java 程序，只需安装 JRE)；
+JDK (java Development Kit)： java 语言的软件开发工具包，内部包括 JRE 和 VM；
+
+## 安装
+
+- 环境变量: Path 环境变量用于记住程序路径，可以在命令行窗口任意目录启动程序；
+- 命令行： cmd 命令行窗口，java -version 查看版本；
+
+## java 结构
+
+- project (项目/工程)
+- module (模块)
+- package
+  src 下的包；命名规则最好是域名的格式的反向，如 com.google;
+- class (类)
+  package com.google; 在类中，指定报名;
+  import com.google.Person; 导入类 (不在同一个包需要导入);
+  import com.google.\*; 导入所有类;
+
+## 运行
+
+- 以大驼峰方式创建后缀.java 文件，其中**类名称必须和文件名称一致**；
+- 在.java 文件所处位置打开命令行窗口，运行：java HelloWorld (.java 的文件名)；
+
+## 计算机单位
 
 计算机最小的组成单位**字节 byte**：其中二进制位称为 **位 bit** 简称 b，使用 8 个二进制位为一组字节保存数据，1byte = 8bit；1KB=1024B；
 
 如：十进制的 6，通过**除二取余法** 转换成二进制 110，字节为 00000110；
-
-## 概念
-
-JVM (java Virtual Machine)： java 虚拟机，真正运行 java 程序的地方；
-核心类库：java 自身写好的程序，如：System、String、Math、Scanner 等；
-JRE (java Runtime Environment)： java 运行环境；
-JDK (java Development Kit)： java 开发工具包(包括以上 3 者)；
-
-### 环境变量
-
-Path 环境变量用于记住程序路径，可以在命令行窗口任意目录启动程序；
-
-### 结构
-
-- project (项目/工程)，module (模块)，package(包)，class (类)；
-
-## 初始
-
-1. 以大驼峰方式创建后缀.java 文件，其中**类名称必须和文件名称一致**；
-2. 运行：java HelloWorld
 
 ## 基本数据类型
 
@@ -205,7 +213,7 @@ a+=b 等价于 a = a + b; (a 与 b 相加后，类型强制转换为 a 类型，
     }
 ```
 
-## 案例 录入用户键盘
+## 案例 键盘录入
 
 ```JAVA
   public static void main(String[] args) {
@@ -223,7 +231,7 @@ a+=b 等价于 a = a + b; (a 与 b 相加后，类型强制转换为 a 类型，
     }
 ```
 
-## 程序流程控制
+## 流程控制
 
 - 顺序结构，从上到下执行代码；
 - 条件结构，根据条件执行对应代码；
@@ -363,14 +371,60 @@ a+=b 等价于 a = a + b; (a 与 b 相加后，类型强制转换为 a 类型，
 - 运行一个 java 程序，JVM 中包含哪几部分内存区域
   方法区，栈内存，堆内存
 
-## 方法
+---
 
-- 方法执行原理
-  方法被调用时，是进入到栈内存中运行；由于栈是遵循先进后出原则，main 方法调 a 方法，a 方法调 b 方法，b 方法执行完回到 a 方法中，a 方法执行完回到 main 方法中。
+> 面向对象
+> 人类、鸟类、鱼类都是对一类事务的描述，是抽象的概念；
+> 对象是某类事务实际存在的每个个体，因而也被称之为实例；
+> 定义一个类，然后建议不创建许多这个类的实例对象，称之为面向对象编程；
+
+## 类
+
+### 属性
+
+定义类的属性，作为成员变量，具体的实例对象中才可以使用这些变量；
+
+### 方法
+
+方法被调用时，是进入到栈内存中运行；由于栈是遵循先进后出原则，main 方法调 a 方法，a 方法调 b 方法，b 方法执行完回到 a 方法中，a 方法执行完回到 main 方法中。
+
+```java
+public class Person {
+    // 定义类的属性，作为成员变量，具体的实例对象中才可以使用这些变量；
+    String name;
+    int age;
+    String gender;
+
+    int sum(int a, int y) {
+        return a + y;
+    }
+
+    void setName (String name) {
+        // name = name; 重名时，只是对形参操作；
+        this.name = name; // this 指向实例对象
+    }
+}
+
+
+public class Demo {
+    public static void main(String[] args) {
+        Person p1 = new Person(); // 通过new关键字创建实例对象
+        Person p2 = new Person();
+        p1.name = "Tom";
+        p2.name = "Jack";
+
+        System.out.println( p1.name ); // Tom
+        System.out.println( p2.name ); // Jack
+
+        int res = p2.sum(1, 2);
+        System.out.println(res);    // 3
+    }
+}
+```
 
 ### 方法重载
 
-- 一个类中，出现多个方法的名称相同，但**形参列表不同 (个数、类型、顺序)**，与形参名、修饰符、返回值类型无关；
+- 一个类中，出现多个方法的名称相同，只是**形参列表不同 (个数、类型、顺序)**；
 
 ```JAVA
     public static void main(String[] args) {
@@ -392,3 +446,85 @@ a+=b 等价于 a = a + b; (a 与 b 相加后，类型强制转换为 a 类型，
         System.out.println(a + b);
     }
 ```
+
+### 构造方法
+
+与类名称相处；构造方法会在实例对象创建时执行，此时可以将各种需要的初始化操作都在这里执行；
+
+```java
+public class Person {
+    // 也可以直接定义属性变量是设置默认值
+    String name = "nobody";
+    int age = 1;
+    String gender = "male";
+
+    {
+        System.out.println(name); // nobody; 属性变量先初始化，其次是此处代码块执行，然后才是构造函数执行
+        name = "somebody";
+    }
+
+    // 通过构造方法给成员变量设置初始值
+    Person (String name, int age, String gender) {
+        System.out.println(this.name); // somebody;
+
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+    }
+}
+```
+
+### 静态变量方法
+
+- 成员属性(变量)/方法，是对象所具有的特征，只有具体的实例对象才可以使用；
+- 静态属性(变量)/方法，是类所具有的特征，类本身就可以使用；静态变量是属于类，不依赖对象，所以静态方法中无法获取成员变量、无法使用 this 关键字；
+
+```java
+public class Person {
+    // 也可以直接定义属性变量是设置默认值
+    String name = "somebody";
+    static String nickname;
+
+    static String say (){
+        System.out.println("我的名字是" + name); // err
+        System.out.println("我的昵称是" + nickname);
+    }
+}
+```
+
+### 访问权限
+
+为成员变量/方法，静态白变量/方法 指定访问权限；
+
+| 权限      | 当前类 | 同一包下的类 | 不同包下的子类 | 不同包下的类 |
+| --------- | ------ | ------------ | -------------- | ------------ |
+| private   | √      | ×            | ×              | ×            |
+| default   | √      | √            | ×              | ×            |
+| protected | √      | √            | √              | ×            |
+| public    | √      | √            | √              | √            |
+
+### 封装
+
+类中的成员变量可直接查看和修改，封装目的是保证类的变量安全性，通过 Getter 和 Setter 方法访问；
+
+```java
+public class Person {
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+### 继承
+
+标记为 final 的类不能被继承；

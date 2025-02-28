@@ -221,34 +221,38 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 - 元素设置了粘性布局之后，会受到两个因素的影响： - 1.包含块； - 2.最近可滚动元素，否则就是适口（body）
   ps：可滚动元素（overflow: 非 visible，它的意思就是不会出现滚动；hidden, scroll, auto 都是可滚动元素）；
 
-```
-    <style>
-        dt {
-            font-weight: bold;
-            background-color: orange;
-            position: sticky;
-            top: 0;
-        }
-        dd {
-            border-bottom: 1px solid #ccc;
-        }
-    </style>
-```
+```html
+<style>
+  dt {
+    font-weight: bold;
+    background-color: orange;
+    position: sticky;
+    top: 0;
+  }
+  dd {
+    border-bottom: 1px solid #ccc;
+  }
+</style>
 
-```
 <body>
-    <dl>
-        <dt>A</dt>
-        <dd>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Id in officia nisi nulla adipisci illo dignissimos
-            doloribus delectus provident. Officiis, ratione. Dicta ratione fuga perferendis, provident saepe soluta
-            explicabo accusantium.</dd>
-    </dl>
-    <dl>
-        <dt>B</dt>
-        <dd>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Id in officia nisi nulla adipisci illo dignissimos
-            doloribus delectus provident. Officiis, ratione. Dicta ratione fuga perferendis, provident saepe soluta
-            explicabo accusantium.</dd>
-    </dl>
+  <dl>
+    <dt>A</dt>
+    <dd>
+      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Id in officia
+      nisi nulla adipisci illo dignissimos doloribus delectus provident.
+      Officiis, ratione. Dicta ratione fuga perferendis, provident saepe soluta
+      explicabo accusantium.
+    </dd>
+  </dl>
+  <dl>
+    <dt>B</dt>
+    <dd>
+      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Id in officia
+      nisi nulla adipisci illo dignissimos doloribus delectus provident.
+      Officiis, ratione. Dicta ratione fuga perferendis, provident saepe soluta
+      explicabo accusantium.
+    </dd>
+  </dl>
 </body>
 ```
 
@@ -258,7 +262,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 ## 伪元素 ::before/::after
 
-- 伪元素默认是行元素，无法设置宽高；变块元素，需要设置 display: block 或 position: absolute (会将行颜色设置为块元素)
+- 伪元素默认是行元素，无法设置宽高；变块元素需要设置 display: block 或 position: absolute (会将行元素设置为块元素)
 
 - content 可设置字符串、空白、图片、计数器、attr（通过元素上的属性值设置字符串）;
 
@@ -992,3 +996,60 @@ grid-auto-flow: column;
     border-radius: 10px;
 }
 ```
+
+## white-space & word-break
+
+用于控制元素内的空白字符（如空格、制表符、换行符等）如何处理，以及文本是否和何时进行换行；
+但是影响有限，如果是一串数字，不会强制文本在特定宽度内换行。
+如果文本中没有空格或其他允许断行的字符（如标点符号），浏览器可能会将整个单词视为一个不可分割的整体，导致溢出
+
+```html
+<body>
+  <div
+    style="
+        width: 100px;
+        height: 50px;
+        border: 1px solid black;
+        white-space: normal;
+      "
+  >
+    1111122233333
+  </div>
+
+  <div
+    style="
+        width: 100px;
+        height: 50px;
+        border: 1px solid black;
+        white-space: normal;
+      "
+  >
+    aaaaabbbbbcccc
+  </div>
+
+  <div
+    style="
+        width: 100px;
+        height: 50px;
+        border: 1px solid black;
+        white-space: normal;
+      "
+  >
+    111 1111113333444
+  </div>
+
+  <div
+    style="
+        width: 100px;
+        height: 50px;
+        border: 1px solid black;
+        white-space: normal;
+        word-break: break-all;
+      "
+  >
+    111111111113333
+  </div>
+</body>
+```
+
+![](/images/Css/white-space.png)

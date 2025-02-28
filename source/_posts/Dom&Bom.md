@@ -413,6 +413,8 @@ document.addEventListener('click', function(event){
 })
 ```
 
+[获取元素尺寸](/blog/2025/02/27/css_styel)
+
 ###### 元素偏移量 el.offsetLeft / el.offsetTop
 
 ###### 获取元素尺寸 el.offsetWidth

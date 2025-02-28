@@ -192,7 +192,7 @@ DQL 查询数据库中表的记录
 
 sql 执行顺序
 
-```JS
+```sql
 from table_name, // 1
 where 条件, //2
 groud by 字段, having 条件,// 3
@@ -200,35 +200,35 @@ select 字段, //4
 order by 字段, // 5
 limit 0,10 // 6
 
-select user.name username, from tb_user user where user.age > 15 order by username asc;
+select user.name as username, from tb_user as user where user.age > 15 order by username asc;
 ```
 
-```JS
-// 指定返回字段
+```sql
+-- 指定返回字段
 select 字段1,字段2,... from 表名;
 
-// 去重
+-- 去重
 select distinct 字段1,字段2,... from 表名;
 
-// 设置返回的别名, as可省略
+-- 设置返回的别名, as可省略
 select 字段1 as 别名,字段2 as 别名,... from 表名 表别名;
 
 select * from tb_user where id != 1;
 
-select * from tb_user where id_card is null; // 查询id_card 为 null的数据
+select * from tb_user where id_card is null; -- 查询id_card 为 null的数据
 
-select * from tb_user where id_card is not null; // 查询id_card 不为 null的数据
+select * from tb_user where id_card is not null; -- 查询id_card 不为 null的数据
 
 select * from tb_user where age >= 10 and age <= 20;
-select * from tb_user where age between 10 and 20; // 等价于
+select * from tb_user where age between 10 and 20; -- 等价于
 
 select * from tb_user where age=10 or age=20 or age=30;
-select * from tb_user where age in (10, 20, 30); // 等价于
+select * from tb_user where age in (10, 20, 30); -- 等价于
 
-// 查询名称长度为2个字符的用户
+-- 查询名称长度为2个字符的用户
 select * from tb_user where name like '__';
 
-// 查询id最后一个字符为X的用户, %相当于正则的.
+-- 查询id最后一个字符为X的用户, %相当于正则的.
 select * from tb_user where id_card like '%X';
 ```
 
@@ -353,14 +353,12 @@ alter table tb_department add primary key (id);
 alter table tb_name drop foreign key fk_department_id;
 ```
 
-## 多表查询
+## 多表关系
 
-### 多表关系
+### 一对多关系
 
-- 一对多关系
-
-  如一个部门对应多名员工；
-  在多的一方设置外键， 指向少的一方的主键；(设置外键时，需先设置主表 primary key 主键约束)
+如一个部门对应多名员工；
+在多的一方设置外键， 指向少的一方的主键；(设置外键时，需先设置主表 primary key 主键约束)
 
 ```SQL
 -- 创建表，并添加外键约束
@@ -373,9 +371,10 @@ create table tb_user add constraint fk_department_id foreign key (department_id)
 alter table tb_user add constraint fk_department_id foreign key (department_id) references tb_department(id) on update cascade on delete cascade;
 ```
 
-- 多对多关系
-  如一个商品有多个关注用户，一个用户关注多个商品；
-  创建第三方中间表，中间表包含至少包含两个外键，分别关联两方主键；
+### 多对多关系
+
+如一个商品有多个关注用户，一个用户关注多个商品；
+创建第三方中间表，中间表包含至少包含**两个外键**，分别关联两方主键；
 
 ```SQL
 create table tb_mid_user_goods (
@@ -388,10 +387,11 @@ create table tb_mid_user_goods (
 ) comment '用户与商品中间表';
 ```
 
-- 一对一关系
-  如一个身份证对应一个驾驶证；
-  在任意一方加入外键 (UNIQUE)，关联另一方主键；
-  多用于单表拆分，将基础字段放一张表，详情字段放在另一张表，以提升操作效率；
+### 一对一关系
+
+如一个身份证对应一个驾驶证；
+在任意一方加入外键 (UNIQUE)，关联另一方主键；
+多用于单表拆分，将基础字段放一张表，详情字段放在另一张表，以提升操作效率；
 
 ```SQL
 create table tb_user_details (
@@ -405,10 +405,11 @@ create table tb_user_details (
 ) COMMENT '用户详情表';
 ```
 
-### 多表查询
+## 多表查询
 
-- 内连接
-  查询 A、B 表交集的数据
+#### 内连接
+
+查询两张表**交集**数据（有重复数据，使用 distince 可去重）
 
 ```SQL
 
@@ -421,8 +422,9 @@ select * from tb_user, tb_department where tb_user.department_id = tb_department
 select * from tb_user [inner] join tb_department on tb_user.department_id = tb_department.id;
 ```
 
-- 外连接
-  查询左表/右表所有数据，包含两张表交集的数据
+#### 外连接
+
+查询两张表**合集**数据（有重复数据，使用 distince 可去重）
 
 ```SQL
 
@@ -433,10 +435,11 @@ select * from tb_user left [outer] join tb_department on tb_user.department_id =
 select * from tb_user right [outer] join tb_department on tb_user.department_id = tb_department.id;
 ```
 
-- 自连接
-  当前表与自身连接查询，自连接必须使用表别名；
-  可以使用自连接或外连接方式；
-  看成两张表；
+#### 自连接
+
+当前表与自身连接查询，自连接必须使用表别名；
+可以使用自连接或外连接方式；
+看成两张表；
 
 ```SQL
 select a.user, b.user from tb_user as a, tb_user as b where a.superior_id = b.id;
@@ -447,8 +450,9 @@ select a.user '员工', b.user '上级' from tb_user as a left outer join tb_use
 #### 联合查询
 
 把多次查询的结果合并起来，形成一个新的查询结果集；
-union all 返回合集, 有重复部分；union 返回交集，数据会去重；
-select \* 查询的显示字段数需要保持一致；
+union 返回交集，数据会去重；
+union all 返回合集, 有重复部分；
+select \* 查询的展示**字段保持一致**；
 
 ```sql
 select * from A表... union [all] select * from B表...;
@@ -458,8 +462,9 @@ union all
 select * from tb_user where age > 20;
 ```
 
-#### 子查询/嵌套查询
+#### 子查询
 
+子查询/嵌套查询
 子查询外部的语句可以是 select、insert、update、delete；
 查询位置：select 之后、from 之后、where 之后；
 
@@ -478,7 +483,7 @@ select * from tb_user where age > 20;
 
 select id from tb_department where name = '研发部';
 select * from tb_user where department_id = 3;
-// 等价于
+-- 等价于
 select * from tb_user where department_id = (select id from tb_department where name = '研发部');
 
 
@@ -486,7 +491,7 @@ select * from tb_user where department_id = (select id from tb_department where 
 
 select create_time from tb_user where user = 'Tom';
 select * from tb_user where create_time > '2024-11-20';
-// 等价于
+-- 等价于
 select * from tb_user where create_time > (select create_time from tb_user where user = 'Tom');
 ```
 
@@ -497,7 +502,7 @@ select * from tb_user where create_time > (select create_time from tb_user where
 
 select id from tb_department where name = '研发部' or name = '财务部';
 select * from tb_user where department_id in (2,3);
-// 等价于
+-- 等价于
 select * from tb_user where department_id in (select id from tb_department where name = '研发部' or name = '财务部');
 
 
@@ -505,14 +510,14 @@ select * from tb_user where department_id in (select id from tb_department where
 
 select salary from tb_user where department_id = (select id from tb_department where name = '研发部');
 select * from tb_user where salary > 7000;
-// 等价于
+-- 等价于
 select * from tb_user where salary > all ( select salary from tb_user where department_id = (select id from tb_department where name = '研发部') );
 ```
 
-- 行子查询 (子查询结果为一行多列)
+- 行子查询 (子查询结果为一行多列 > 结果为一条数据，多个列字段 > 根据返回的多个字段组合的条件查询数据)
 
 ```sql
-查询与相同工资 且 相同上司的员工信息（1.查询员工的工资和上级id）
+查询与某个员工相同工资 且 相同上司的员工信息；
 
 select salary, superior_id from tb_user where username = 'Mary';
 select * from tb_user where salary = 6000 and superior_id = 1;
@@ -520,10 +525,180 @@ select * from tb_user where salary = 6000 and superior_id = 1;
 // 等价于；(将salary, superior_id组合作为一个条件)
 select * from tb_user where (salary, superior_id) = (6000, 1)
 
-// 等价于；
+-- 等价于；
 select * from tb_user where (salary, superior_id) = (select salary, superior_id from tb_user where username = 'Mary');
 ```
 
-- 表子查询 (子查询结果为多行多列)
+- 表子查询 (子查询结果为多行多列，相当于返回一张表，常用操作符为 IN)
+  数据会重复；
+
+```sql
+查询与Tom 和 William 的职位和薪资一致的员工信息 （1.查询Tom和William各自的职位和薪资，2.根据Tom的职位和薪资，根据William的职位和薪资来查询员工信息，数据会重复）
+-- select position, salary from tb_user where username = 'Tom' or username = 'William';
+select * from tb_user where (position, salary) in ( select position, salary from tb_user where username = 'Tom' or username = 'William' );
+
+
+查询入职日期是 '2024-11-20' 之后的员工信息及其部门信息（1.查询入职日期是 '2024-11-20' 之后的员工信息，2.根据这部分员工查询对应的部门信息）
+-- select * from tb_user where create_time > '2024-11-20';
+select user.*, dept.* from (select * from tb_user where create_time > '2024-11-20') as user left join tb_department as dept on user.department_id = dept.id;
+```
+
+#### 案例
+
+```sql
+-- 查询员工的姓名、年龄、职位、部门信息
+
+-- 隐式内连接
+select u.username, d.name from tb_user as u, tb_department as d where u.department_id = d.id;
+
+-- 显示内连接 (on外键与主键的id)
+select u.username, d.name from tb_user as u inner join tb_department as d on u.department_id = d.id;
+
+
+-- 查询年龄小于 30 岁的员工姓名、部门信息；
+select u.username, d.name from tb_user as u inner join tb_department as d on u.department_id = d.id where u.age < 30;
+```
+
+```sql
+-- 查询有员工的部门id和部门名称；
+
+-- 隐式内连接
+select distinct d.id, d.name from tb_user as u, tb_department as d where u.department_id = d.id;
+
+-- 显示内连接
+select distinct d.id, d.name from tb_user as u inner join tb_department as d on u.department_id = d.id where u.department_id = d.id;
+
+
+-- 查询所年龄大于 30 岁的员工，及其所属的部门名称；如果员工没有分配部门，也展示出来 (合集)；
+select d.name as departmentName, u.* from tb_user as u left join tb_department as d on u.department_id = d.id where u.age > 30;
+
+
+-- 查询所有员工的工资等级；
+select s.name as levelName, u.* from tb_user as u inner join tb_salaryLevel as s where s.min < u.salary and u.salary <= s.max;
+select s.name as levelName, u.* from tb_user as u inner join tb_salaryLevel as s where u.salary between s.min and s.max;
+```
+
+```sql
+-- 查询 研发部 所有员工的信息 以及工资等级；
+
+select d.name as 'departmentName', u.username, s.name as 'salaryLevel'
+from
+    tb_user as u,
+    tb_department as d,
+    tb_salaryLevel as s
+where
+    u.department_id = d.id
+    and (
+        u.salary between s.min and s.max
+    )
+    and d.name = '研发部';
+
+
+-- 查询研发部员工的平均薪资；
+select avg(u.salary) as '部门平均薪资' from tb_user as u, tb_department as d where u.department_id = d.id;
+
+
+-- 查询工资比 Tom 高的员工信息
+select * from tb_user as u where u.salary > (select salary from tb_user where username = 'Tom');
+
+
+-- 查询工资比平均工资高的员工信息
+select * from tb_user as u where salary > (select avg(salary) from tb_user);
+
+
+-- 查询工资低于本部门平均工资的员工信息
+-- select avg(u1.salary) from tb_user as u1 where department_id = 1;  查询部门为1的平均工资
+
+-- select * from tb_user as u2 where u2.salary < (select avg(u1.salary) from tb_user as u1 where department_id = 1); 查询低于 部门为1的平均工资 的员工信息
+
+select *
+from tb_user as u2
+where
+    u2.salary < (
+        select avg(u1.salary)
+        from tb_user as u1
+        where
+            u1.department_id = u2.department_id
+    );
+```
+
+```sql
+-- 查询所有部门信息，并统计部门的员工人数
+-- select id, name from tb_department; 查询部门信息
+
+-- select count(*) from tb_user as u where u.department_id = 2;  统计部门人数
+
+select
+    d.id,
+    d.name,
+    (select count(*) from tb_user as u where u.department_id = d.id) as '部门人数'
+from
+    tb_department as d;
+```
 
 ## 事务
+
+> 每一条 sql 语句都是一个事务，且默认自动提交；设置事务提交方式改为手动提交；
+
+> mysql 的事务是默认自动提交的，当执行一条 DML 语句后，mysql 会立即隐式的提交事务；
+
+> 一组操作的集合，是不可分割的工作单位，事务会把所有的操作作为一个整体一起向系统提交或撤销操作请求，要么同时成功，要么同时失败；
+> 如：转账操作，先查询张三余额，再将张三的余额减少，再查询李四余额，再给李四增加余额，如果中间某一步失败，则整个事务失败，之前的操作全部撤销；将以上操作控制在一个事务内，在执行操作前，先开启事务，执行第一步、第二步、第三步... 如果其中一步抛出异常，则事务回滚，之前的操作全部撤销。
+
+- 原子性：事务是一组不可分割的最小操作单位，要么全部成功，要么全部失败；
+- 一致性：事务完成时，必须使所有的数据都保持一致状态；
+- 隔离性：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立环境下运行；
+- 持久性：事务一旦提交或回滚，它对数据库中的数据的改变是永久的；
+
+```sql method first
+select @@autocommit;    -- 1是自动提交，0是手动提交
+
+set @@autocommit = 0; -- 设置事务提交方式
+
+select * from tb_account where name = 'Tom';
+
+update tb_account set money = money - 1000 where name = 'Tom';
+
+update tb_account set money = money + 1000 where name = 'Mary';
+
+commit; -- 提交事务
+
+-- rollback; -- 回滚事务
+```
+
+```sql method second 常
+start TRANSACTION; -- 开启事务
+
+select * from tb_account where name = 'Tom';
+
+update tb_account set money = money - 1000 where name = 'Tom';
+
+update tb_account set money = money + 1000 where name = 'Mary';
+
+-- 要么所有事务操作执行成功，提交事务
+commit;
+
+-- 要么回滚事务；
+-- ROLLBACK;
+```
+
+#### 事务的并发问题
+
+- 脏读：一个事务读取到另外一个事务还没有提交的数据；
+- 不可重复读：一个事务读取同一个数据的两次查询结果不一致，因为另外一个事务操作导致了这个事务两次查询结果不一致；
+- 幻读：一个事务按照条件查询数据时，没有查询到对应的数据行，但在执行插入数据时，又发现这行数据已经存在了；
+
+| 事务隔离级别                    | 脏读 | 不可重复读 | 幻读 |
+| ------------------------------- | ---- | ---------- | ---- |
+| 读未提交 Read uncommitted       | √    | √          | √    |
+| 读已提交 Read committed         | ×    | √          | √    |
+| 可重复读 Repeatable read (默认) | ×    | ×          | √    |
+| 串行化 Serializable             | ×    | ×          | ×    |
+
+```sql
+-- 查询事务隔离级别
+select @@transaction_isolation; 
+
+-- session指当前会话客户端，global指全局客户端；
+set [session|global] transaction isolation level [read uncommitted|read committed|repeatable read|serializable];
+```
