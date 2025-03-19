@@ -32,7 +32,7 @@ JDK (java Development Kit)： java 语言的软件开发工具包，内部包括
 
 ## 计算机单位
 
-计算机最小的组成单位**字节 byte**：其中二进制位称为 **位 bit** 简称 b，使用 8 个二进制位为一组字节保存数据，1byte = 8bit；1KB=1024B；
+计算机最小的组成单位**字节 byte**：其中二进制位称为 **位 bit** 简称 b，使用 8 个二进制位为一组字节保存数据，1byte = 8bit；1KB = 1024B；
 
 如：十进制的 6，通过**除二取余法** 转换成二进制 110，字节为 00000110；
 
@@ -142,7 +142,7 @@ type -> int: type 是 1 字节，在内存中占据 8 位二进制；int 4 字�
 
 - 扩展运算符
 
-a+=b 等价于 a = a + b; (a 与 b 相加后，类型强制转换为 a 类型，再赋值)
+a += b 等价于 a = a + b; (a 与 b 相加后，类型强制转换为 a 类型，再赋值)
 
 ```JAVA
     public static void main(String[] args) {
@@ -449,7 +449,11 @@ public class Demo {
 
 ### 构造方法
 
-与类名称相处；构造方法会在实例对象创建时执行，此时可以将各种需要的初始化操作都在这里执行；
+- 类默认会有一个无参的构造方法；父类有一个有参构造方法，子类必须在构造方法中调用初始化父类的构造方法 (无参构造可省略);
+- 与类名称相处；构造方法会在实例对象创建时执行，此时可以将各种需要的初始化操作都在这里执行;
+- final 给类，此类不允许被继承;
+- final 给方法，不允许子类重写此方法;
+- finla 给属性，属性必须在构造函数中被初始化 (不允许在其他方法中修改)，或者在定义属性时初始值 (构造函数中也不能初值了);
 
 ```java
 public class Person {
@@ -527,4 +531,354 @@ public class Person {
 
 ### 继承
 
-标记为 final 的类不能被继承；
+- 标记为 final 的类不能被继承；
+- 定义不同类时，存在相同属性，为了方便使用可以将共同属性抽象成一个父类，再定义其他子类继承父类，减少代码重复定义，子类可以使用父类**非 private**的属性和方法；
+- 类默认会有一个无参的构造方法；父类有一个有参的构造方法，子类必须在构造方法中调用实现父类的构造方法；
+
+```java
+public class Person {
+     String name;
+     int age;
+     String city;
+
+     public void test(){
+         System.out.println("父类 person");
+     }
+     public Person(String name, int age, String city) {
+         this.name = name;
+         this.age = age;
+         this.city = city;
+     }
+}
+
+public class Student extends Person {
+    String city;
+
+    public Student(String name, int age, String city) {
+        super(name, age, city); // 使用super代表父类，父类的构造方法就是super();
+        this.city = city;
+    }
+
+    public void say () {
+        test();
+        System.out.println("我叫" + name);
+        System.out.println("我在" + city);
+        System.out.println("父类在" + super.city);
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        // 使用父类的变量去引用一个子类对象（类型转换，向上转型）
+        Person p1 = new Student("人类", 1, "Beijing");
+        // p1.say(); // err, 父类对象的引用相当于父类来使用，只能访问父类的成员;
+
+        Student s1 = new Student("小明", 1, "Beijing");
+        s1.say();
+    }
+}
+```
+
+### 多态
+
+- 多个不同的对象对同一个消息作出响应，同一个消息根据不同对象而采用不同的方法;
+- 方法重写，给父类方法添加 final 表示最终形态，不允许子类重写;
+
+```java Person.java
+public class Person {
+     String name;
+     int age;
+     String city;
+
+     public Person(String name, int age, String city) {
+         this.name = name;
+         this.age = age;
+         this.city = city;
+     }
+     // 重写顶级Object中的equals方法
+     @Override
+     public boolean equals(Object obj) {
+        if(obj == null) return false;
+        if(obj instanceof  Person){
+            Person person = (Person) obj;
+            return this.name.equals(person.name) && this.age == person.age && this.city.equals(person.city);
+        }
+        return false;
+     }
+     // 重写顶级Object中的toString方法
+     @Override
+     public String toString(){
+         return "Person {" +"name:'" + name + '\'' + ", age:" + age + ", city:'" + city + '\'' + '}';
+     }
+}
+```
+
+```java
+public class Student extends Person {
+    String city;
+
+    public Student(String name, int age, String city) {
+        super(name, age, city); // 使用super代表父类，父类的构造方法就是super();
+        this.city = city;
+    }
+
+    public void say () {
+        System.out.println("我在" + this.city);
+    }
+}
+
+public class Worker extends Person {
+
+    public Worker(String name, int age, String city) {
+        super(name, age, city);
+    }
+
+    public void say () {
+        System.out.println("我在" + super.city);
+    }
+}
+```
+
+```java
+public class Demo {
+    public static void main(String[] args) {
+        Student s1 = new Student("小明", 1, "Beijing");
+        Student s2 = new Student("小明", 1, "Beijing");
+
+        System.out.println(s1 == s2); // false
+        System.out.println(s1.equals(s2)); // true
+
+        System.out.println(s1.toString()); // Person {name:'小明', age:1, city:'Beijing'}
+        s1.say(); // 我在Beijing
+
+        Worker w1 = new Worker("小刚", 1, "Shanghai");
+        w1.say(); // 我在Shanghai
+    }
+}
+```
+
+### 抽象类
+
+- 一般只用于继承使用，不能实例化;
+- 给类添加关键字 abstract，表示该类为抽象类，不能实例化 (只能是实例化继承的子类);
+- 子类必须重写实现父类的抽象方法;
+
+```java
+public abstract class Person {
+     String name;
+     int age;
+     String city;
+
+     public Person(String name, int age, String city) {
+         this.name = name;
+         this.age = age;
+         this.city = city;
+     }
+
+     public void test(){
+         System.out.println("参加考试");
+     }
+     public abstract void exam ();
+}
+```
+
+```java
+public class Student extends Person {
+    String city;
+
+    public Student(String name, int age, String city) {
+        super(name, age, city);
+        this.city = city;
+    }
+    @Override
+    public void exam() {
+        System.out.println("只会考试");
+    }
+}
+```
+
+## 接口
+
+- 接口中不能有成员属性，可以有静态变量和方法；
+- 接口中的定义的默认方法 与 类中的父类中的方法重名时，会优先使用父类的方法；
+
+```java Person.java
+public abstract class Person {
+     String name;
+     int age;
+     String city;
+
+     public Person(String name, int age, String city) {
+         this.name = name;
+         this.age = age;
+         this.city = city;
+     }
+     public void test(){
+         System.out.println("参加考试");
+     }
+     public abstract void exam ();
+}
+```
+
+```java
+public class Student extends Person implements Study {
+    String city;
+
+    public Student(String name, int age, String city) {
+        super(name, age, city);
+        this.city = city;
+    }
+    @Override
+    public void test() {
+        Study.super.exam();
+    }
+    @Override
+    public void exam() {
+        System.out.println("只会考试");
+    }
+}
+```
+
+```java interface
+public interface Study {
+    // 接口中不能有成员属性，可以有静态变量和方法
+    public static final int a = 10;
+
+    public void test();
+
+    default void exam () {
+        System.out.println("从java 8开始，可以默认实现接口");
+    }
+}
+```
+
+- Object 类上有的或继承而来的，可以不必在自己的类里实现，也可以重写；
+- 接口中默认方法，不能重写 Object 类的方法；
+
+```java
+public interface A {
+    void test();
+}
+
+public interface B {
+    void hello();
+}
+
+public interface C extends A, B {
+    void test();  // 重名会覆盖
+    boolean equals(Object obj); // Object类上有的或继承而来的，可以不必在自己的类里实现，也可以重写；
+}
+```
+
+## 枚举
+
+```java
+public enum Status {
+    RUNNING,
+    STUDYING,
+    SLEEPING,
+}
+
+class Student {
+    private Status studentStatus;
+
+    public Status getStatus() {
+        return this.studentStatus;
+    }
+    public void setStatus(Status status) {
+        this.studentStatus = status;
+    }
+}
+
+public class Demo  {
+    public static void main(String[] args) {
+        Student hong = new Student();
+
+        System.out.println(Status.values()); // 枚举列表
+        System.out.println(Status.valueOf("SLEEPING")); // SLEEPING
+
+        hong.setStatus(Status.RUNNING);
+        System.out.println(hong.getStatus()); // RUNNING
+    }
+}
+```
+
+## 包装类
+
+java 中的基本数据类型不是对象，通过包装类使得可以以对象的形式使用，体现面向对象的思想， 如可以进行一些数学运算，如加减乘除，比较大小等。
+
+| 基本数据类型 | 包装类    |
+| ------------ | --------- |
+| byte         | Byte      |
+| boolean      | Boolean   |
+| short        | Short     |
+| char         | Character |
+| int          | Integer   |
+| long         | Long      |
+| float        | Float     |
+| double       | Double    |
+
+### Integer 包装类
+
+```java
+public class Demo  {
+    public static void main(String[] args) {
+        Integer count = new Integer(10); // Integer包装类
+
+        Integer count1 = 10; // 自动装箱，类似于包装类简写
+        int c = count1; //  包装类自动拆箱，将对象类型转成普通数字类型
+        System.out.println(c);
+
+        Integer count2 = Integer.valueOf(10); //  自动装箱等价于调用此方法
+        int cc = count2.intValue(); // 自动拆箱等价于调用此方法
+        System.out.println(cc);
+
+        Integer a = 10, b = 10;
+        int x = a + b; // 等价于 a.intValue() + b.intValue();
+
+        System.out.println(x);
+        System.out.println(a == b); // true, 自动拆箱后再比较 a.intValue() == b.intValue()
+    }
+}
+```
+
+### 数组包装类
+
+```java
+public class Demo  {
+    public static void main(String[] args) {
+        int[] arr = new int[3]; // 指定数组长度
+
+        int[] arr2 = new int[]{1, 2, 3}; // 设置默认值
+
+        int[] arr3 = {1, 2, 3}; // 设置默认值
+
+        // forEach方法
+        for(int a: arr3){
+            System.out.println(a);
+        }
+
+        int[][] arr4 = new int[3][3];
+        int[][] arr5 = new int[][]{{1,2,3}, {4,5,6}, {7,8,9}};
+        System.out.println(arr5[2][2]); // 9
+
+        test(arr2);
+        test2(false, 1,2,3,4,5);
+    }
+
+    public static void test(int[] args){
+        for(int it : args){
+            System.out.println(it);
+        }
+    }
+
+    public static void test2(Boolean a, int... args){
+        for(int it : args){
+            System.out.println(it);
+        }
+    }
+}
+```
+
+#### String包装类
+字符串类是比较特殊的类；char基本类型可以保存一个2字节的Unicode字符，字符串是一系列字符的序列；

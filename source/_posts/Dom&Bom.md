@@ -419,18 +419,18 @@ document.addEventListener('click', function(event){
 
 ###### 获取元素尺寸 el.offsetWidth
 
-width + 左右 padding + 左右 border;
+width + padding + border;
 包含了可能会出现滚动条的宽高
 
 ###### 获取元素尺寸 el.clientWidth
 
-width + 左右 padding;
+width + padding;
 只有可视区域，不计算出现的滚动条的宽高
 注意：el.clientLeft 获取元素 border 宽度
 
 ###### 获取元素尺寸 el.scrollWidth
 
-width + 左右 padding
+width + padding
 会包含父元素设置了超出了边界而隐藏的宽度
 内容大小没有超出元素大小时，也就是没有滚动条时 = clientWidth
 

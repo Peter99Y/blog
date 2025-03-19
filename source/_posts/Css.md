@@ -203,10 +203,84 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 ![](/images/Css/overflow.jpg)
 
+## float
+
+半脱离文档流；
+自动变为块元素，自动设置了 display: block 属性；
+
+```html
+<style>
+  .box {
+    width: 100px;
+    height: 100px;
+  }
+  .box1 {
+    background-color: orange;
+    float: left;
+  }
+  .box2 {
+    background-color: skyblue;
+    float: left;
+  }
+  .box3 {
+    background-color: red;
+    float: left;
+  }
+</style>
+```
+
+![](/images/Css/float1.png)
+
+```html
+<style>
+  .box {
+    width: 100px;
+    height: 100px;
+  }
+  .box1 {
+    background-color: orange;
+  }
+  .box2 {
+    background-color: skyblue;
+    float: left;
+  }
+  .box3 {
+    background-color: red;
+    width: 130px;
+    height: 130px;
+  }
+</style>
+
+<body>
+  <div class="box box1">box1</div>
+  <div class="box box2">float</div>
+  <div class="box box3">box3</div>
+</body>
+```
+
+![](/images/Css/float2.png)
+
+```html
+<style>
+  .box {
+    background-color: orange;
+    float: left;
+  }
+</style>
+
+<body>
+  <div class="box">Lorem ipsum dolor sit</div>
+</body>
+```
+
+![](/images/Css/float3.png)
+
+---
+
 ## position
 
 所有浮动元素和定位元素都会默认变成块元素；
-如果给行元素添加定位，那么就会变成块元素，并且会脱离文档流；
+给行元素添加定位，会变成块元素，并且会脱离文档流；
 
 ##### absolute
 
@@ -320,11 +394,11 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 | :visited          | 选中已访问过的**超链接**                                     |
 | :hover            | 选中鼠标悬停的元素                                           |
 | :acitve           | 选中鼠标按下的元素                                           |
-| \*                | \*                                                           |
+| -                 | -                                                            |
 | :focus            | 选中获得焦点的**表单元素**                                   |
 | :disabled         | 选中被禁用的**表单元素**                                     |
 | :checked          | 选中被选中的**表单元素**                                     |
-| \*                | \*                                                           |
+| -                 | -                                                            |
 | nth-child(an+b)   | 选中第 an+b 个子元素，a 和 b 是常亮，n 从 0 开始递增         |
 | first-child       | 选中第一个子元素                                             |
 | last-child        | 选中最后一个子元素                                           |
@@ -332,30 +406,94 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 | last-of-type      | 选中最后一个指定类型的子元素                                 |
 | nth-of-type(an+b) | 选中第 an+b 个指定类型子元素，a 和 b 是常亮，n 从 0 开始递增 |
 
-###### :has
+#### :has
 
 通过判断子元素条件设置父元素样式;
 
-```
-    // 如果div下有h5元素，就给div设置背景颜色
-    div:has(h5){
-        background-color: orange;
-    }
-```
+```html
+<style>
+  /* 如果div下有h5元素，就给div设置背景颜色 */
+  div:has(h5) {
+    background-color: orange;
+  }
+</style>
 
-```
-    <div>
-        <h4>1</h4>
-    </div>
+<body>
+  <div>
+    <h4>1</h4>
+  </div>
 
-    <div>
-        <h5>2</h5>
-    </div>
+  <div>
+    <h5>2</h5>
+  </div>
+</body>
 ```
 
 ![](/images/Css/has.png)
 
-###### :is / :where
+#### :not
+
+```html
+<style>
+  p:not(.world) {
+    color: orange;
+  }
+</style>
+
+<body>
+  <p>hello</p>
+  <p class="world">world</p>
+</body>
+```
+
+![](/images/Css/not1.png)
+
+---
+
+- div 元素下, 给既不是 h3 也不是 h5 元素设置 color；
+  注意：p:not(.world){...} p 与:not 中间不能有空格，否则被认为是给下级元素添加样式；
+
+```html
+<style>
+  div :not(h3):not(h5) {
+    color: orange;
+  }
+</style>
+
+<body>
+  <div>
+    <h3>1</h3>
+    <h4>2</h4>
+    <h5>3</h5>
+  </div>
+</body>
+```
+
+---
+
+- 给 span 元素设置 color
+
+```html
+<style>
+  p span:not(.world) {
+    color: orange;
+  }
+</style>
+
+<body>
+  <p>
+    <span>hello</span>
+  </p>
+
+  <p>
+    <span class="world">world</span>
+  </p>
+</body>
+```
+
+![](/images/Css/not2.png)
+
+#### :is / :where
 
 ```
     <style>
@@ -394,65 +532,6 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
         <h4>hello</h4>
     </div>
 ```
-
-###### :not
-
-- 注意：p:not(.world){...} 如 p :not 中间空格，否则认为是下级元素；
-
-```
-    p:not(.world){
-        color: orange;
-    }
-```
-
-```
-   <p>hello</p>
-   <p class="world">world</p>
-```
-
-![](/images/Css/not1.png)
-
----
-
-- 在 p 元素下给 span 元素设置 color
-
-```
-    p span:not(.world){
-        color: orange;
-    }
-```
-
-```
-    <p>
-        <span>hello</span>
-    </p>
-
-    <p>
-        <span class="world">world</span>
-    </p>
-```
-
-![](/images/Css/not2.png)
-
----
-
-- div 元素下给既不是 h3 也不是 h5 元素设置 color
-
-```
-    div :not(h3):not(h5){
-        color: orange;
-    }
-```
-
-```
-    <div>
-        <h3>1</h3>
-        <h4>2</h4>
-        <h5>3</h5>
-    </div>
-```
-
----
 
 ## display
 
@@ -643,357 +722,27 @@ circle - 圆形; inset - 矩形; ellipse - 椭圆; polygon - 多边形
 
 ![](/images/Css/clip-path.jpg)
 
-## grid
-
-> 当设置 display: grid; 相当于元素被设置成了块元素；inline-grid
-
-```html
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  .grid {
-    display: grid;
-    width: 500px;
-    height: 500px;
-    border: 3px solid orange;
-
-    /*
-        每列的列宽50px；
-        每行的行高50像素；
-    */
-    grid-template-columns: 100px 100px 100px 100px;
-    grid-template-rows: 50px 50px 50px;
-  }
-</style>
-
-<body>
-  <div class="grid">
-    <div>1</div>
-    <div>2</div>
-    <div>3</div>
-    <div>4</div>
-    <div>5</div>
-    <div>6</div>
-    <div>7</div>
-    <div>8</div>
-    <div>9</div>
-  </div>
-</body>
-```
-
-![](/images/Css/grid1.png)
-
----
-
-###### %
-
-```
-/*
-    4列的列宽都是100px；
-    第1行高20%，第2行高30%，第3行高50%；
-*/
-
-grid-template-columns: 100px 100px 100px 100px;
-grid-template-rows: 20% 30% 50%;
-
-等价于
-
-grid-template-rows: 2fr 3fr 5fr;
-```
-
-![](/images/Css/grid2.png)
-
----
-
-###### repeat()
-
-```
-/*
-    重复5列，每列的列宽20%；
-    重复3行，每行的行高50px；
-*/
-grid-template-columns: repeat(5, 20%);
-grid-template-rows: repeat(3, 50px);
-```
-
-![](/images/Css/grid3.png)
-
----
-
-###### repeat(auto-fill)
-
-```
-/*
-    auto-fill会将列宽按照30%划分，不够划分时会留白
-*/
-grid-template-columns: repeat(auto-fill, 30%);
-grid-template-rows: repeat(3, 100px);
-```
-
-![](/images/Css/grid4.png)
-
----
-
-###### auto
-
-```
-/*
-    第一列宽自适应铺满；
-    第二行高自适应铺满；
-*/
-grid-template-columns: auto 100px 100px;
-grid-template-rows: 100px auto 100px;
-```
-
-![](/images/Css/grid5.png)
-
-###### fr
-
-```
-/*
-    列宽比例 1:2:3；
-    行高比例 3:2:1；
-*/
-grid-template-columns: 1fr 2fr 3fr;
-grid-template-rows: 3fr 2fr 1fr;
-```
-
-![](/images/Css/grid6.png)
-
----
-
-###### minmax(minVal, maxVal)
-
-若子元素像素太长会撑出父容器；
-
-```
-/*
-    最大值 <= 剩余空间，取最大值；
-    最小值 < 剩余空间 < 最大值，填满剩余空间；
-    剩余空间 <= 最小值，取最小值；
-*/
-grid-template-columns: 200px 190px minmax(100px, 200px);
-grid-template-rows: 100px 100px 100px;
-```
-
-![](/images/Css/grid7.png)
-
-###### gap
-
-gap 是多出来的部分会撑出父容器，即使元素使用了 box-sizing: border-box;
-
-```
-/* 如设置repeat(5, 1fr)，1fr是按比例来的，gap多出来的部分不会撑出父容器；*/
-grid-template-columns: repeat(5, 20%);
-grid-template-rows: repeat(5, 20%);
-
-
-/* 每行间隔20像素，每列间隔10像素 */
-row-gap: 20px;
-column-gap: 10px;
-等价于
-gap: 20px 10px;
-```
-
-![](/images/Css/grid8.png)
-
----
-
-###### 排序
-
-```
-/* 默认为row水平排序 */
-grid-auto-flow: column;
-```
-
-![](/images/Css/grid9.png)
-
----
-
-###### items 项目对齐方式
-
-```
-.grid {
-    display: grid;
-    width: 500px;
-    height: 500px;
-    border: 3px solid orange;
-    margin: 100px auto;
-
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-
-    /*
-        单元格内的项目对其方式：
-        水平位置；
-        垂直位置；
-    */
-    justify-items: center;
-    align-items: center;
-
-    /*
-        水平位置 垂直位置；
-    */
-    place-items: center center;
-}
-
-.grid > div{
-    width: 100px;
-    height: 100px;
-    background-color: yellowgreen;
-}
-```
-
-![](/images/Css/grid10.png)
-
----
-
-###### content 网格对齐位置
-
-```
-    /* 整个网格在父容器位置 */
-    justify-content: space-between;
-    align-content: center;
-
-    等价于
-
-    place-content: center center;
-```
-
-![](/images/Css/grid11.png)
-
----
-
-###### 合并
-
-- 合并起始位置默认从 1 开始；
-
-- 合并了多少个单元格，需要删除多少个单元格，否则会造成看起来有空隙；
-
-- 指定合并的单元格在 html 排序位置无关；
-
-```html
-<style>
-  .grid {
-    display: grid;
-    width: 500px;
-    height: 500px;
-    border: 3px solid orange;
-    margin: 100px auto;
-
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-
-    gap: 10px;
-  }
-
-  .grid > div {
-    background-color: yellowgreen;
-  }
-
-  .row-1 {
-    grid-column-start: 1;
-    grid-column-end: 4;
-  }
-
-  .row-2 {
-    grid-column-start: 1;
-    grid-column-end: 3;
-  }
-
-  .row-3 {
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
-</style>
-
-<body>
-  <div class="grid">
-    <div class="row-1">1</div>
-    <div class="row-2">2</div>
-    <div class="row-3">3</div>
-  </div>
-</body>
-```
-
-![](/images/Css/grid12.png)
-
-```html
-<style>
-  .grid {
-    display: grid;
-    width: 500px;
-    height: 500px;
-    border: 3px solid orange;
-    margin: 100px auto;
-
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-
-    gap: 10px;
-  }
-
-  .row-1 {
-    /* 列合并的开始/结束位置 */
-    /* 
-        grid-column-start: 2;
-        grid-column-end: 4; 
-    */
-    grid-column: 2/4;
-
-    /* 行合并的开始/结束位置 */
-    /*
-        grid-row-start: 1;
-        grid-row-end: 3;
-    */
-    grid-row: 1/3;
-  }
-
-  .row-3 {
-    grid-column: 1/3;
-    grid-row: 3/4;
-  }
-
-  .grid > div {
-    background-color: yellowgreen;
-  }
-</style>
-
-<body>
-  <div class="grid">
-    <div>1</div>
-    <div class="row-1">row-1</div>
-
-    <!-- 单元格的html位置可随意 -->
-    <div>2</div>
-
-    <div class="row-3">row-3</div>
-    <div>3</div>
-  </div>
-</body>
-```
-
-![](/images/Css/grid13.png)
-
 ## scrollbar
 
-```
-// 滚动条外观
-::-webkit-scrollbar{
-    width: 10px;
+```css
+::-webkit-scrollbar {
+  /* 垂直滚动条的宽度 */
+  width: 10px;
+  /* 水平滚动条高度 */
+  height: 10px;
 }
 
+/* 轨道 */
 ::-webkit-scrollbar-track {
-    background-color: #ddd;
+  background-color: #ddd;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
+/* 滑块 */
 ::-webkit-scrollbar-thumb {
-    width: 10px;
-    background-color: #ccc;
-    border-radius: 10px;
+  width: 10px;
+  background-color: #ccc;
+  border-radius: 10px;
 }
 ```
 
