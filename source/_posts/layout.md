@@ -500,7 +500,7 @@ title: Layout
 </body>
 ```
 
-![](/images/Css/grid1.png)
+![](/images/css/layout/grid1.png)
 
 #### %
 
@@ -518,7 +518,7 @@ grid-template-rows: 20% 30% 50%;
 grid-template-rows: 2fr 3fr 5fr;
 ```
 
-![](/images/Css/grid2.png)
+![](/images/css/layout/grid2.png)
 
 #### repeat()
 
@@ -531,7 +531,7 @@ grid-template-columns: repeat(5, 20%);
 grid-template-rows: repeat(3, 50px);
 ```
 
-![](/images/Css/grid3.png)
+![](/images/css/layout/grid3.png)
 
 #### repeat(auto-fill)
 
@@ -543,7 +543,7 @@ grid-template-columns: repeat(auto-fill, 30%);
 grid-template-rows: repeat(3, 100px);
 ```
 
-![](/images/Css/grid4.png)
+![](/images/css/layout/grid4.png)
 
 #### auto
 
@@ -556,7 +556,7 @@ grid-template-columns: auto 100px 100px;
 grid-template-rows: 100px auto 100px;
 ```
 
-![](/images/Css/grid5.png)
+![](/images/css/layout/grid5.png)
 
 #### fr
 
@@ -569,7 +569,7 @@ grid-template-columns: 1fr 2fr 3fr;
 grid-template-rows: 3fr 2fr 1fr;
 ```
 
-![](/images/Css/grid6.png)
+![](/images/css/layout/grid6.png)
 
 #### minmax(minVal, maxVal)
 
@@ -585,7 +585,7 @@ grid-template-columns: 200px 190px minmax(100px, 200px);
 grid-template-rows: 100px 100px 100px;
 ```
 
-![](/images/Css/grid7.png)
+![](/images/css/layout/grid7.png)
 
 #### gap
 
@@ -600,7 +600,7 @@ column-gap: 10px;
 gap: 20px 10px;
 ```
 
-![](/images/Css/grid8.png)
+![](/images/css/layout/grid8.png)
 
 #### 排序
 
@@ -609,7 +609,7 @@ gap: 20px 10px;
 grid-auto-flow: column;
 ```
 
-![](/images/Css/grid9.png)
+![](/images/css/layout/grid9.png)
 
 #### items 项目对齐方式
 
@@ -645,7 +645,7 @@ grid-auto-flow: column;
 }
 ```
 
-![](/images/Css/grid10.png)
+![](/images/css/layout/grid10.png)
 
 #### content 网格对齐位置
 
@@ -659,7 +659,7 @@ grid-auto-flow: column;
     place-content: center center;
 ```
 
-![](/images/Css/grid11.png)
+![](/images/css/layout/grid11.png)
 
 #### 合并
 
@@ -713,7 +713,7 @@ grid-auto-flow: column;
 </body>
 ```
 
-![](/images/Css/grid12.png)
+![](/images/css/layout/grid12.png)
 
 ```html
 <style>
@@ -770,4 +770,4 @@ grid-auto-flow: column;
 </body>
 ```
 
-![](/images/Css/grid13.png)
+![](/images/css/layout/grid13.png)

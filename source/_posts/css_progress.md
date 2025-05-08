@@ -1,8 +1,8 @@
 ---
-title: "波浪进度"
+title: "css原生波浪进度"
 ---
 
-[参考文章](https://cloud.tencent.com/developer/article/1800814)
+![](/images/css/original/wave.gif)
 
 ```HTML
 <html class="full"></html>
@@ -61,3 +61,5 @@ title: "波浪进度"
 </body>
 </html>
 ```
+
+[参考文章](https://cloud.tencent.com/developer/article/1800814)

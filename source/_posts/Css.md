@@ -2,6 +2,28 @@
 title: Css
 ---
 
+## css 通用属性值
+
+initial 将元素的属性重置为默认值 (注意 p、b、ul、h1 等元素有默认 margin 和 padding 值);
+unset 将元素的属性能继承父级，否则使用默认值;
+revert 将元素的属性重置为浏览器默认值;
+
+```html
+<style>
+  p {
+    margin: initial;
+  }
+
+  ul {
+    all: unset;
+  }
+
+  div {
+    all: revert;
+  }
+</style>
+```
+
 ## css 属性值计算过程
 
 - 1.确定声明值 (将两样式表中**没有冲突的 css 属性**，作为最终的 css 属性值)
@@ -136,7 +158,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </body>
 ```
 
-![](/images/Css/margin-top.jpg)
+![](/images/css/css/margin-top.jpg)
 
 - bfc 元素的高度计算了子浮动元素 (父子关系);
   - 父元素::after{clear: both; content: '', display: block};
@@ -201,7 +223,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </body>
 ```
 
-![](/images/Css/overflow.jpg)
+![](/images/css/css/overflow.jpg)
 
 ## float
 
@@ -229,7 +251,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </style>
 ```
 
-![](/images/Css/float1.png)
+![](/images/css/css/float1.png)
 
 ```html
 <style>
@@ -258,7 +280,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </body>
 ```
 
-![](/images/Css/float2.png)
+![](/images/css/css/float2.png)
 
 ```html
 <style>
@@ -273,7 +295,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </body>
 ```
 
-![](/images/Css/float3.png)
+![](/images/css/css/float3.png)
 
 ---
 
@@ -330,7 +352,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </body>
 ```
 
-![](/images/Css/sticky.png)
+![](/images/css/css/sticky.png)
 
 ---
 
@@ -351,7 +373,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 <div label-suffix="：">名称</div>
 ```
 
-![](/images/Css/content_attr.png)
+![](/images/css/css/content_attr.png)
 
 ```html
 <style>
@@ -382,7 +404,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </style>
 ```
 
-![](/images/Css/heart.png)
+![](/images/css/css/heart.png)
 
 ---
 
@@ -429,7 +451,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </body>
 ```
 
-![](/images/Css/has.png)
+![](/images/css/css/has.png)
 
 #### :not
 
@@ -446,7 +468,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </body>
 ```
 
-![](/images/Css/not1.png)
+![](/images/css/css/not1.png)
 
 ---
 
@@ -491,46 +513,44 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 </body>
 ```
 
-![](/images/Css/not2.png)
+![](/images/css/css/not2.png)
 
 #### :is / :where
 
-```
-    <style>
-        /*
-            .line1 h4,
-            .line2 h4,
-            .line3 h4 {
-                color: orange;
-            }
-        */
+```html
+<style>
+  /*
+      .line1 h4,
+      .line2 h4,
+      .line3 h4 {
+          color: orange;
+      }
+  */
 
-        等价于
+  /* 等价于  */
+  :is(.line1, .line2, .line3) h4 {
+    color: orange;
+  }
 
-        :is(.line1, .line2, .line3) h4 {
-            color: orange;
-        }
+  /* 等价于  */
+  :where(.line1, .line2, .line3) h4 {
+    color: orange;
+  }
+</style>
 
-        等价于
+<body>
+  <div class="line1">
+    <h4>hello</h4>
+  </div>
 
-        :where(.line1, .line2, .line3) h4{
-            color: orange;
-        }
-    </style>
-```
+  <div class="line2">
+    <h4>hello</h4>
+  </div>
 
-```
-    <div class="line1">
-        <h4>hello</h4>
-    </div>
-
-    <div class="line2">
-        <h4>hello</h4>
-    </div>
-
-    <div class="line2">
-        <h4>hello</h4>
-    </div>
+  <div class="line2">
+    <h4>hello</h4>
+  </div>
+</body>
 ```
 
 ## display
@@ -545,43 +565,32 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 - 4. 过渡动画无效；
 
-```
-        .select-wrapper {
-            cursor: pointer;
-            position: relative;
-            margin-bottom: 50px;
-        }
+```html
+<style>
+  .wrapper:hover .content {
+    display: block;
+  }
 
-        .select-wrapper:hover .select-content {
-            display: block;
-        }
+  .content {
+    /* hover切换过渡动画无效 */
+    display: none;
+    transition: all 0.2s ease;
+  }
+</style>
 
-        .select-content {
-            margin-top: 12px;
-            position: absolute;
-            left: 0;
+<body>
+  <div class="wrapper">
+    <span> hover </span>
 
-            /* 4. 过渡动画无效 */
-            display: none;
-            transition: all 0.2s ease;
-        }
-```
-
-```
-    <div class="select-wrapper">
-        <span> 消息⬇ </span></span>
-
-        <div class="select-content">
-            <div style="display: none;">
-                <a href="#" style="display: block;">关注</a>
-            </div>
-            <a href="#">点赞</a>
-            <a href="#">收藏</a>
-        </div>
+    <div class="content">
+      <!-- 父级display: none; 子级display: block依然无效 -->
+      <a href="#" style="display: block">关注</a>
     </div>
+  </div>
+</body>
 ```
 
-![](/images/Css/display.png)
+![](/images/css/css/display.png)
 
 ## visibility
 
@@ -592,39 +601,10 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 - 3. 子元素可设置 visible，从而不受父元素 hidden 的影响；
 - 4. 有过渡动画效果；
 
-```
-    .select-wrapper {
-        cursor: pointer;
-        position: relative;
-        margin-bottom: 50px;
-    }
-
-    .select-wrapper:hover .select-content {
-        visibility: visible;
-    }
-
-    .select-content {
-        margin-top: 12px;
-        position: absolute;
-        left: 0;
-
-        transition: all 0.2s ease;
-        visibility: hidden;
-    }
-```
-
-```
-    <div class="select-wrapper">
-        <span> 消息⬇ </span></span>
-
-        <div class="select-content">
-            <div style="visibility: hidden;">
-                <a href="#" style="visibility: visible;">关注</a>
-            </div>
-            <div><a href="#">点赞</a></div>
-            <div><a href="#">收藏</a></div>
-        </div>
-    </div>
+```html
+<div class="content" style="visibility: hidden">
+  <a href="#" style="visibility: visible">关注</a>
+</div>
 ```
 
 ## opacity
@@ -637,22 +617,26 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 - 3. 子元素自身设置 opacity:1，也会被父元素的 opacity 透明度影响；
 - 4. 有过渡动画效果；
 
-```
-    <div style="
-            width: 100px;
-            height: 200px;
-            background-color: orange;
-            opacity: 0;">
-        <span style="opacity: 1">son</span>
-    </div>
+```html
+<body>
+  <div
+    style="
+      width: 100px;
+      height: 200px;
+      background-color: orange;
+      opacity: 0;
+    "
+  >
+    <span style="opacity: 1">son</span>
+  </div>
 
-    <script>
-
-        let i = document.querySelector('div')
-        i.addEventListener('click', function () {
-            console.log('i')
-        })
-    </script>
+  <script>
+    let i = document.querySelector("div");
+    i.addEventListener("click", function () {
+      console.log("i");
+    });
+  </script>
+</body>
 ```
 
 ## linear-gradient
@@ -686,41 +670,43 @@ background-image:
     }
 ```
 
-![](/images/Css/text-shadow.jpg)
+![](/images/css/css/text-shadow.jpg)
 
 ## clip-path
 
 裁剪一个元素成任意类型
 circle - 圆形; inset - 矩形; ellipse - 椭圆; polygon - 多边形
 
+```html
+<style>
+  img {
+    margin: 10px auto;
+    width: 100px;
+    display: block;
+  }
+
+  .img-1 {
+    /* 长度 at 圆心处于元素x位置 圆心处于元素y位置 */
+    clip-path: circle(50% at center center);
+  }
+
+  .img-2 {
+    clip-path: circle(100% at 100% 100%);
+  }
+
+  .img-3 {
+    /* 上右下左 */
+    clip-path: inset(0% 32% 0% 46%);
+  }
+
+  .img-4 {
+    /* 每个点的x & y轴位置 */
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+</style>
 ```
-        img {
-            margin: 10px auto;
-            width: 100px;
-            display: block;
-        }
 
-        .img-1 {
-            /* 长度 at 圆心处于元素x位置 圆心处于元素y位置 */
-            clip-path: circle(50% at center center)
-        }
-
-        .img-2 {
-            clip-path: circle(100% at 100% 100%)
-        }
-
-        .img-3 {
-            /* 上右下左 */
-            clip-path: inset(0% 32% 0% 46%);
-        }
-
-        .img-4 {
-            /* 每个点的x & y轴位置 */
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-        }
-```
-
-![](/images/Css/clip-path.jpg)
+![](/images/css/css/clip-path.jpg)
 
 ## scrollbar
 
@@ -801,4 +787,4 @@ circle - 圆形; inset - 矩形; ellipse - 椭圆; polygon - 多边形
 </body>
 ```
 
-![](/images/Css/white-space.png)
+![](/images/css/css/white-space.png)
