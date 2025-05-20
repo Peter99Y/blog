@@ -5,8 +5,7 @@ title: Css
 ## css 通用属性值
 
 initial 将元素的属性重置为默认值 (注意 p、b、ul、h1 等元素有默认 margin 和 padding 值);
-unset 将元素的属性能继承父级，否则使用默认值;
-revert 将元素的属性重置为浏览器默认值;
+unset 将元素的属性重置为继承的值，否则使用默认值;
 
 ```html
 <style>
@@ -17,11 +16,17 @@ revert 将元素的属性重置为浏览器默认值;
   ul {
     all: unset;
   }
-
-  div {
-    all: revert;
-  }
 </style>
+
+<body>
+  <div style="color: blue">
+    <p style="color: red"> 展示红色 </p>
+  </div>
+
+  <div style="color: blue">
+    <p style="color: unset"> 展示蓝色 </p>
+  </div>
+</body>
 ```
 
 ## css 属性值计算过程
@@ -650,27 +655,6 @@ background-image:
 	linear-gradient(to bottom, transparent 0%, #fff 80%),
     linear-gradient(to right, #ba8782 45%, #89CFF0);
 ```
-
-## 文字阴影
-
-```
-    h1 {
-        color: #e6e6e6;
-        font-size: 100px;
-
-        /* x轴，y轴，模糊半径，颜色，逗号间隔可添加多个阴影 */
-        text-shadow:
-            1px -1px #fff,
-            -1px 1px #999,
-            -10px 10px 5px #808080;
-
-        /* 第一个：从右上角度照射高亮边角
-        第二个：左下角阴影
-        第三个：文字背景阴影（对应照射角度） */
-    }
-```
-
-![](/images/css/css/text-shadow.jpg)
 
 ## clip-path
 
