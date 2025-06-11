@@ -435,7 +435,7 @@ Block Formatting Context 块级格式化上下文，它是一块**独立的渲�
 
 #### :has
 
-通过判断子元素条件设置父元素样式;
+通过判断条件设置父元素样式;
 
 ```html
 <style>

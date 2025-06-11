@@ -80,3 +80,69 @@ title: css原生边框动画
   </div>
 </div>
 ```
+
+---
+
+![](/images/css/original/css_border3.png)
+
+```css
+  <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      button {
+        width: 200px;
+        height: 80px;
+        color: yellowgreen;
+        font-size: 24px;
+        background-color: #000;
+        border: none;
+        outline: none;
+        z-index: 1;
+        border-radius: 10px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      button::after {
+        content: "";
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background-color: orange;
+        z-index: -2;
+        left: 50%;
+        top: 50%;
+        transform-origin: left top;
+        animation: rotation 2s linear infinite;
+      }
+      button::before {
+        content: "";
+        position: absolute;
+        --gap: 3px;
+        width: calc(100% - var(--gap) * 2);
+        height: calc(100% - var(--gap) * 2);
+        background-color: #444;
+        left: var(--gap);
+        top: var(--gap);
+        z-index: -1;
+        border-radius: inherit;
+      }
+
+      @keyframes rotation {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+```
