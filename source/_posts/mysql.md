@@ -156,7 +156,7 @@ DML 对数据库表中的数据进行增删改查
 
 字符串和日期类型包含在引号内
 
-```JS
+```sql
 // 插入一条/多条数据，按照对应字段名的顺序添加数据
 insert into table_name (字段名1, 字段名2,...) values (字段值1, 字段值2,...), (字段值1, 字段值2,...);
 
@@ -697,7 +697,7 @@ commit;
 
 ```sql
 -- 查询事务隔离级别
-select @@transaction_isolation; 
+select @@transaction_isolation;
 
 -- session指当前会话客户端，global指全局客户端；
 set [session|global] transaction isolation level [read uncommitted|read committed|repeatable read|serializable];
