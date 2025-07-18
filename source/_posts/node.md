@@ -311,7 +311,7 @@ fetch("https://jsonplaceholder.typicode.com/photos/1")
 
 path 在不同操作系统有差异，windows 下是'\' 和 '/'，其他 unix, macOs, linix 下是'/';
 
-## path
+### path
 
 ```javascript D:/Projects/node/index.js
 const path = require("path");
@@ -346,7 +346,7 @@ console.log(path.resolve("./demo.html"));             // D:/Projects/node/demo.h
 console.log(path.resolve(__dirname, "./demo.html"));  // D:/Projects/node/demo.html
 ```
 
-## os
+### os
 
 os 模块可以跟操作系统进行交互
 
@@ -385,9 +385,15 @@ const open = (url) => {
 open("https://baidu.com");
 ```
 
-## process
+### process
 
-process 是 node 操作进程的模块，并且是挂载到 globalThis 下的全局 api；
+process 是 node 操作进程的模块，并且是挂载到 globalThis 下的全局 api，无需引入直接使用；
+
+- process.pid 获取进程 id
+- process.argv 获取自定义的命令行参数
+- process.env 获取操作系统的所有环境变量
+- process.cwd() 获取当前进程的目录
+- process.exit() 退出进程
 
 ```javascript
 const pid = process.pid;
@@ -430,9 +436,11 @@ setTimeout(() => {
 }, 2000);
 ```
 
-## child_process
+### child_process
 
-### execSync & spawn
+用于创建、管理、通信和执行子进程
+
+##### execSync & spawn
 
 - exec & execSync(常用) 可执行 shell 命令或与软件交互；参数的字节上限 200kb；执行完命令才会返回结果；
 - spawn(常用) & spawnSync 可执行 shell 命令或与软件交互；没有字节上限；实时返回结果流；
@@ -463,7 +471,7 @@ stdout.on("close", (data) => {
 });
 ```
 
-### execFile & execFileSync
+##### execFile & execFileSync
 
 执行可执行的文件
 
@@ -496,7 +504,7 @@ echo 'end'        // 输出end
 node test.js      // 运行test.js文件
 ```
 
-### fork
+##### fork
 
 主进程与子进程通信，只能接收 js 模块；
 node 的弱点不适合做 cpu 密集型应用，因为是单线程会造成堵塞，此时可把耗时任务丢给子进程处理；
@@ -520,7 +528,7 @@ process.on("message", (msg) => {
 process.send("子进程发送的消息");
 ```
 
-## events
+### events
 
 事件触发器，采用的是订阅发布模式，vue2 的 bus，mitt 都是采用发布订阅模式；
 
@@ -548,11 +556,11 @@ bus.emit("randomKey", "world");
 bus.emit("once", "不管发布多少次，只会执行一次");
 ```
 
-## util
-
-util 是 nodejs 提供的一个工具模块，提供了一些常用的方法方便快速开发；
+### util
 
 #### util.promisify
+
+node 中大部分 API 在 ES6 前是采用回调函数形式，Promisify 可将回调函数转换为 promise 方便使用；
 
 ```javascript
 import util from "node:util";
@@ -560,6 +568,7 @@ import { exec } from "node:child_process";
 
 // const execPromise = util.promisify(exec);
 
+// util.promisify 原理实现
 const promisify = (fn) => {
   return (...args) => {
     return new Promise((resolve, reject) => {
@@ -592,6 +601,8 @@ execPromise("node -v")
 
 #### util.callbackify
 
+将 Promise 函数转成回调函数
+
 ```javascript
 import util from "node:util";
 
@@ -603,6 +614,7 @@ const fn = (type) => {
   }
 };
 
+// 实现原理
 const callbackify = (fn) => {
   return (...args) => {
     let callback = args.pop();
@@ -616,7 +628,6 @@ const callbackify = (fn) => {
   };
 };
 
-// 把Promise函数转成回调函数
 // const callback = util.callbackify(fn);
 const callback = callbackify(fn);
 
@@ -626,6 +637,8 @@ callback(1, (err, value) => {
 ```
 
 #### util.format
+
+格式化字符串
 
 ```javascript
 import util from "node:util";
@@ -639,7 +652,7 @@ console.log(res2); // NaN-dd
 console.log(res3); // 99-dd
 ```
 
-## fs
+### fs
 
 fs 文件模块，可以进行文件系统的读写、更改文件权限、创建目录等；
 
@@ -758,7 +771,7 @@ fs.linkSync("./text.txt", "./text2.txt");
 fs.symlinkSync("./text.txt", "./text2.txt");
 ```
 
-## crypto
+### crypto
 
 crypto 模块提供了对称加密、非对称加密、哈希函数和数字签名技术;
 
@@ -810,19 +823,7 @@ let result = hash.digest("hex");
 console.log(result);
 ```
 
-## 编写脚手架
-
-- 自定义命令，通过终端创建什么命令 (如 -v, --help, 交互方式(如输入或选择等));
-- 通过交互反馈下载对应的模板；
-
-commander：用于构建命令行工具的 npm 库，可以创建命令行接口，处理命令行参数和选项；
-inquirer：命令行交互工具，提供丰富的交互，可与用户进行交互和收集用户输入，如输入框、选择列表、确认框等；
-download-git-repo：从远程 github 仓库下载指定分支或标签的代码；
-ora：命令行界面加载动画库，提供如进度条、加载动画、文字转场效果等；
-
-## markdownToHtml
-
-## zlib
+### zlib
 
 zlib 模块可以对数据压缩和解压，在程序中减少数据的输入大小和提高性能；
 zlib 支持流 stream 的方式进行数据的压缩和解压，支持 Gzip 和 Deflate；
@@ -876,14 +877,14 @@ server.listen(3000, () => {
 });
 ```
 
-## http
+### http
 
 - http 模块可创建 http 服务器，提供 Web 应用程序或网站；通过监听特定端口，服务器可以接收客户端的请求并响应；
 - 构建 RESTful API，使请求方法和路径来定义 API 的不同端点；
 - 创建代理服务器，用于转发客户端的请求到其他服务器。代理服务器可用语负载均衡、缓存、安全过滤、跨域等请求场景；
 - 创建一个简单的文件服务器，提供静态文件（如 HTML、CSS、JavaScript、图片等）给客户端访问；
 
-### http 调试
+#### http 接口调试
 
 vscode 插件：REST Client；
 根目录下新建 anyword.http 文件，内容如下：
@@ -901,7 +902,7 @@ send request
 GET http://localhost:3000/user/login?username=Tom&password=123456 HTTP/1.1
 ```
 
-### http 服务器
+#### http 服务器
 
 ```javascript
 const http = require("http");
@@ -945,7 +946,7 @@ http
   });
 ```
 
-### 反向代理
+#### 反向代理
 
 反向代理充当服务器和客户端之间的中间层，将客户端的请求转发给后端服务器，并返回结果给客户端；
 需要借助第三方库实现反向代理：http-proxy-middleware；
@@ -1017,7 +1018,7 @@ http
   .listen(3000);
 ```
 
-### 动静分离
+#### 动静分离
 
 将动态生成的内容 (如动态网页、API 请求) 与 静态资源 (如 HTML、CSS、JS、图像) 分开处理和分发；
 通过将动态请求分发到不同的服务器或服务商，可以平衡服务器负载；使用缓存机制将静态资源存储在浏览器缓存中，减少网络请求；
@@ -1063,6 +1064,20 @@ http
     console.log("服务器启动成功");
   });
 ```
+
+## 案例 - 编写脚手架
+
+- 自定义命令，通过终端创建什么命令 (如 -v, --help, 交互方式(如输入或选择等));
+- 通过交互反馈下载对应的模板；
+
+commander：用于构建命令行工具的 npm 库，可以创建命令行接口，处理命令行参数和选项；
+inquirer：命令行交互工具，提供丰富的交互，可与用户进行交互和收集用户输入，如输入框、选择列表、确认框等；
+download-git-repo：从远程 github 仓库下载指定分支或标签的代码；
+ora：命令行界面加载动画库，提供如进度条、加载动画、文字转场效果等；
+
+## 案例 - markdownToHtml
+
+读取 md 文件转成 html 并预览
 
 ## express 框架
 
@@ -1389,6 +1404,85 @@ app.post("/exchangeSalary", async (req, res) => {
 app.listen(3000, () => console.log("server started"));
 ```
 
+## 定时任务
+
+定时任务可以按照指定的时间点或时间间隔内执行任务，如自动执行后台任务、数据备份、日志清理、缓存刷新等，发送邮件、生成报告、更新数据更；
+
+依赖：`node-schedule`
+
+- cron 表达式
+  一种用于指定定时任务执行时间的字符串形式，由 6-7 个字段组成，每个字段表示任务执行的时间单位和范围；
+  从小到大，从秒到年；
+
+| 域   | 是否必须 | 取值范围             | 字符         |
+| ---- | -------- | -------------------- | ------------ |
+| 秒   | true     | [0, 59]              | \*, -/       |
+| 分   | true     | [0, 59]              | \*, -/       |
+| 时   | true     | [0, 23]              | \*, -/       |
+| 日   | true     | [0, 31]              | \*, -/ ? L W |
+| 月   | true     | [1, 12] / [JAN, DEC] | \*, -/       |
+| 星期 | true     | [1, 7] / [MON, SUN]  | \*, -/ ? L # |
+| 年   | false    | 1970+                | \*, -/       |
+
+---
+
+| 字符 | 描述                                                       |
+| ---- | ---------------------------------------------------------- |
+| 数值 | 时间单位                                                   |
+| -    | 匹配起始和结束的数值，如 1-5 表示 1 到 5 的所有值          |
+| \*   | 匹配该字段所有可能值                                       |
+| ,    | 分隔多个数值或范围，匹配其中任意一个值，如 1,3 表示 1 或 3 |
+| /    | 指定间隔的数值，如 \*/5 表示每 5 时间单位执行一次          |
+| ?    | 替代日和星期字段中任意值                                   |
+| L    | 最后一天                                                   |
+| W    | 最近的工作日                                               |
+
+常见表达式
+
+```
+* * * * * *         每秒钟执行一次任务；
+*/5 * * * * *       每5秒钟执行一次任务；
+
+0 * * * * *         每1分钟整点执行一次任务；
+*/5 */1 * * * *     每1分钟5秒钟执行一次任务；
+
+0 0 * * * *         每小时整点执行一次任务；
+
+*0 30 0 * *     每天0点30分钟0秒钟执行一次任务；
+0 0 1 * * *     每月的1日整点执行一次任务；
+
+0 0 * * 1 *     每周1的整点执行一次任务；
+0 0 1 1 * *     每年的1月1日整点执行一次任务；
+```
+
+```javascript
+import schedule from "node-schedule";
+import request from "request"; // 请求插件
+
+// 开启定时任务
+schedule.scheduleJob("*/10 * * * * *", () => {
+  // 请求接口
+  request(
+    "https://ug.baidu.com/mcp/pc/pcsearch",
+    {
+      method: "get",
+      headers: {
+        Referer: "http://baidu.com/",
+        cookie: "",
+      },
+    },
+    (err, res, body) => {
+      console.log(body);
+    }
+  );
+});
+
+// 取消定时任务
+// schedule.cancelJob('* * * * * *', ()=>{
+//   console.log('cancel a task every second');
+// })
+```
+
 ## MVC
 
 MVC（Model-View-Controller）是一种软件架构模式，它将一个应用程序分解为三个主要部分：模型、视图和控制器。
@@ -1397,3 +1491,5 @@ MVC 主要目标是提供了一种清晰的结构将应用程序的逻辑、数�
 - Model：模型是应用程序的数据和业务逻辑，负责数据的存储、检索、验证和更新等操作，通常包含与数据库、文件系统或外部服务进行交互的代码；
 - View：视图是应用程序的数据以可视化的形式呈现给用户，负责用户界面的展示，包含各种图形元素、页面布局和用户交互组件等。通常是根据数据的状态来动态生成和更新视图；
 - Controller：控制器是应用程序的中间层，充当模型和视图之间的中间人，负责协调两者之间的交互。接收用户的输入输入跟新模型的状态，并且根据模型变化更新视图；
+
+---

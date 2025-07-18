@@ -2,7 +2,7 @@
 title: WebSocket
 ---
 
-```vue
+```html
 <template>
   <el-dialog
     v-model="show"
@@ -124,7 +124,7 @@ const onInit = async () => {
     const { data: token } = await getDiviceTokenApi(props.currentRow.catNo);
     wsToken = token;
 
-    ws = new WebSocket("wss://caps.runde.pro/wss");
+    ws = new WebSocket("wss://...");
     ws.onopen = handleOpen;
     ws.onmessage = handleMessage;
     ws.onerror = handleError;
