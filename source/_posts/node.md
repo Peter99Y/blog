@@ -2,6 +2,10 @@
 title: nodeJs
 ---
 
+node 使用的是 javascript 语言，是 jiavascript 运行时的环境；
+node 适合做一些 IO 密集型应用，不适合 CPU 密集型应用(图像编码处理、音频编码处理、或者大量算法)，因为 node 是单线程原因，容易造成 CPU 占用率高；
+node 是基于单线程的事件驱动模型，默认情况下，不管电脑CPU有多少核，只使用一个CPU核心；
+
 ## init
 
 `npm init`: 初始化新的 npm 项目，创建 package.json 文件；
@@ -884,10 +888,10 @@ server.listen(3000, () => {
 - 创建代理服务器，用于转发客户端的请求到其他服务器。代理服务器可用语负载均衡、缓存、安全过滤、跨域等请求场景；
 - 创建一个简单的文件服务器，提供静态文件（如 HTML、CSS、JavaScript、图片等）给客户端访问；
 
-#### http 接口调试
+#### vscode 接口调试
 
 vscode 插件：REST Client；
-根目录下新建 anyword.http 文件，内容如下：
+根目录下新建 anyword.http 文件，内容参数如下：
 
 ```javascript anyword.http
 # POST http://localhost:3000/user/registry
@@ -902,7 +906,7 @@ send request
 GET http://localhost:3000/user/login?username=Tom&password=123456 HTTP/1.1
 ```
 
-#### http 服务器
+#### 创建服务器
 
 ```javascript
 const http = require("http");
@@ -1075,9 +1079,13 @@ inquirer：命令行交互工具，提供丰富的交互，可与用户进行交
 download-git-repo：从远程 github 仓库下载指定分支或标签的代码；
 ora：命令行界面加载动画库，提供如进度条、加载动画、文字转场效果等；
 
+---
+
 ## 案例 - markdownToHtml
 
 读取 md 文件转成 html 并预览
+
+---
 
 ## express 框架
 
@@ -1144,7 +1152,7 @@ const LoggerMiddleware = (req, res, next) => {
 export default LoggerMiddleware;
 ```
 
-### 跨域
+## 跨域
 
 浏览器 **同源策略** (协议、域名、 端口号) ，其中任何一个不同都会造成的跨域问题；
 
@@ -1184,6 +1192,49 @@ app.get("/list", (req, res) => {
 });
 
 app.listen(3000, () => console.log("Server started on port 3000"));
+```
+
+### 本地调试
+
+- 本地服务调试，浏览器访问 node 服务地址，访问/, 接口会将 html 文件返回给客户端, 因为 html 是服务器发来的， 两者是处于同一个域名下，这样就没有跨域；
+
+- 使用 cors 插件，无需访问本地服务先获取静态页面；任意位置打开本地 html 文件，可直接 node 服务接口，不会跨域；
+
+```javascript index.js
+const http = require("http");
+const url = require("url");
+const fs = require("fs");
+const html = fs.readFileSync("index.html", "utf8");
+
+http
+  .createServer((req, res) => {
+    const { pathname, query } = url.parse(req.url, true);
+
+    if (req.method === "GET") {
+      if (pathname === "/") {
+        res.writeHead(200, { "Content-Type": "text/html" });
+        res.end(html);
+      }
+
+      // 其他接口
+      if (pathname === "/list") {
+        res.statusCode = 200;
+        res.end("接收到的请求参数username=" + query.username);
+      }
+    }
+  })
+  .listen(3000, () => {
+    console.log("服务启动");
+  });
+
+http
+  .createServer(function (req, res) {
+    const { pathname } = url.parse(req.url);
+
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.end(html);
+  })
+  .listen(80);
 ```
 
 ## mysql
@@ -1493,3 +1544,504 @@ MVC 主要目标是提供了一种清晰的结构将应用程序的逻辑、数�
 - Controller：控制器是应用程序的中间层，充当模型和视图之间的中间人，负责协调两者之间的交互。接收用户的输入输入跟新模型的状态，并且根据模型变化更新视图；
 
 ---
+
+## 大文件上传
+
+大文件上传两种解决方案：
+
+1. 分片上传，将大文件切分成较小的片段，逐个上传分片。如果某个分片上传失败，只需重新上传该分片而不需要重新上传整个文件。同时，还可以利用多个网络连接并行上传分片；
+2. 断点续传，如果网络中断上传，断点续传可以记录已成功上传的分片信息，以便继续上传未完成部分；
+
+```javascript node
+import express from "express";
+import multer from "multer";
+import cors from "cors";
+import fs from "fs";
+import path from "path";
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const storage = multer.diskStorage({
+  // 存储目录
+  destination: function (req, file, cb) {
+    cb(null, "uploads/slices");
+  },
+  // 定义文件名
+  filename: function (req, file, cb) {
+    cb(null, `${req.body.index}-${req.body.filename}`);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// 上传文件
+app.post("/upload", upload.single("chunkfile"), (req, res) => {
+  res.send("上传成功");
+});
+
+app.post("/mergeFile", (req, res) => {
+  // 获取分片文件的目录地址
+  const slicedDir = path.join(process.cwd(), "uploads/slices");
+  // 获取某个文件的所有切片数组
+  const sliceList = fs.readdirSync(slicedDir);
+  // 文件排序
+  sliceList.sort((a, b) => a.split("-")[1] - b.split("-")[1]);
+
+  // 拼接出最后存储的文件地址
+  const fileDir = path.join(
+    process.cwd(),
+    "uploads/files",
+    `${req.body.filename}`
+  );
+
+  sliceList.forEach((slicedName) => {
+    // 写入文件：1参写入地址，2参是写入的文件数据；
+    fs.appendFileSync(
+      fileDir,
+      fs.readFileSync(path.join(slicedDir, slicedName))
+    );
+    // 写入完成后，将分片数据删除
+    fs.unlinkSync(path.join(slicedDir, slicedName));
+  });
+
+  res.send("success");
+});
+
+app.listen(3000, () => {
+  console.log("服务启动");
+});
+```
+
+```javascript html
+const file = document.getElementById("file");
+let filename = null; // 如 test.mp4
+
+file.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  console.log(file);
+
+  filename = file.name;
+  const chunks = chunkFn(file);
+  uploadFiles(chunks);
+});
+
+// 文件分块
+const chunkFn = (file, size = 1024 * 1024) => {
+  const chunks = [];
+  for (let i = 0; i < file.size; i += size) {
+    chunks.push(file.slice(i, i + size));
+  }
+  return chunks;
+};
+
+// 上传
+const uploadFiles = (chunks) => {
+  const list = [];
+  for (let i = 0; i < chunks.length; i++) {
+    const formData = new FormData();
+    formData.append("index", i);
+    formData.append("filename", filename);
+    formData.append("total", chunks.length);
+    formData.append("chunkfile", chunks[i]); // 必须写在最后，后端若先读取file，后续就不会在读filename等参数
+    list.push(
+      fetch("http://localhost:3000/upload", {
+        method: "POST",
+        body: formData,
+      })
+    );
+  }
+
+  Promise.all(list).then((res) => {
+    console.log("上传成功后，通知后端将所有切片合并为文件");
+
+    fetch("http://localhost:3000/mergeFile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        filename: filename,
+      }),
+    });
+  });
+};
+```
+
+## 下载
+
+```javascript
+import express from "express";
+import cors from "cors";
+import fs from "fs";
+import path from "path";
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.post("/download", (req, res) => {
+  const fileDir = path.join(
+    process.cwd(),
+    "uploads/files",
+    `${req.body.filename}`
+  );
+
+  // 读取流，注意不要传第2参数'uft-8', 会使得流变成字符串形式；
+  const content = fs.readFileSync(fileDir);
+  // 设置响应头，告诉浏览器返回的是二进制流
+  res.setHeader("Content-Type", "application/octet-stream");
+
+  // Content-Disposition: 'inline' 默认是inline模式，表示浏览器直接在页面上显示，比如图片，'attachment'表示下载文件；
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=${req.body.filename}`
+  );
+
+  res.send(content);
+});
+
+app.listen(3000, () => {
+  console.log("服务启动");
+});
+```
+
+```javascript html
+const btn = document.querySelector("button");
+const filename = "1.mp4";
+
+btn.addEventListener("click", () => {
+  fetch("http://localhost:3000/download", {
+    method: "POST",
+    body: JSON.stringify({
+      filename: filename,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.arrayBuffer())
+    .then((res) => {
+      const blob = new Blob([res], { type: "video/mp4" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+    });
+});
+```
+
+## 缓存
+
+http 缓存主要分为两大类：强缓存和协商缓存；这两种都通过 http 响应头来控制，目的是提高网站性能；
+
+#### 强缓存
+
+<!-- 浏览器在第一次访问某个资源时，会向服务器请求该资源，服务器返回该资源，并设置一个缓存时间，浏览器在缓存时间内，再次访问该资源，浏览器会直接从缓存中获取该资源，而不会向服务器请求该资源； -->
+
+强缓存之后不需要向服务器发送请求，而是从浏览器缓存中读取 内存缓存(memory cache) 或 硬盘缓存(disk cache)，这两者是浏览器自己调度；
+momery cache 存储在浏览器内存中，一般浏览器刷新页面时候会发现很多内存缓存，关闭浏览器后会释放缓存；
+disk cache 存储在计算机硬盘中，空间大，但是读取效率比内存缓存慢；
+
+强缓存通过字段 expires 和 cache-control 实现，expire 是 HTTP1.0 的，cache-control 是 HTTP1.1; 当请求头同时包含两者时，cache-control 优先级高于 expires, 后者会无效；
+expires 指定响应的到期时间，判断机制是当浏览器请求资源时，会获取本地时间戳，然后拿本地时间戳与 expires 设置的时间对比；
+强缓存返回的状态码是 200 (谷歌浏览器有 bug， 会返回 304)；
+
+```javascript
+import express from "express";
+import cors from "cors";
+import fs from "fs";
+import path from "path";
+
+const app = express();
+app.use(cors());
+
+// 静态资源缓存
+app.use(
+  express.static("./static", {
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  })
+);
+
+// 动态资源缓存(指的是接口)，强缓存
+app.get("/expires", (req, res) => {
+  // 设置某个过期时间之前缓存，格式是UTC格式
+  res.setHeader("Expires", new Date("2025-07-31 10:16:59").toUTCString());
+  res.send("hello" + Date.now());
+});
+
+app.get("/cacheControl", (req, res) => {
+  // 这里是以秒来设置过期时间，10秒钟会缓存
+  res.setHeader("Cache-Control", "max-age=10");
+  res.send("world");
+});
+
+app.listen(3000, () => {
+  console.log("服务启动");
+});
+```
+
+![](/images/node/cache.png)
+
+#### 协商缓存
+
+Last-Modified 与 If-Modified-Since 服务器通过 Last-Modified 字段返回资源的最后修改时间。当用户再次访问相同接口，请求头自定会带上 If-modified-since 字段，值就是上次 Last-Modified 传过来的时间，服务器通过判断时间来决定是否更新资源，如果没更新，则返回 304 状态码，告诉浏览器使用缓存；
+当协商缓存和强缓存同时出现在请求头时，强缓存优先于协商缓存；
+
+```javascript
+// 获取文件最后修改时间
+const getFileTime = () => {
+  return fs.statSync("./index.html").mtime.toISOString();
+};
+
+app.get("/last-modified", (req, res) => {
+  // no-cache不使用强缓存， no-store 不使用任何缓存；
+  res.setHeader("Cache-Control", "no-cache");
+
+  const modifiedTime = getFileTime();
+  const hasBeenModified = req.headers["if-modified-since"] === modifiedTime;
+
+  // 若读取的文件没有修改过，则返回304状态码，告诉浏览器使用缓存；
+  if (hasBeenModified) {
+    res.statusCode = 304;
+    res.end();
+  } else {
+    res.setHeader("Last-Modified", modifiedTime);
+    res.send("hello");
+  }
+});
+```
+
+![](/images/node/cache2.png)
+
+## 单设备登录
+
+Single Device Login 是一种单设备登录机制，它允许用户在同一时间只能一个设备登录；
+应用场景：电子邮箱和通讯应用涉及敏感信息、电子支付平台、视频影音 VIP 防止账号共享等；
+
+**浏览器指纹**有很多种，采用 canvas；用户使用的操作系统、浏览器、GPU、驱动程序有差异，在绘制图形时，这些细微差异也就造成了生成的标识不一样，因此每一个用户都可以生成唯一的 canvas 指纹；
+
+```javascript node
+import express from "express";
+import cors from "cors";
+import { WebSocketServer } from "ws";
+
+const app = express();
+app.use(cors());
+
+const server = app.listen(3000, () => {
+  console.log("服务启动");
+});
+
+const wss = new WebSocketServer({ server });
+
+const connection = {};
+wss.on("connection", (ws) => {
+  // 接收的数据结构: {userId: 1, fingerprint: 'abc', action: 'login'}
+  ws.on("message", (message) => {
+    const { action, userId, fingerprint } = JSON.parse(message);
+
+    if (action === "login") {
+      // 如果对象里面有用户ID，说明之前已经登录过，现在是登录的新设备
+      if (connection[userId] && connection[userId].fingerprint) {
+        connection[userId].socket.send(
+          JSON.stringify({ action: "logout", message: "用户在别的设备登录" })
+        );
+        connection[userId].socket.close();
+
+        // 绑定新设备
+        connection[userId].socket = ws;
+        connection[userId].socket.send(
+          JSON.stringify({ action: "logout", message: "新设备登录成功" })
+        );
+      }
+
+      // 第一次登录，初始化数据结构
+      else {
+        connection[userId] = { socket: ws, fingerprint };
+        connection[userId].socket.send(
+          JSON.stringify({ action: "login", message: "登录成功" })
+        );
+      }
+    }
+  });
+});
+```
+
+```html
+<button>click</button>
+
+<script>
+  const btn = document.querySelector("button");
+
+  const createFingerprint = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.fillRect(0, 0, 10, 10);
+    return canvas.toDataURL(); // 返回base64data；若觉得base64太长可使用md5加密缩短；
+  };
+
+  btn.addEventListener("click", () => {
+    const ws = new WebSocket("ws://localhost:3000");
+    ws.addEventListener("open", () => {
+      ws.send(
+        JSON.stringify({
+          userId: "Tom123",
+          action: "login",
+          fingerprint: createFingerprint(),
+        })
+      );
+    });
+
+    ws.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data);
+      if (data.action === "logout") {
+        alert(data.message);
+      }
+
+      if (data.action === "login") {
+        alert(data.message);
+      }
+    });
+  });
+</script>
+```
+
+## 扫码登录
+
+```javascript node
+import express from "express";
+import cors from "cors";
+import qrcode from "qrcode";
+import jwt from "jsonwebtoken";
+
+const app = express();
+app.use(cors());
+app.use("/static", express.static("public")); // 访问 http://localhost:3000/static/qrcode.html
+
+// 模拟数据库用户表
+const user = {};
+const userId = 123;
+/**
+ * const status = {
+    0: "未授权",
+    1: "授权成功",
+    2: "超时",
+  };
+ */
+
+// 获取二维码api
+app.get("/qrcode", async (req, res) => {
+  user[userId] = {
+    token: null, // 登录凭证 默认空
+    time: Date.now(), // 过期时间进行判断是否超时
+  };
+
+  // 生成二维码图片；传递重定向网址，也就是手机扫码之后会跳转到授权页面，让用户点击授权； 本地调试时可将本地局域地址替换成外网地址进行测试；
+  const base64 = await qrcode.toDataURL(
+    "http://192.168.110.103:3000/static/permission.html?userId=" + userId
+  );
+  res.json({ qrcode: base64, userId });
+});
+
+// 轮询检查授权状态api
+app.get("/checkLogin/:userId", (req, res) => {
+  const { userId } = req.params;
+  const duration = 1000 * 60 * 3; // 超时时间
+
+  if (Date.now() - user[userId].time > duration) {
+    // 返回超时状态
+    res.json({ status: 2 });
+  } else if (user[userId].token) {
+    // 已授权
+    res.json({ status: 1 });
+  } else {
+    // 未授权
+    res.json({ status: 0 });
+  }
+});
+
+// 登录api
+app.post("/login/:userId", (req, res) => {
+  const { userId } = req.params;
+  const token = jwt.sign({ id: userId }, "secretKey");
+  user[userId].token = token;
+  user[userId].time = Date.now();
+  res.json({ token });
+});
+
+app.listen(3000, () => console.log("Server is running on port 3000"));
+```
+
+```html qrcode.html
+<h2>请扫描二维码授权</h2>
+
+<img id="qrcode" alt="" />
+<div id="status"></div>
+
+<script>
+  const status = {
+    0: "未授权",
+    1: "授权成功",
+    2: "超时",
+  };
+
+  const qrcode = document.getElementById("qrcode");
+  const tip = document.getElementById("status");
+
+  // 初始化
+  let userId = null;
+  tip.innerText = status[0];
+
+  fetch("/qrcode")
+    .then((res) => res.json())
+    .then((data) => {
+      qrcode.src = data.qrcode;
+      userId = data.userId;
+      checkStatus();
+    });
+
+  const checkStatus = () => {
+    let timer = setInterval(() => {
+      fetch(`/checkLogin/${userId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          tip.innerText = status[data.status];
+
+          // 已授权或者超时，就停止轮询
+          if (data.status != 0) {
+            clearInterval(timer);
+          }
+        });
+    }, 1000);
+  };
+</script>
+```
+
+```javascript permission.html
+<script>
+  const agree = document.getElementById("agree");
+  const userId = 123;
+
+  agree.addEventListener("click", () => {
+    fetch(`/login/${userId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        status: 1,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.token) {
+          alert("登录成功");
+        }
+      });
+  });
+</script>
+```
