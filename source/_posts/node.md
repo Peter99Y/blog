@@ -4,7 +4,7 @@ title: nodeJs
 
 node 使用的是 javascript 语言，是 jiavascript 运行时的环境；
 node 适合做一些 IO 密集型应用，不适合 CPU 密集型应用(图像编码处理、音频编码处理、或者大量算法)，因为 node 是单线程原因，容易造成 CPU 占用率高；
-node 是基于单线程的事件驱动模型，默认情况下，不管电脑CPU有多少核，只使用一个CPU核心；
+node 是基于单线程的事件驱动模型，默认情况下，不管电脑 CPU 有多少核，只使用一个 CPU 核心；
 
 ## init
 
@@ -271,8 +271,8 @@ Buffer 用于处理二进制数据和媒体数据；
 Procee 进程对象，用于获取当前进程的信息和控制进程；
 
 ```javascript
-console.log(__dirname); // D:\Projects\node
-console.log(__filename); // D:\Projects\node\index.js
+console.log(__dirname); // D:\Projects\node;  在esm规范下是不可用，可用cwd替代
+console.log(__filename); // D:\Projects\node\index.js;  在esm规范下是不可用，可用cwd替代
 ```
 
 ## SSR
@@ -313,6 +313,21 @@ fetch("https://jsonplaceholder.typicode.com/photos/1")
 
 ## 内置模块
 
+### url
+
+```
+import { URL } from "url";
+let url = new URL("https://example.com/path?name=value#hash");
+
+console.log(url.protocol); // https:
+console.log(url.host);     // example.com
+console.log(url.pathname); // /path
+console.log(url.search);   // ?name=value
+console.log(url.hash);     // #hash
+console.log(url.searchParams.get('name')); // value
+
+```
+
 path 在不同操作系统有差异，windows 下是'\' 和 '/'，其他 unix, macOs, linix 下是'/';
 
 ### path
@@ -324,22 +339,23 @@ console.log(path.sep)                             // \; 根据操作系统差异
 
 ---
 
-console.log(path.dirname("/abc/demo.html"));      // abc; 返回除了最后一个文件名的路径
-console.log(path.basename("/abc/demo.html"));     // demo.html; 返回给的路径的最后一个文件名
-console.log(path.basename("\\abc\\demo.html"));   // demo.html
-
----
-
 console.log(path.extname("/abc/demo.html"));      // .html; 返回给的路径的扩展名
 
 ---
 
+console.log(path.dirname("/abc/demo.html"));      // abc; 返回除了最后一个文件名的路径
+console.log(path.basename("/abc/demo.html"));     // demo.html; 返回给的路径的最后一个文件名
+```
+
+```javascript D:/Projects/node/index.js
 console.log(path.join("/abc", "/test", "/demo.html"));          // /abc/test/demo.html
 console.log(path.join("/abc", "/test", "/demo.html", "../"));   // /abc/test; 支持操作符
 
 ---
-// 给的路径是绝对路径时，返回结果
 
+// resolve() 方法会解析路径，并返回一个绝对路径;
+// 如果给的路径是绝对路径
+console.log(path.resolve());                          // D:/Projects/node
 console.log(path.resolve("/demo.html"));              // D:/demo.html
 console.log(path.resolve("/a", "/b", "/demo.html"));  // D:/demo.html
 
@@ -348,6 +364,143 @@ console.log(path.resolve("./demo.html"));             // D:/Projects/node/demo.h
 
 // 给的路径是绝对路径和相对路径时，返回绝对路径
 console.log(path.resolve(__dirname, "./demo.html"));  // D:/Projects/node/demo.html
+```
+
+### fs
+
+使用 ./ 或 ../相对路径操作文件时，容易出现动态路径拼接问题，因为代码在运行的时候，是以执行 node 命令时所处的目录；
+
+```javascript
+const fs = require("fs");
+const path = require("path");
+
+// 若不是在 node这一层级，如 在D:\Project 这一层级执行 node .\node\app.js 会报错；
+fs.readFile("./text.txt", (err, data) => {
+  if (err) {
+    return console.log(err);
+  }
+
+  console.log(data.toString());
+});
+
+// 手写绝对路径，不利于维护
+fs.readFile("D:\\Projects\\node\\text.txt", (err, data) => {
+  if (err) {
+    return console.log(err);
+  }
+
+  console.log(data.toString());
+});
+
+fs.readFile(path.join(__dirname + "/text.txt"), (err, data) => {
+  if (err) {
+    return console.log(err);
+  }
+
+  console.log(data.toString());
+});
+```
+
+```javascript
+const fs = require("fs");
+const fsPromise = require("fs/promises");
+
+// 异步方式
+fs.readFile(
+  "./text.txt",
+  {
+    encoding: "utf-8",
+    flags: "r",
+  },
+  function (err, data) {
+    if (err) throw err;
+    console.log(data);
+  }
+);
+
+// 同步方式会阻塞代码
+const txt = fs.readFileSync("./text.txt", "utf-8").toString();
+console.log(txt);
+
+// Promise方式
+fsPromise.readFile("./text.txt", "utf-8").then((data) => {
+  console.log(data);
+});
+
+// 可读流；处理大文件常用；
+const readStream = fs.createReadStream("./text.txt", "utf-8");
+readStream.on("data", (chunk) => {
+  console.log(chunk);
+});
+readStream.on("end", () => {
+  console.log("读取完成");
+});
+```
+
+```javascript
+const fs = require("fs");
+
+// 创建文件夹；创建和删除若是多层级需添加recursive；
+fs.mkdirSync("./text", { recursive: true });
+
+// fs.rmSync("./text", { recursive: true });
+
+fs.renameSync("./text", "./newText");
+
+fs.watch("./text.txt", (event, filename) => {
+  console.log(filename);
+  console.log(event);
+});
+```
+
+```javascript
+const fs = require("fs");
+
+// 写入文本，每次写入都是覆盖
+fs.writeFileSync("./text.txt", "hello world");
+
+// 追加内容
+fs.writeFileSync("./text.txt", "\n追加内容", {
+  flag: "a", // append缩写
+});
+
+fs.appendFileSync("./text.txt", "\n另外一种追加方法");
+
+// 创建可写流；大量数据分批插入
+let writeStream = fs.createWriteStream("./text.txt");
+
+let poem = [
+  "春江花月夜",
+  "春江潮水连海平，海上明月共潮生。",
+  "滟滟随波千万里，何处春江无月明！",
+  "江流宛转绕芳甸，月照花林皆似霰。",
+  "空里流霜不觉飞，汀上白沙看不见。",
+  "...",
+];
+
+poem.forEach((it) => {
+  writeStream.write(it + "\n");
+});
+
+writeStream.end();
+
+writeStream.on("finish", () => {
+  console.log("写入完成");
+});
+```
+
+```javascript
+const fs = require("fs");
+
+// 硬链接；
+// 类似于引用类型，不管哪个文件内容修改，两个文件都是同一个内存地址；
+// 但是任何一个文件删除，都不影响另外一个文件；
+fs.linkSync("./text.txt", "./text2.txt");
+
+// 软链接；
+// 需要使用管理员权限才能执行脚本；
+// text.txt原始文件删除，text2无法使用，类似于text2是一个快捷键；
+fs.symlinkSync("./text.txt", "./text2.txt");
 ```
 
 ### os
@@ -444,10 +597,10 @@ setTimeout(() => {
 
 用于创建、管理、通信和执行子进程
 
-##### execSync & spawn
+- execSync & spawn
 
-- exec & execSync(常用) 可执行 shell 命令或与软件交互；参数的字节上限 200kb；执行完命令才会返回结果；
-- spawn(常用) & spawnSync 可执行 shell 命令或与软件交互；没有字节上限；实时返回结果流；
+exec & execSync(常用) 可执行 shell 命令或与软件交互；参数的字节上限 200kb；执行完命令才会返回结果；
+spawn(常用) & spawnSync 可执行 shell 命令或与软件交互；没有字节上限；实时返回结果流；
 
 ```javascript
 const {exec, execSync,  spawn,  spawnSync} = require("child_process");
@@ -475,7 +628,7 @@ stdout.on("close", (data) => {
 });
 ```
 
-##### execFile & execFileSync
+- execFile & execFileSync
 
 执行可执行的文件
 
@@ -508,7 +661,7 @@ echo 'end'        // 输出end
 node test.js      // 运行test.js文件
 ```
 
-##### fork
+- fork
 
 主进程与子进程通信，只能接收 js 模块；
 node 的弱点不适合做 cpu 密集型应用，因为是单线程会造成堵塞，此时可把耗时任务丢给子进程处理；
@@ -562,7 +715,7 @@ bus.emit("once", "不管发布多少次，只会执行一次");
 
 ### util
 
-#### util.promisify
+- util.promisify
 
 node 中大部分 API 在 ES6 前是采用回调函数形式，Promisify 可将回调函数转换为 promise 方便使用；
 
@@ -603,7 +756,7 @@ execPromise("node -v")
   .catch(console.error);
 ```
 
-#### util.callbackify
+- util.callbackify
 
 将 Promise 函数转成回调函数
 
@@ -640,7 +793,7 @@ callback(1, (err, value) => {
 });
 ```
 
-#### util.format
+- util.format
 
 格式化字符串
 
@@ -654,125 +807,6 @@ let res3 = util.format("%d-%s", "99", "dd");
 console.log(res1); // mm-dd
 console.log(res2); // NaN-dd
 console.log(res3); // 99-dd
-```
-
-### fs
-
-fs 文件模块，可以进行文件系统的读写、更改文件权限、创建目录等；
-
-```javascript
-const fs = require("fs");
-const fsPromise = require("fs/promises");
-
-// 异步方式
-fs.readFile(
-  "./text.txt",
-  {
-    encoding: "utf-8",
-    flags: "r",
-  },
-  function (err, data) {
-    if (err) throw err;
-    console.log(data);
-  }
-);
-
-// 同步方式会阻塞代码
-const txt = fs.readFileSync("./text.txt", "utf-8").toString();
-console.log(txt);
-
-// Promise方式
-fsPromise.readFile("./text.txt", "utf-8").then((data) => {
-  console.log(data);
-});
-
-// 可读流；处理大文件常用；
-const readStream = fs.createReadStream("./text.txt", "utf-8");
-readStream.on("data", (chunk) => {
-  console.log(chunk);
-});
-readStream.on("end", () => {
-  console.log("读取完成");
-});
-```
-
-```javascript
-const fs = require("fs");
-
-// 创建文件夹；创建和删除若是多层级需添加recursive；
-fs.mkdirSync("./text", { recursive: true });
-
-// fs.rmSync("./text", { recursive: true });
-
-fs.renameSync("./text", "./newText");
-
-fs.watch("./text.txt", (event, filename) => {
-  console.log(filename);
-  console.log(event);
-});
-```
-
-```javascript
-const fs = require("fs");
-
-// 写入文本，每次写入都是覆盖
-fs.writeFileSync("./text.txt", "hello world");
-
-// 追加内容
-fs.writeFileSync("./text.txt", "\n追加内容", {
-  flag: "a", // append缩写
-});
-
-fs.appendFileSync("./text.txt", "\n另外一种追加方法");
-
-// 创建可写流；大量数据分批插入
-let writeStream = fs.createWriteStream("./text.txt");
-
-let poem = [
-  "春江花月夜",
-  "春江潮水连海平，海上明月共潮生。",
-  "滟滟随波千万里，何处春江无月明！",
-  "江流宛转绕芳甸，月照花林皆似霰。",
-  "空里流霜不觉飞，汀上白沙看不见。",
-  "江天一色无纤尘，皎皎空中孤月轮。",
-  "江畔何人初见月？江月何年初照人？",
-  "人生代代无穷已，江月年年望相似。",
-  "不知江月待何人，但见长江送流水。",
-  "白云一片去悠悠，青枫浦上不胜愁。",
-  "谁家今夜扁舟子？何处相思明月楼？",
-  "可怜楼上月徘徊，应照离人妆镜台。",
-  "玉户帘中卷不去，捣衣砧上拂还来。",
-  "此时相望不相闻，愿逐月华流照君。",
-  "鸿雁长飞光不度，鱼龙潜跃水成文。",
-  "昨夜闲潭梦落花，可怜春半不还家。",
-  "江水流春去欲尽，江潭落月复西斜。",
-  "斜月沉沉藏海雾，碣石潇湘无限路。",
-  "不知乘月几人归，落月摇情满江树。",
-];
-
-poem.forEach((it) => {
-  writeStream.write(it + "\n");
-});
-
-writeStream.end();
-
-writeStream.on("finish", () => {
-  console.log("写入完成");
-});
-```
-
-```javascript
-const fs = require("fs");
-
-// 硬链接；
-// 类似于引用类型，不管哪个文件内容修改，两个文件都是同一个内存地址；
-// 但是任何一个文件删除，都不影响另外一个文件；
-fs.linkSync("./text.txt", "./text2.txt");
-
-// 软链接；
-// 需要使用管理员权限才能执行脚本；
-// text.txt原始文件删除，text2无法使用，类似于text2是一个快捷键；
-fs.symlinkSync("./text.txt", "./text2.txt");
 ```
 
 ### crypto
@@ -881,14 +915,14 @@ server.listen(3000, () => {
 });
 ```
 
-### http
+## http
 
-- http 模块可创建 http 服务器，提供 Web 应用程序或网站；通过监听特定端口，服务器可以接收客户端的请求并响应；
-- 构建 RESTful API，使请求方法和路径来定义 API 的不同端点；
-- 创建代理服务器，用于转发客户端的请求到其他服务器。代理服务器可用语负载均衡、缓存、安全过滤、跨域等请求场景；
-- 创建一个简单的文件服务器，提供静态文件（如 HTML、CSS、JavaScript、图片等）给客户端访问；
+> http 内置模块可创建 http 服务器，提供 Web 应用程序或网站；通过监听特定端口，服务器可以接收客户端的请求并响应；
+> 构建 RESTful API，使请求方法和路径来定义 API 的不同端点；
+> 创建代理服务器，用于转发客户端的请求到其他服务器。代理服务器可用语负载均衡、缓存、安全过滤、跨域等请求场景；
+> 创建一个简单的文件服务器，提供静态文件（如 HTML、CSS、JavaScript、图片等）给客户端访问；
 
-#### vscode 接口调试
+> 扩展：vscode 插件快速调试接口
 
 vscode 插件：REST Client；
 根目录下新建 anyword.http 文件，内容参数如下：
@@ -906,60 +940,16 @@ send request
 GET http://localhost:3000/user/login?username=Tom&password=123456 HTTP/1.1
 ```
 
-#### 创建服务器
-
-```javascript
-const http = require("http");
-const url = require("url");
-
-http
-  .createServer((req, res) => {
-    // true 表示GET参数将字符串转为对象
-    const { pathname, query } = url.parse(req.url, true);
-
-    if (req.method === "POST") {
-      if (pathname === "/login") {
-        let data = "";
-        req.on("data", (chunk) => {
-          data += chunk;
-        });
-
-        req.on("end", () => {
-          res.setHeader("Content-Type", "application/json");
-          res.statusCode = 200;
-          res.end("接收到的请求参数是：" + data);
-        });
-      } else {
-        res.statusCode = 404;
-        res.end("404");
-      }
-    }
-
-    if (req.method === "GET") {
-      if (pathname === "/list") {
-        res.statusCode = 200;
-        res.end("接收到的请求参数username=" + query.username);
-      } else {
-        res.statusCode = 404;
-        res.end("404");
-      }
-    }
-  })
-  .listen(3000, () => {
-    console.log("服务启动");
-  });
-```
-
-#### 反向代理
+### 反向代理
 
 反向代理充当服务器和客户端之间的中间层，将客户端的请求转发给后端服务器，并返回结果给客户端；
 需要借助第三方库实现反向代理：http-proxy-middleware；
 
-- 负载均衡根据预先定义的请求分发到多个后端服务器，实现负载均衡，避免单个后端服务器过载；
-- 如果某个服务器出现故障，代理服务器会自动将请求转发给其他服务器，实现故障转移；
-- 缓存静态资源或经常访问的动态内容，减轻服务器负载压力，提高响应速度；
-- 反向代理可作为防火墙，保护服务器免受恶意请求和攻击，过滤、检测、阻止恶意请求；
-- 可重写请求的域名和路径，实现 URL 路由和重定向；
+> 负载均衡根据预先定义的请求分发到多个后端服务器，实现负载均衡，避免单个后端服务器过载；
+> 如果某个服务器出现故障，代理服务器会自动将请求转发给其他服务器，实现故障转移；
+> 缓存静态资源或经常访问的动态内容，减轻服务器负载压力，提高响应速度；
+> 反向代理可作为防火墙，保护服务器免受恶意请求和攻击，过滤、检测、阻止恶意请求；
+> 可重写请求的域名和路径，实现 URL 路由和重定向；
 
 ---
 
@@ -1022,10 +1012,127 @@ http
   .listen(3000);
 ```
 
-#### 动静分离
+### 创建服务器
+
+浏览器访问 node 服务地址，访问/, 接口会将 html 文件返回给客户端, 因为 html 是服务器发来的， 两者是处于同一个域名下，这样就没有跨域；
+
+如果是 http 模块可通过响应头 res.setHeader("Access-Control-Allow-Origin", "\*")，解决跨域问题；
+
+如果是 express 可使用 cors 插件，无需访问本地服务先获取静态页面；任意位置打开本地 html 文件，可直接访问 node 服务接口，不会跨域；
+
+```javascript
+import http from "node:http";
+import url from "node:url";
+import fs from "node:fs";
+
+const server = http.createServer((req, res) => {
+  // res.setHeader("Access-Control-Allow-Origin", "*"); // 如不是通过访问服务器地址访问，则允许跨域
+  const { pathname } = url.parse(req.url, true);
+
+  if (req.method === "GET") {
+    if (pathname === "/") {
+      const html = fs.readFileSync("index.html", "utf8");
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(html);
+    }
+
+    if (pathname === "/detail") {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "text/html"); // 默认响应头是text/html
+      res.write("<h2> hello </h2>"); // 字符串or二进制流
+      res.end("<h3> world </h3>"); // 必须调用end结束响应通知客户端发送完毕；添加字符串or二进制流，相当于传递最后一段数据并结束响应；
+    }
+
+    if (pathname === "/text") {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "text/plain"); // 返回文本格式
+      res.write("<h2> hello </h2>");
+      res.end("<h3> world </h3>");
+    }
+  }
+
+  if (req.method === "POST") {
+    if (pathname === "/login") {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+
+      req.on("end", () => {
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 200;
+        res.end("接收到的请求参数是：" + data);
+      });
+    } else {
+      res.statusCode = 404;
+      res.end("404");
+    }
+  }
+});
+
+server.listen(3000, () => {
+  console.log("服务启动");
+});
+```
+
+<div style="display: flex; justify-content:space-between; gap: 10px;">
+
+![](/images/node/contentType1.png)
+
+![](/images/node/contentType2.png)
+
+![](/images/node/contentType3.png)
+
+</div>
+
+### 动静分离
 
 将动态生成的内容 (如动态网页、API 请求) 与 静态资源 (如 HTML、CSS、JS、图像) 分开处理和分发；
 通过将动态请求分发到不同的服务器或服务商，可以平衡服务器负载；使用缓存机制将静态资源存储在浏览器缓存中，减少网络请求；
+
+```javascript node
+import http from "node:http";
+import fs from "node:fs";
+
+const server = http.createServer((req, res) => {
+  if (req.method === "GET") {
+    if (req.url === "/") {
+      const html = fs.readFileSync("./public/index.html", "utf8");
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(html);
+    }
+
+    if (req.url === "/js/index.js") {
+      const js = fs.readFileSync("./public/js/index.js");
+      res.end(js);
+    }
+
+    if (req.url === "/css/index.css") {
+      const css = fs.readFileSync("./public/css/index.css");
+      res.end(css);
+    }
+
+    if (req.url === "/img/1.png") {
+      const img = fs.readFileSync("./public/img/1.png");
+      res.end(img);
+    }
+  }
+});
+
+server.listen(3000, () => {
+  console.log("服务启动");
+});
+```
+
+<div style="display:flex; justify-content: space-between; gap: 10px;">
+
+![](/images/node/static.png)
+
+![](/images/node/static_layout.png)
+
+</div>
+
+---
 
 ```javascript
 import http from "http";
@@ -1033,43 +1140,43 @@ import fs from "fs";
 import path from "path";
 import mime from "mime";
 
-http
-  .createServer(function (req, res) {
-    const { method, url } = req;
-    const isStatic = url.startsWith("/static");
+const server = http.createServer(function (req, res) {
+  const { method, url } = req;
+  const isStatic = url.startsWith("/static");
 
-    // 判断是否是访问静态资源 (访问静态资源必须是get)
-    if (method === "GET" && isStatic) {
+  // 判断是否是访问静态资源 (访问静态资源必须是get)
+  if (method === "GET") {
+    if (isStatic) {
       const staticPath = path.join(process.cwd(), url);
-
       fs.readFile(staticPath, (err, data) => {
         if (err) {
           res.writeHead(404, { "Content-Type": "text/plain" });
           res.end("404 Not Found");
-        } else {
-          console.log("访问静态资源");
-
-          const type = mime.getType(staticPath); // 根据文件路径获取媒体类型
-          res.writeHead(200, {
-            "Content-Type": type, // 设置响应头媒体类型
-            "cache-control": "public, max-age=3600", // 设置强缓存，浏览器缓存后不会再从服务器获取资源
-          });
-          res.end(data);
+          return;
         }
+
+        const mimeType = mime.getType(staticPath); // 根据文件路径获取媒体类型
+        res.writeHead(200, {
+          "Content-Type": mimeType, // 设置响应头媒体类型
+          "cache-control": "public, max-age=3600", // 设置强缓存，浏览器缓存后不会再从服务器获取资源
+        });
+        res.end(data);
       });
     }
+  }
 
-    // 动态资源
-    if (method === "GET" || method === "POST") {
-    }
-  })
-  .listen(80, () => {
-    console.log("浏览器访问静态资源：http://127.0.0.1/static/index.css");
-    console.log("服务器启动成功");
-  });
+  // 动态资源
+  if (method === "GET" || method === "POST") {
+  }
+});
+
+server.listen(80, () => {
+  console.log("浏览器访问静态资源：http://127.0.0.1/static/index.css");
+  console.log("服务器启动成功");
+});
 ```
 
-## 案例 - 编写脚手架
+<!-- ## 案例 - 编写脚手架
 
 - 自定义命令，通过终端创建什么命令 (如 -v, --help, 交互方式(如输入或选择等));
 - 通过交互反馈下载对应的模板；
@@ -1085,14 +1192,38 @@ ora：命令行界面加载动画库，提供如进度条、加载动画、文�
 
 读取 md 文件转成 html 并预览
 
----
+--- -->
 
 ## express 框架
 
 express 框架是一个基于 Node.js 平台的快速、开放、极简的 Web 框架，简化了 HTTP 请求、响应和中间件的过程；
 
-- 强大的中间件生态系统，可使用各种中间件扩展和增强应用程序的功能，中间件允许在请求前后执行逻辑，例如身份验证、会话管理、日志记录、静态文件服务、模板引擎等等；
-- 路由模块化，使得应用程序可以根据不同的功能或模块进行分组，将特定的 URL 路径映射到响应的处理函数， 提高代码的组织性和可维护性；
+### 托管静态资源
+
+```javascript app.js
+import express from "express";
+
+const app = express();
+app.use(express.static("public"));
+
+app.listen(3000, () => console.log("http://localhost:3000"));
+```
+
+<div style="display:flex; justify-content: space-between; gap: 10px;">
+
+![](/images/node/static2.png)
+
+![](/images/node/static_layout.png)
+
+</div>
+
+### 路由
+
+路由模块化，使应用程序根据不同功能或模块进行分组，将特定的 URL 路径映射到响应的处理函数， 提高代码的组织性和可维护性；
+
+### 中间件
+
+强大的中间件生态系统，可使用各种中间件扩展和增强应用程序的功能，中间件允许在请求前后执行逻辑，例如身份验证、会话管理、日志记录、静态文件服务、模板引擎等等；
 
 ```javascript app.js
 import express from "express";
@@ -1101,10 +1232,10 @@ import User from "./src/user.js";
 import List from "./src/list.js";
 
 const app = express();
-app.use(express.json()); // 支持post解析json
+app.use(express.json()); // 支持post请求方式解析json格式
 app.use(LoggerMiddleware); // 使用日志中间件
 
-app.use("/user", User);
+app.use("/user", User); // 注册路由模块 并 添加统一前缀
 app.use("/list", List);
 
 app.listen(3000, () => console.log("Server started on port 3000"));
@@ -1112,9 +1243,9 @@ app.listen(3000, () => console.log("Server started on port 3000"));
 
 ```javascript user.js
 import express from "express";
+const router = express.Router(); // 创建路由对象
 
-const router = express.Router();
-
+// 挂载路由
 router.get("/login", (req, res) => {
   res.json({ code: 200, message: "登录成功" });
 });
@@ -1194,47 +1325,57 @@ app.get("/list", (req, res) => {
 app.listen(3000, () => console.log("Server started on port 3000"));
 ```
 
-### 本地调试
+- jsonp
+  浏览器同源策略对 &lt;script src&gt; &lt;img src&gt; &lt;link href&gt; &lt;iframe&gt;标签豁免，允许跨域加载数据；
 
-- 本地服务调试，浏览器访问 node 服务地址，访问/, 接口会将 html 文件返回给客户端, 因为 html 是服务器发来的， 两者是处于同一个域名下，这样就没有跨域；
+```javascript node
+import http from "node:http";
+import url from "node:url";
+import fs from "node:fs";
 
-- 使用 cors 插件，无需访问本地服务先获取静态页面；任意位置打开本地 html 文件，可直接 node 服务接口，不会跨域；
+const server = http.createServer((req, res) => {
+  const { pathname, query } = url.parse(req.url, true);
 
-```javascript index.js
-const http = require("http");
-const url = require("url");
-const fs = require("fs");
-const html = fs.readFileSync("index.html", "utf8");
-
-http
-  .createServer((req, res) => {
-    const { pathname, query } = url.parse(req.url, true);
-
-    if (req.method === "GET") {
-      if (pathname === "/") {
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.end(html);
-      }
-
-      // 其他接口
-      if (pathname === "/list") {
-        res.statusCode = 200;
-        res.end("接收到的请求参数username=" + query.username);
-      }
+  if (req.method === "GET") {
+    if (pathname === "/") {
+      const html = fs.readFileSync("index.html", "utf8");
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(html);
     }
-  })
-  .listen(3000, () => {
-    console.log("服务启动");
-  });
 
-http
-  .createServer(function (req, res) {
-    const { pathname } = url.parse(req.url);
+    if (pathname === "/jsonp") {
+      // 返回 JSONP 格式：回调函数名(JSON数据)
+      const { callback: callbackName } = query;
+      res.end(`${callbackName}("hello")`);
+    }
+  }
+});
 
-    res.writeHead(200, { "Content-Type": "text/html" });
-    res.end(html);
-  })
-  .listen(80);
+server.listen(3000, () => {
+  console.log("服务启动");
+});
+```
+
+```html
+<body>
+  <button onclick="fetchData()">click</button>
+
+  <script>
+    function handleResponse(data) {
+      console.log(data); // hello
+    }
+
+    function fetchData() {
+      // 动态创建script标签
+      const script = document.createElement("script");
+      script.src = "http://localhost:3000/jsonp?callback=handleResponse";
+      document.body.appendChild(script);
+    }
+  </script>
+
+  <!-- 直接引入 -->
+  <!-- <script src="http://localhost:3000/jsonp?callback=handleResponse"></script> -->
+</body>
 ```
 
 ## mysql
@@ -1737,7 +1878,7 @@ btn.addEventListener("click", () => {
 
 http 缓存主要分为两大类：强缓存和协商缓存；这两种都通过 http 响应头来控制，目的是提高网站性能；
 
-#### 强缓存
+- 强缓存
 
 <!-- 浏览器在第一次访问某个资源时，会向服务器请求该资源，服务器返回该资源，并设置一个缓存时间，浏览器在缓存时间内，再次访问该资源，浏览器会直接从缓存中获取该资源，而不会向服务器请求该资源； -->
 
@@ -1785,7 +1926,7 @@ app.listen(3000, () => {
 
 ![](/images/node/cache.png)
 
-#### 协商缓存
+- 协商缓存
 
 Last-Modified 与 If-Modified-Since 服务器通过 Last-Modified 字段返回资源的最后修改时间。当用户再次访问相同接口，请求头自定会带上 If-modified-since 字段，值就是上次 Last-Modified 传过来的时间，服务器通过判断时间来决定是否更新资源，如果没更新，则返回 304 状态码，告诉浏览器使用缓存；
 当协商缓存和强缓存同时出现在请求头时，强缓存优先于协商缓存；
@@ -2020,7 +2161,7 @@ app.listen(3000, () => console.log("Server is running on port 3000"));
 </script>
 ```
 
-```javascript permission.html
+```html permission.html
 <script>
   const agree = document.getElementById("agree");
   const userId = 123;
