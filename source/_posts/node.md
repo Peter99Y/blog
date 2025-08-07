@@ -313,6 +313,11 @@ fetch("https://jsonplaceholder.typicode.com/photos/1")
 
 ## 内置模块
 
+模块加载机制
+
+- 模块在第一次加载后会被缓存，多个文件引入了相同的模块，后续地方只是从缓存中获取；不论是内置模块、自定义模块、第三方模块都会优先从缓存中加载；
+- 加载自定义模块时，必须使用 './' 或 '../' 开头，否则 node 会把它当作内置模块或第三方模块进行加载；
+
 ### url
 
 ```
@@ -817,19 +822,21 @@ crypto 模块提供了对称加密、非对称加密、哈希函数和数字签�
 const crypto = require("crypto");
 
 // 对称加密算法；双方协定一个密钥以及iv
-// 1参接收一个算法常用的是aes-256-cbc；
-// 2参是密钥32位；
+// 1参接收一个算法, 常用的是aes-256-cbc；
+// 2参是密钥，支持32位；
 // 3参数是iv初始化向量16位；确保每次生成的密钥串列不同；
-const key = crypto.randomBytes(32);
+const algorithm = "aes-256-cbc";
+const secretKey = crypto.randomBytes(32);
 const iv = Buffer.from(crypto.randomBytes(16));
-const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
-cipher.update("这是密钥", "utf-8", "hex"); // 生成密文
-const result = cipher.final("hex"); // 按16进制输出密文
 
-// 解密；需要相同key和相同iv
-const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-decipher.update(result, "hex", "utf-8");
-const result2 = decipher.final("utf-8");
+const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+cipher.update("加密文本", "utf-8", "hex"); // 生成密文
+const encrypted = cipher.final("hex"); // 按16进制输出密文
+
+// 解密；需要相同secretKey和iv
+const decipher = crypto.createDecipheriv(algorithm, secretKey, iv);
+decipher.update(encrypted, "hex", "utf-8");
+const decrypted  = decipher.final("utf-8");
 ```
 
 ```javascript
@@ -1223,13 +1230,123 @@ app.listen(3000, () => console.log("http://localhost:3000"));
 
 ### 中间件
 
-强大的中间件生态系统，可使用各种中间件扩展和增强应用程序的功能，中间件允许在请求前后执行逻辑，例如身份验证、会话管理、日志记录、静态文件服务、模板引擎等等；
+强大的中间件生态系统，可使用各种中间件扩展和增强应用程序的功能，中间件允许在请求前后执行逻辑，例如身份验证、会话管理、日志记录、静态文件服务、模板引擎等等；express 常见中间件：express.static()、express.json()、express.urlencoded()等;
+
+express 中间件本质上就是一个函数，只是形参中必须包含 next 参数；next 函数是实现连续调用多个中间件的关键，它把流转关系转交给下一个中间件，若没有就流转到路由；
+多个中间件之间共享同一个 req 和 res，基于这种特性可以统一 req 和 res 添加自定义属性和方法，供下游的中间件或路由使用；
+
+- 全局中间件：任何请求到达服务器后都会出发的中间件；
+
+```javascript
+import express from "express";
+const app = express();
+
+// 注册全局中间件
+app.use((req, res, next) => {
+  req.startTime = Date.now();
+  next();
+});
+
+app.use((req, res, next) => {
+  req.endTime = Date.now() + 1;
+  next();
+});
+
+app.get("/", (req, res) => {
+  res.send(req.startTime + " - " + req.endTime);
+});
+
+app.listen(3000, () => console.log("Server started on port 3000"));
+```
+
+- 局部中间件：不使用 app.use()注册的中间件，请求路由匹配上才触发的中间件；
+
+```javascript
+import express from "express";
+const app = express();
+
+const partMw1 = (req, res, next) => {
+  req.startTime = Date.now();
+  next();
+};
+
+const partMw2 = (req, res, next) => {
+  req.endTime = Date.now() + 1;
+  next();
+};
+
+app.get("/", [partMw1, partMw2], (req, res) => {
+  res.send(req.startTime + " - " + req.endTime);
+});
+
+app.listen(3000, () => console.log("Server started on port 3000"));
+```
+
+- 路由中间件：挂载到路由上的中间件，不会挂载到 app 上；
+
+```javascript
+import express from "express";
+import User from "./src/user.js";
+
+const app = express();
+app.use(User); // 注册路由模块 并 添加统一前缀
+
+app.listen(3000, () => console.log("Server started on port 3000"));
+
+---
+// user.js
+import express from "express";
+const router = express.Router(); // 创建路由对象
+
+const routeMw = (req, res, next) => {
+  req.time = Date.now();
+  next();
+};
+
+// 挂载路由
+router.get("/", routeMw, (req, res) => {
+  res.json({ code: 200, message: "登录成功", time: req.time });
+});
+
+export default router;
+```
+
+- 错误中间件：必须注册在所有路由之后才能生效，有 4 个参数；
+
+```javascript
+import express from "express";
+
+const app = express();
+
+app.get("/", (req, res) => {
+  throw new Error("这是服务器发生错误");
+  res.send("Hello World!"); // 不会执行
+});
+
+app.use((err, req, res, next) => {
+  res.send(err.message); // 这是服务器发生错误
+  next();
+});
+
+app.listen(3000, () => console.log("Server started on port 3000"));
+```
+
+### MVC
+
+MVC（Model-View-Controller）是一种软件架构模式，它将一个应用程序分解为三个主要部分：模型、视图和控制器。
+MVC 主要目标是提供了一种清晰的结构将应用程序的逻辑、数据和界面分离，提高代码的可维护性、可扩展性和可复用性。
+
+- Model：模型是应用程序的数据和业务逻辑，负责数据的存储、检索、验证和更新等操作，通常包含与数据库、文件系统或外部服务进行交互的代码；
+- View：视图是应用程序的数据以可视化的形式呈现给用户，负责用户界面的展示，包含各种图形元素、页面布局和用户交互组件等。通常是根据数据的状态来动态生成和更新视图；
+- Controller：控制器是应用程序的中间层，充当模型和视图之间的中间人，负责协调两者之间的交互。接收用户的输入输入跟新模型的状态，并且根据模型变化更新视图；
+
+---
 
 ```javascript app.js
 import express from "express";
 import LoggerMiddleware from "./middleware/logger.js";
-import User from "./src/user.js";
-import List from "./src/list.js";
+import User from "./router/user.js";
+import List from "./router/list.js";
 
 const app = express();
 app.use(express.json()); // 支持post请求方式解析json格式
@@ -1241,23 +1358,30 @@ app.use("/list", List);
 app.listen(3000, () => console.log("Server started on port 3000"));
 ```
 
-```javascript user.js
+```javascript router/user.js
 import express from "express";
+import { login, register } from "../controller/user.js";
+
 const router = express.Router(); // 创建路由对象
 
-// 挂载路由
-router.get("/login", (req, res) => {
-  res.json({ code: 200, message: "登录成功" });
-});
+router.get("/login", login);
 
-router.post("/registry", (req, res) => {
-  res.json({ code: 200, message: "注册成功" });
-});
+router.post("/registry", register);
 
 export default router;
 ```
 
-```javascript logger.js
+```javascript controller/user.js
+export const login = (req, res) => {
+  res.json({ code: 200, message: "登录成功" });
+};
+
+export const register = (req, res) => {
+  res.json({ code: 200, message: "注册成功" });
+};
+```
+
+```javascript middleware/logger.js
 import log4js from "log4js";
 
 // 配置日志
@@ -1674,17 +1798,6 @@ schedule.scheduleJob("*/10 * * * * *", () => {
 //   console.log('cancel a task every second');
 // })
 ```
-
-## MVC
-
-MVC（Model-View-Controller）是一种软件架构模式，它将一个应用程序分解为三个主要部分：模型、视图和控制器。
-MVC 主要目标是提供了一种清晰的结构将应用程序的逻辑、数据和界面分离，提高代码的可维护性、可扩展性和可复用性。
-
-- Model：模型是应用程序的数据和业务逻辑，负责数据的存储、检索、验证和更新等操作，通常包含与数据库、文件系统或外部服务进行交互的代码；
-- View：视图是应用程序的数据以可视化的形式呈现给用户，负责用户界面的展示，包含各种图形元素、页面布局和用户交互组件等。通常是根据数据的状态来动态生成和更新视图；
-- Controller：控制器是应用程序的中间层，充当模型和视图之间的中间人，负责协调两者之间的交互。接收用户的输入输入跟新模型的状态，并且根据模型变化更新视图；
-
----
 
 ## 大文件上传
 
@@ -2185,4 +2298,74 @@ app.listen(3000, () => console.log("Server is running on port 3000"));
       });
   });
 </script>
+```
+
+## JWT
+
+JSON Web Token 跨域认证机制; 由三个部分组成：Header，Payload，Signature，playload 中存放用户信息，signature 中存放密钥，header 中存放加密算法;
+
+session 认证机制需要配合 Cookie 使用，Cookie 存储 sessionId，sessionId 存储用户信息；由于 Cookie 默认不支持跨域访问，当涉及到涉及前后端跨域请求接口需要额外配置才能实现 Session 跨域认证；
+
+需要安装两个 pacakges: jsonwebtoken (生成 JWT 字符串), express-session (将 JWT 字符串解析还原成 JSON 对象);
+
+```javascript
+import express from "express";
+import jsonwebtoken from "jsonwebtoken";
+import { expressjwt } from "express-jwt";
+
+const secretKey = "anyword";
+const app = express();
+app.use(express.json());
+
+// 注册JWT字符串解析成JSON对象的中间件;
+// unless指定哪些接口不需要访问权限；
+// expressjwt 中间件配置成功会自动将解析后的JSON对象挂载到req.auth对象中;
+// 请求Authorization需要携带Bearer ...;
+app.use(
+  expressjwt({
+    secret: secretKey,
+    algorithms: ["HS256"],
+  }).unless({
+    path: [/^\/api\//],
+  })
+);
+
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.send({
+      status: 400,
+      message: "登录失败",
+    });
+  }
+
+  // 将用户名生成token；不要使用密码生成token!!
+  const token = jsonwebtoken.sign({ username }, secretKey, { expiresIn: "1h" });
+  res.send({
+    status: 200,
+    message: "登录成功",
+    token,
+  });
+});
+
+app.get("/auth/user", (req, res) => {
+  const { username } = req.auth;
+
+  res.send({
+    status: 200,
+    message: "获取用户信息成功",
+    data: { username },
+  });
+});
+
+// 处理错误中间件
+app.use(function (err, req, res, next) {
+  if (err.name === "UnauthorizedError") {
+    return res.status(401).send("无效的token");
+  }
+  res.send({ status: 500, message: err.message || "未知错误" });
+});
+
+app.listen(3000, () => console.log("Server started on port 3000"));
 ```
