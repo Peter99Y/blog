@@ -66,6 +66,82 @@ title: "css进度"
 </html>
 ```
 
+```html vue3
+<template>
+  <div class="wave-progress-wrapper">
+    <div class="indicator" :style="progressStyle">
+      <span>{{ percent }}%</span>
+    </div>
+  </div>
+</template>
+
+<script setup>
+  const props = defineProps({
+    percent: Number,
+  });
+
+  const progressStyle = computed(() => {
+    return {
+      "--top": `${100 - props.percent}%`,
+    };
+  });
+</script>
+
+<style lang="scss" scoped>
+  .wave-progress-wrapper {
+    position: relative;
+    z-index: 1;
+    padding: 3px;
+    border-radius: 50%;
+    background: linear-gradient(to top, #bbe5fc, #c7c4fc);
+
+    .indicator {
+      position: relative;
+      z-index: 3;
+
+      --circle-length: 31px;
+      --wave-length: calc(var(--circle-length) * 2);
+      --wave-radius: calc(var(--wave-length) / 2 - 10px);
+
+      width: var(--circle-length);
+      height: var(--circle-length);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &::after {
+        content: "";
+        display: block;
+        width: var(--wave-length);
+        height: var(--wave-length);
+        border-radius: var(--wave-radius);
+        background: #4879ff;
+
+        position: absolute;
+        z-index: -1;
+        top: var(--top);
+        animation: spin 7s linear infinite;
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotateZ(0deg);
+      }
+      100% {
+        transform: rotateZ(360deg);
+      }
+    }
+  }
+</style>
+```
+
 ## 电池进度条
 
 ![](/images/css/original/css_progress.png)

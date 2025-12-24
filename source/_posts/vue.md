@@ -1328,32 +1328,6 @@ beforeRouteLeave (to, from, next) {
 methods:{},
 ```
 
-###### keep-alive
-
-vue 内置组件,可以使被包含的组件保留状态避免重新渲染
-`router.js`
-
-```
-{
-   path: '/profile',
-   name: 'Profile',
-   component: Profile,
-   meta:{
-        keepAlive: false // 在路由中设置组件是否缓存
-   }
-},
-```
-
-`app.vue`
-
-```
-<keep-alive v-if="$route.meta.keepAlive">
-     <router-view/>
-<keep-alive>
-```
-
----
-
 ###### ES6 模块化:
 
 模块化就是把单独的一个功能封装到一个模块(文件)中，模块之间相互隔离，但是可以通过特定的接口公开内部成员，也可以依赖别的模块；这样方便代码的重用，从而提升开发效率，方便后期维护;

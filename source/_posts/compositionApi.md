@@ -322,9 +322,9 @@ defineExpose({
 
 ## computed
 
--   传入函数
+- 传入函数
 
--   传入{get,set}对象
+- 传入{get,set}对象
 
 ```
 <script setup>
@@ -399,9 +399,9 @@ const handleCount = () => {
 
 #### watchEffect
 
--   回调函数内每个涉及的数据的修改都会触发;
--   首次加载立即执行（普通 watch 需要配置 immediate）
--   返回停止监听函数
+- 回调函数内每个涉及的数据的修改都会触发;
+- 首次加载立即执行（普通 watch 需要配置 immediate）
+- 返回停止监听函数
 
 ```
 import { watchEffect, ref } from "vue";
@@ -719,7 +719,7 @@ export default {
 
 provide 在父组件中提供给嵌套的后代组件数据和方法，在任何一级后代组件中都可以使用 inject 接收；(非后代组件无法共享哦)
 
--   注意：会同源修改，若不希望后代组件修改，provide 使用 readonly;
+- 注意：会同源修改，若不希望后代组件修改，provide 使用 readonly;
 
 ```
 <script lang="ts" setup>
@@ -920,43 +920,70 @@ const Async = defineAsyncComponent(() => import('@/components/async.vue')) // �
 
 ## keep-alive
 
+可以使被包含的组件保留状态避免重新渲染
 当组件被包裹了 keep-alive 后，组件内会新增 onActivated, onDeactivated 两个声明周期函数。
 
-son.vue
-
-```
+```html son.vue
 <template>
-  <input type="text" v-model="name">
+  <input type="text" v-model="name" />
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
+  import { onActivated, onDeactivated, onMounted, onUnmounted, ref } from "vue";
 
-const name = ref(null);
+  const name = ref(null);
 
-onMounted(() => {
-  console.log('1.组件首次挂载')
-})
+  onActivated(() => {
+    console.log(
+      "keep-alive 1.组件首次挂载触发; 2.每次切换从缓存中被重新插入时执行;"
+    );
+  });
 
-onActivated(() => {
-  console.log('keep-alive 1.组件首次挂载, 2.每次切换从缓存中被重新插入时执行')
-})
+  onDeactivated(() => {
+    console.log(
+      "keep-alive 1.组件组件卸载触发; 2.每次切换从DOM 上移除、进入缓存执行"
+    );
+  });
 
-onDeactivated(() => {
-  console.log('keep-alive 1.组件组件卸载, 2.每次切换从DOM 上移除、进入缓存执行')
-})
+  onMounted(() => {
+    console.log("1.组件首次挂载触发;");
+  });
 
-onUnmounted(() => {
-  console.log('1.组件卸载')
-})
+  onUnmounted(() => {
+    console.log("1.组件卸载触发;");
+  });
+
+  watch(
+    () => name.value,
+    (val) => {
+      console.log("注意：watch函数无法触发");
+    }
+  );
 </script>
 ```
 
+```html father.vue
+<keep-alive v-if="needKeepAlive === true">
+  <Hello v-if="isShown"></Hello>
+  <World v-else></World>
+</keep-alive>
 ```
-  <keep-alive>
-      <Hello v-if="isShown"></Hello>
-      <World v-else></World>
-  </keep-alive>
+
+```javascript router.js
+{
+   path: '/profile',
+   name: 'Profile',
+   component: Profile,
+   meta:{
+        keepAlive: false // 在路由中设置组件是否缓存
+   }
+},
+```
+
+```html app.vue
+<keep-alive v-if="$route.meta.keepAlive">
+  <router-view />
+</keep-alive>
 ```
 
 ## transition
