@@ -558,7 +558,7 @@ function getElementLeft(eleObj){
 
 滚动窗口至文档中的特定位置
 
-##### el.scroll()
+##### dom.scroll()
 
 元素滚动到特定坐标
 

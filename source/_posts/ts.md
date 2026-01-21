@@ -4,22 +4,27 @@ title: Ts
 
 ### 编译环境
 
-- tsc --version: 查看版本，检测是否安装成功；
+- 查看版本: tsc --version / -v
 
 - 全局安装
   npm install typescript -g
-- 局部安装
-  限定某个项目的 ts 为特定版本。若全局 ts 不同电脑安装不同版本，从而导致某个特性被废除
-  npm install typescript -D
 
-- html 页面中引入 ts 文件，需要通过命令 tsc 文件名（Type Script Compile）编译成 js 文件，最后引入编译后的 js 文件。
+- 局部安装
+  npm install typescript -D
+  (限定某个项目的 ts 为特定版本。若全局 ts 不同电脑安装不同版本，从而导致某个特性被废除)
 
 - 编译 ts 文件：tsc demo.ts
 
-- 自动编译 ts 文件：tsc demo.ts -w (不会走 tsconfig.json 配置文件，只是编译并监测某个文件)
-  <!-- -   在所处目录中 tsc --init 生成 tsconfig.json 文件;
-  -   tsc 文件名 -w (监视文件变动); -->
+- 自动编译 ts 文件：tsc demo.ts -w
+  (不会走 tsconfig.json 配置文件，只是监测并编译 ts 文件, 且不是实时运行编译后的 js 文件)
+
 - 生成 tsconfig.json 配置文件： tsc --init
+
+- 运行 ts 编译后的 js 文件：node demo.js / nodemon demo.js
+  或者全局安装 ts-node 将编译 ts 和运行 js 直接进行运行 ts 文件
+  ts-node: demo.ts
+
+- 最后 html 引入 ts 编译后的 js 文件;
 
 ---
 
@@ -1596,8 +1601,8 @@ console.log(ios.b); // 3
 
 - 方法装饰器，属性装饰器，参数装饰器的 target:
 
-  - 如将装饰器修饰静态函数，接收的是构造函数；
-  - 如将装饰器修饰原型函数，接收原型对象；
+  - 如把装饰器修饰静态函数，接收的是构造函数；
+  - 如把装饰器修饰原型函数，接收原型对象；
 
 - propertyKey: 修饰的方法名/属性名；
 
@@ -1605,14 +1610,11 @@ console.log(ios.b); // 3
 
 ---
 
-1. 直接使用报错：“作为表达式调用时，无法解析类修饰器的签名”；
-2. 需要打开 tsconfig.json 修改装饰器配置，将以下两个属性修改为 true；
-3. 执行命令：tsc -w 根据 json 配置项监测文件；
+- 直接使用报错：“作为表达式调用时，无法解析类修饰器的签名”；
+- 需要打开 tsconfig.json 修改装饰器配置，将以下两个属性修改为 true；
 
-```typescript
-"experimentalDecorators": true,
-"emitDecoratorMetadata": true,
-```
+`experimentalDecorators": true,
+emitDecoratorMetadata": true`
 
 #### 类装饰器
 
@@ -1632,10 +1634,12 @@ const moveDecorator: ClassDecorator = (target: Function) => {
 // 2. 放在类上一行表示此类使用这个装饰器
 @moveDecorator
 class Tank {}
-// moveDecorator(Tank);	// 不使用@语法糖方式，放在声明的class以下；
+
+// 若不使用 @moveDecorator 语法糖方式，必须放在声明的 class 下方；
+// moveDecorator(Tank);
 
 const t = new Tank();
-console.log((t as any).getPosition()); // 类里面没有方法所以报错，断言一下即可；
+console.log((t as any).getPosition()); // 这里 Tank类 内没有此方法会报错，断言一下即可；
 ```
 
 ###### 装饰器叠加
@@ -1701,8 +1705,7 @@ const messageDecorator: ClassDecorator = (target: Function) => {
 @messageDecorator
 class Web {
   public login() {
-    // console.log("登陆成功");
-    (this as any).message("登陆成功");
+    (this as any).message("登陆成功"); // "登陆成功"
   }
 }
 
@@ -1842,9 +1845,9 @@ class Article {
 new Article().handleAdd();
 ```
 
-#### (少) 属性装饰器& 参数装饰器
+#### 属性装饰器 & 参数装饰器
 
-参数装饰器需要安装`npm i reflect-metadata`存/取数据；- 这里没搞
+参数装饰器需要安装 `npm i reflect-metadata` 存/取数据；- 这个插件和装饰器无关，没搞
 
 ```typescript
 // 属性装饰器
@@ -2091,30 +2094,25 @@ type whichType = ReturnType<typeof fn>; // whichType = (string | number | boolea
 
 ### 声明文件
 
-> 在 TS 文件编码，在编译成 JS 文件时会自动生成声明文件 d.ts; 声明文件只对类型定义，不进行任何的赋值和实现。
+> 在 TS 文件编码，在编译成 JS 文件时会自动生成声明文件 d.ts;
+> 声明文件只对类型定义，不进行任何的赋值和实现；
+> 使用第三方库时，需要引用它的声明文件，才能获得代码补全、结构提示等功能；
+> 如引用的第三方库显示红线且没有提示，需引入其声明文件 或 自己添加声明文件；
 
-使用第三方库时，需要引用它的声明文件，才能获得代码补全、结构提示等功能；
+1. ts 社区为活跃的第三方库编写了声明文件：`npm i --save-dev @types/库名称`
+2. 对单个文件，可使用命令 `npx tsc --declaration --outDir dist src/index.ts`
+3. 或者自己添加声明文件：`库名称.d.ts`
+   PS: ts 会自动在 tsconfig.json > include 指定的文件下寻找到对应的声明文件；
 
-如引用的第三方库显示红线且没有提示，需引入其声明文件 或 自己添加声明文件；
+```typescript express.d.ts
+// declare let/const	// 声明全局变量
+// declare function	// 声明全局方法 (declare声明的函数可重名)
+// declare class		// 声明全局类
+// declare enum		// 声明全局枚举
+// declare namespace	// 声明命名空间
+// interface/type		// 声明全局类型和接口 (无需declare关键字)
 
-> - ts 社区为活跃的第三方库编写了声明文件：`npm i --save-dev @types/库名称`
-> - 自己添加声明文件：`库名称.d.ts`
->   PS: ts 会自动在 tsconfig.json > include 指定的文件下寻找到对应的声明文件；
-
-```
-// 实现声明文件
-
-declare let/const	// 声明全局变量
-declare function	// 声明全局方法 (declare声明的函数可重名)
-declare class		// 声明全局类
-declare enum		// 声明全局枚举
-declare namespace	// 声明命名空间
-interface/type		// 声明全局类型和接口 (无需declare关键字)
-```
-
-```typescript
 // 模块声明定义声明文件 declare module '模块名称'，如 express.d.ts；
-
 declare module "express" {
   interface Express {
     (): App;
@@ -2150,36 +2148,6 @@ router.get("/api", (req: any, res: any) => {
 app.listen(3000, () => {
   console.log("visit localhost:3000");
 });
-```
-
-### 类型兼容
-
-- 协变
-  子类型的属性能完全兼容主类型的属性称为协变
-
-```typescript
-interface A {
-  name: string;
-  age: number;
-}
-
-interface B {
-  name: string;
-  age: number;
-  sex: string;
-}
-
-let a: A = {
-  name: "Tom",
-  age: 1,
-};
-let b: B = {
-  name: "Jack",
-  age: 1,
-  sex: "male",
-};
-
-a = b;
 ```
 
 ### tsconfig.json
