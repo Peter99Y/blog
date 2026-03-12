@@ -343,7 +343,6 @@ title: Layout
   width: 200px;
   height: 100%;
   padding: 20px;
-  overflow: auto;
   box-sizing: border-box;
   background-color: yellowgreen;
 }

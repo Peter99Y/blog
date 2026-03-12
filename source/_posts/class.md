@@ -141,7 +141,11 @@ class UserInputForm {
 new UserInputForm();
 ```
 
+## 类
+
 类是一个抽象性的模板，对于该类事物的综合描述，这些描述中分为两种内容，一是属性，二是方法；
+
+---
 
 ### consturctor
 
@@ -220,7 +224,7 @@ dog.run("fast");
 
 ---
 
-##### extends & super
+### extends & super
 
 - 子类可以继承父类的方法和属性；
 - 继承后遵循就近原则，最后调用**父类普通函数**；
@@ -312,7 +316,7 @@ s.sum(); // 5
 s.minus(); // 1
 ```
 
-##### 注意
+### 注意
 
 ```javascript
 let that;
@@ -337,7 +341,7 @@ var dog = new Animal("dog");
 dog.run(); // 这里dog.run调用，run函数里的this, 指向dog实例对象;
 ```
 
-#### example
+## example
 
 ```javascript
 // let that;

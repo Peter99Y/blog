@@ -6,22 +6,28 @@ Nest.js 是一个基于 Node.js 的框架，并且完全支持 TypeScript, Nest.
 
 ## 编程思想
 
+### 面向过程 & 面向对象
+
 [面向过程&面向对象](/blog/2026/01/12/class)
 
-AOP 面向切面编程，AOP 允许用户定义在代码执行过程中，在特定的代码段前后进行拦截，对代码进行扩展。
+### 面向切面编程 (AOP)
+
+在不破坏封装功能的前提下，额外增加功能；
+如增加一个日志功能，不是在原有的所有class类中增加功能；
 
 ## 设计模式
 
-IOC (Inversion of Control) 控制反转，高层模块不应该依赖低层模块，两者都应该依赖抽象。
+IOC (Inversion of Control) 控制反转，高层模块不应该依赖低层模块，两者都应该依赖抽象；
 
-DI (Dependency Injection) 依赖注入，通过构造函数或者属性注入依赖。
+DI (Dependency Injection) 依赖注入，通过构造函数或者属性注入依赖；
+
+- 栗子1
 
 ```typescript
-// 当A类修改为需要传入参数时，B类和C类都需要修改，以及都会依赖A类；
-
+// 当A类从不需要传入参数修改为需要时，B类和C类依赖A类，导致它们都需要同时修改；
 class A {
   name: string;
-  //   constructor() {
+  // constructor() {}
   constructor(name: string) {
     this.name = name;
   }
@@ -30,14 +36,16 @@ class A {
 class B {
   a: any;
   constructor() {
-    this.a = new A().name;
+    // this.a = new A().name;
+    this.a = new A("b");
   }
 }
 
 class C {
   a: any;
   constructor() {
-    this.a = new A().name;
+    // this.a = new A().name;
+    this.a = new A("c");
   }
 }
 ```
@@ -50,7 +58,7 @@ class A {
   }
 }
 
-class C {
+class B {
   name: string;
   constructor(name: string) {
     this.name = name;
@@ -73,18 +81,123 @@ class Container {
 
 const module = new Container();
 module.provide("a", new A("aaa"));
-module.provide("c", new C("ccc"));
+module.provide("b", new B("bbb"));
 
-// 引入IOC container 后，B与A的代码逻辑解耦，降低组件之间的耦合度；
-class B {
+// 引入IOC container 后，C类 与 A类 代码逻辑解耦；
+class C {
   a: any;
-  c: any;
+  b: any;
   constructor(module: Container) {
     this.a = module.get("a");
-    this.c = module.get("c");
+    this.b = module.get("b");
   }
 }
 ```
+
+- 栗子2
+
+```typescript
+class Iphone {
+  playGame(name: string) {
+    console.log(`${name} is playing ios game`);
+  }
+}
+
+// Student的play方法 与 Iphone类有强依赖关系；
+// 1. 如果Ipone类的playGame方法修改了，Student类的play方法代码逻辑就会出错；
+// 2. 如果这个学生不是使用的ios类型的手机，因为这种强依赖关系，就需要修改play方法；
+// 因此 Ipone类 与 Student类 需要进行解耦，也就是抽离play方法，传入动态参数传进来，也就解耦了；
+class Student {
+  constructor(private name: string) {}
+  getName() {
+    return this.name;
+  }
+  setName(name: string) {
+    this.name = name;
+  }
+  play() {
+    const iphone = new Iphone();
+    iphone.playGame(this.name);
+  }
+}
+
+const student = new Student("Tom");
+student.play(); // Tom is playing ios game
+```
+
+```typescript
+interface PhoneType {
+  playGame(name: string): void;
+}
+
+class DIStudent {
+  constructor(private name string, private phone: PhoneType) {
+    this.name = name;
+    this.phone = phone;
+  }
+  getName() {
+    return this.name;
+  }
+  setName(name: string) {
+    this.name = name;
+  }
+  play(){
+    // 将强依赖的类抽离，而是作为一个参数传进来，也就实现了依赖注入；
+    // 这种编程思想也就是控制反转；
+    this.phone.playGame(this.name);
+  }
+}
+
+class Iphone implements PhoneType {
+  playGame(name: string) {
+    console.log(`${name} is playing ios game`);
+  }
+}
+
+class Android implements PhoneType  {
+  playGame(name: string) {
+    console.log(`${name} is playing android game`);
+  }
+}
+
+class NewPhone implements PhoneType {
+  playGame(name: string) {
+    console.log(`${name} is playing new game`);
+  }
+}
+
+const tom = new DIStudent('Tom', new Android());
+tom.play(); // Tom is playing android game
+
+const jerry = new DIStudent('Jerry', new Iphone());
+jerry.play(); // Jerry is playing ios game
+```
+
+## 生命周期
+
+| 生命周期       | 描述                                               |
+| -------------- | -------------------------------------------------- |
+| ⬇️ 客户端      | 发起请求                                           |
+| ⬇️ middleware  | 全局中间件 ➡️ 模块中间件                           |
+| ⬇️ guard       | 全局守卫 ➡️ 控制器守卫 ➡️ 路由守卫                 |
+| ⬇️ interceptor | 全局拦截器pre ➡️ 控制拦截器pre ➡️ 路由拦截器pre    |
+| ⬇️ pipe        | 全局管道 ➡️ 控制器管道 ➡️ 路由管道 ➡️ 路由参数管道 |
+| ⬇️ controller  | -                                                  |
+| ⬇️ service     | -                                                  |
+| ⬇️ interceptor | 全局拦截器post ➡️ 控制拦截器post ➡️ 路由拦截器post |
+| ⬇️ filter      | 路由过滤器 ➡️ 控制器过滤器 ➡️ 全局过滤器           |
+| ⬇️ 响应        | 响应客户端                                         |
+
+## MVC
+
+M(model) V(view) C(controller): MVC 是一种软件架构模式，它将应用程序分为模型、视图和控制器三个部分；
+视图层（客户端）发送请求给控制器，控制器根据不同的请求处理不同的模型逻辑，模型将结果返回并影响视图层；
+
+## DTO & DAO
+
+- D(data) T(transfer) O(object) 对请求发送来的参数数据操作，接收部分参数、对参数筛选、约束的属性小于等于实体类（service），通过pipe来操作；
+
+- D(data) A(access) O(object) 对接数据库接口，不暴露数据内部信息，对应实体类；
 
 ## 初始化
 
@@ -106,61 +219,7 @@ RESTful API 是一种架构风格，它利用 HTTP 协议的特性（如方法 m
 
 ## 项目结构
 
-- app.service.ts (服务/提供者)
-
-定义类，处理业务逻辑与数据层的交互（如数据库等），和其他额外的一些三方请求；
-
-```typescript user.service.ts
-import { Injectable } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-
-// 装饰器，表示该类可以被 Nest.js 的 IoC 容器管理，并注入到 Controller 中
-@Injectable()
-
-// 定义类
-export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return "This action adds a new user";
-  }
-
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
-}
-```
-
-- app.module.ts (模块)
-
-项目的根模块；用来处理其他类的引用与共享；
-
-```Typescript user.module.ts
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-
-@Module({
-  imports: [UserModule],
-  controllers: [AppController],
-  providers: [AppService],
-})
-export class AppModule {}
-```
-
-- app.controller.ts (控制器)
+### controller 控制器
 
 处理 http 请求并返回响应；
 路由分发：使用 @Get()、@Post() 等装饰器定义资源的 URI 路径；
@@ -208,6 +267,63 @@ export class UserController {
 }
 ```
 
+### module 模块
+
+- 项目的根模块；用来处理其他类(模块)的引用与共享；
+  如在 app.module.ts 中引用了 user.module.ts、order.module.ts 模块、good.module.ts 模块；
+- 每个模块都有一个 @Module() 装饰器；
+- 模块中有4大属性：imports (引入其他模块)、controllers(处理路由请求)、providers(也就是服务，处理业务逻辑)、exports (被其他模块引入，需设置导出)；
+
+```Typescript user.module.ts
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UserModule } from './user/user.module';
+
+@Module({
+  imports: [UserModule],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+### service 服务
+
+定义类，处理业务逻辑与数据层的交互（如数据库等），和其他额外的一些三方请求；
+
+```typescript user.service.ts
+import { Injectable } from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+
+// 装饰器，表示该类可以被 Nest.js 的 IoC 容器管理，并注入到 Controller 中
+@Injectable()
+
+// 定义类
+export class UserService {
+  create(createUserDto: CreateUserDto) {
+    return "This action adds a new user";
+  }
+
+  findAll() {
+    return `This action returns all user`;
+  }
+
+  findOne(id: number) {
+    return `This action returns a #${id} user`;
+  }
+
+  update(id: number, updateUserDto: UpdateUserDto) {
+    return `This action updates a #${id} user`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} user`;
+  }
+}
+```
+
 ## controller 控制器
 
 ```typescript app.controller.ts
@@ -243,7 +359,7 @@ export class AppController {
   }
 }
 
----
+---------------------------------------------------------
 
 import { Injectable } from '@nestjs/common';
 
@@ -281,7 +397,7 @@ import { UserController } from './user.controller';
 })
 export class UserModule {}
 
---------------------------------------
+--------------------------------------------------------------------------
 
 import { Controller, Get, Inject } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -309,9 +425,7 @@ import { UserController } from './user.controller';
 
 @Module({
   controllers: [UserController],
-
-  // 简写
-  // providers: [UserService],
+  // providers: [UserService],   // 简写
 
   // 完整写法
   providers: [
@@ -328,7 +442,7 @@ import { UserController } from './user.controller';
 })
 export class UserModule {}
 
-----------------------------------
+-------------------------------------------------------------
 
 import { Controller, Get, Inject } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -353,6 +467,11 @@ export class UserController {
 ### 异步模式
 
 ## module 模块
+
+- 功能模块：与共享模块（模块之间共用的一些功能）书写是一模一样的，只是叫法不同，功能模块如 order.module.ts、good.module.ts 模块，
+- 共享模块：如 user.module.ts 模块；
+- 全局模块：如 config.module.ts、database.module.ts、auth.module.ts、logger.module.ts 模块；
+- 动态模块：使用时，才初始化模块；
 
 ### 共享模块
 
@@ -443,8 +562,6 @@ export class UserController {
 
 ### 动态模块
 
-给某个模块传参
-
 ```typescript config.module.ts
 import { Module, Global, DynamicModule } from "@nestjs/common";
 
@@ -506,6 +623,8 @@ export class UserController {
 ## middleware
 
 是在路由处理函数执行之前执行的函数，可对请求对象和响应对象进行修改、调用下一个中间件函数、next 函数若没有调用，则请求将不会继续往下执行。
+
+### 模块中间件
 
 先创建一个名为 logger 的中间件： nest g middleware logger
 
@@ -798,7 +917,6 @@ const subs = interval(1000)
 
 ```typescript src/common/response.ts
 // 响应拦截器
-
 import {
   Injectable,
   NestInterceptor,
@@ -826,7 +944,6 @@ export class Response<T> implements NestInterceptor<T, Response<T>> {
 
 ```typescript src/common/filter.ts
 // 异常拦截器
-
 import {
   ExceptionFilter,
   Catch,
@@ -876,7 +993,7 @@ bootstrap();
 
 ## pipe
 
-- 将前端传递的参数进行**类型转换**
+- 将客户端传递的参数进行**类型转换**
 
 ```typescript user.controller.ts
 import {
@@ -931,6 +1048,8 @@ import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // 全局配置后，参数报错信息才会根据dto.ts中定义的规则返回
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT ?? 3000);
 }
@@ -942,6 +1061,10 @@ bootstrap();
 
 根据条件（例如权限、角色、访问控制列表、token 等）来确定是否允许请求继续执行。
 守卫在每个中间件之后执行，在任何拦截器或管道之前执行。
+
+### 路由守卫
+
+### 控制器守卫
 
 先创建 nest g res [guard]，再切换到创建的目录中，创建 nest g gu [role];
 
@@ -984,7 +1107,7 @@ export class GuardController {
 }
 ```
 
-- 全局守卫
+### 全局守卫
 
 通过所有路由请求触发守卫；
 
@@ -1177,14 +1300,138 @@ export class CreateUserDto {
 
 ![](/images/nest/swagger.png)
 
+## config
+
+全局配置
+
+`npm i @nestjs/config -S`
+
+```ts app.module.ts
+import { Module } from "@nestjs/common";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { UserModule } from "./user/user.module";
+import { ConfigModule } from "@nestjs/config";
+
+@Module({
+  imports: [
+    UserModule,
+    // 使用全局配置只需在 如user.controller.ts中引入 ConfigModule 即可；
+
+    // 方式1：只能在 app.controller.ts 和 app.service.ts 中才能使用（在app.module.ts 这里import）；
+    // ConfigModule,
+
+    // 方式2：在 app.module.ts 这里import，可以在任何地方使用；
+    ConfigModule.forRoot({
+      // 配置为全局模式，则其他模块 user.module.ts 不用像这里一样再引入；
+      isGlobal: true,
+      envFilePath: [".env", ".env.development", ".env.production"], // 读取环境文件
+    }),
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+```ts user.controller.ts
+import { Controller, Get } from "@nestjs/common";
+import { UserService } from "./user.service";
+import { ConfigService } from "@nestjs/config"; // 引入config服务
+import { ConfigEnum } from "src/enum/config.enum";
+
+@Controller("user")
+export class UserController {
+  constructor(
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  @Get()
+  findAll() {
+    const db = this.configService.get(ConfigEnum.DB_DATABASE);
+    const dbHost = this.configService.get(ConfigEnum.DB_HOST);
+    console.log(db, dbHost); // 运行 start:dev：study 127.0.0.1
+    console.log(db, dbHost); // 运行 start:prod：prodDb 127.0.0.2
+    return this.userService.findAll();
+  }
+}
+```
+
+- 通过环境变量配置数据库连接信息
+
+```ts app.module.ts
+import { Module } from "@nestjs/common";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { UserModule } from "./user/user.module";
+import { ConfigModule } from "@nestjs/config";
+
+const envFilePath = `.env.${process.env.NODE_ENV || "development"}`;
+
+@Module({
+  imports: [
+    UserModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      // envFilePath: [".env", ".env.development", ".env.production"],
+      envFilePath,
+    }),
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+需安装 'npm i cross-dev -S'
+
+```json package.json
+{
+  "scripts": {
+    // "start:dev": "nest start --watch",
+    "start:dev": "cross-env NODE_ENV=development nest start --watch",
+
+    // "start:prod": "node dist/main",
+    "start:prod": "cross-env NODE_ENV=production node dist/main"
+  }
+}
+```
+
+运行了start:dev 或 start:prod，.env.development 或 .env.production 文件会合并且覆盖 .env 文件中同名变量;
+
+```ts
+// .env
+DB_TYPE=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_SYNC=false
+
+// .env.development
+DB_DATABASE=study
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=123456
+DB_SYNC=true
+
+// .env.production
+DB_DATABASE=prodDb
+DB_HOST=127.0.0.2
+DB_PORT=3306
+DB_USERNAME=admin
+DB_PASSWORD=123456
+DB_SYNC=false
+```
+
 ## database
 
-typeorm 是 Typescript 中最成熟的对象关系映射器（ORM: Object Relational Mapping 数据库的对象映射） 进行数据库操作；
-实体就是映射到数据库的一个类（当创建实体时，会自动创建数据库这张表）；
+typeorm 是 Typescript 中最成熟的对象关系映射器（ORM: Object Relational Mapping 数据库的对象映射），把面向对象的概念跟数据库中的概念对应起；
+举例：定义一个对象就对应着一张表，这个对象的实例就对应着表中的以表中的一条数据，当创建实体时，会自动创建数据库这张表；
 
 `npm install @nestjs/typeorm typeorm mysql2 -S`
 
-```typescript app.module.ts
+```ts app.module.ts
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -1194,6 +1441,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 @Module({
   imports: [
     UserModule,
+
+    // 方式A
     TypeOrmModule.forRoot({
       type: "mysql", // 连接的数据库类型
       username: "root", // 数据库的账户名
@@ -1205,11 +1454,30 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       retryDelay: 3000, // 重连间隔时间
       synchronize: true, // 自动将实体类同步到数据库中（开发环境可以，生产环境最好false）
 
-      // 自动匹配每个目录下的 entity, 如 user.entity.ts 加载实体文件 (不推荐)
+      // 方式1：手动添加实体文件 (不推荐)
+      // entities: [User, Profile, Log, Role],
+
+      // 方式2：自动匹配每个目录下的 entity, 如 user.entity.ts 加载实体文件 (不推荐)
       // entities: [__dirname + '/**/*.entity{.ts,.js}'],
 
-      // 自动加载实体 forFeature() 注册的每个实体都将自动添加到配置对象的实体数组中（推荐）
+      // 方式3：开启后，自动加载实体，注册的每个实体都将自动添加到配置对象的实体数组中（推荐）
       autoLoadEntities: true,
+    }),
+
+    // 方式B
+    // 通过运行环境动态配置数据库连接信息
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: "mysql", // 连接的数据库类型
+        database: configService.get(ConfigEnum.DB_DATABASE),
+        username: configService.get(ConfigEnum.DB_USERNAME),
+        password: configService.get(ConfigEnum.DB_PASSWORD),
+        host: configService.get(ConfigEnum.DB_HOST),
+        synchronize: configService.get(ConfigEnum.DB_SYNC),
+        autoLoadEntities: true,
+      }),
     }),
   ],
   controllers: [AppController],
@@ -1218,41 +1486,20 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 export class AppModule {}
 ```
 
-```typescript user.module.ts
-import { Module } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { UserController } from "./user.controller";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "./entities/user.entity";
+### entity
 
-@Module({
-  imports: [TypeOrmModule.forFeature([User])],
-  controllers: [UserController],
-  providers: [UserService],
-  exports: [UserService],
-})
-export class UserModule {}
-```
+定义数据库表及字段
 
-```typescript user.entity.ts
-import {
-  Entity,
-  Column,
-  Generated,
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+```ts user.entity.ts
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Phone } from "./phone.entity";
 
 @Entity()
 
 // user表示数据库中的表名
 export class User {
-  // 里面的属性对应数据库中的字段
-
   // 自动递增的主键
-  //   @PrimaryGeneratedColumn()
-
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
   id: number;
 
   // type与数据库类型一致；
@@ -1260,26 +1507,299 @@ export class User {
   name: string;
 
   @Column({
-    // primary: true, // 是否是主键，与 PrimaryColumn() 功能一致, 互斥关系，一个表只能存在一个主键
     name: "age", // 表列名
-    nullable: true, // 允许字段是否为空, 默认false
+    nullable: true, // 允许字段是否为空
     comment: "年龄",
-    select: true, // 查询时是否返回该字段
+    select: false, // 查询时false不返回该字段
     update: true, // save操作时是否更新该字段值
-    unique: false, // 是否唯一
     collation: "", // 定义列排序规则
   })
   age: number;
 
-  // 自动生成时间
-  @CreateDateColumn("timestamp")
-  createdTime: Date;
-
-  // 自动生成uuid
-  @Generated("uuid")
-  uuid: string;
-
   @Column({ type: "enum", enum: ["male", "female"], default: "male" })
   gender: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  nickname: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  workNo: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  superiorId: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  salary: number;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  position: string;
+
+  // user表与phone表是一对多关系，1参是回调函数来与谁创建关联关系，2参定义反向关系；
+  @OneToMany(() => Phone, (phone) => phone.user)
+  phones: Phone[];
+}
+```
+
+```ts phone.entity.ts
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { User } from "./user.entity";
+
+@Entity()
+export class Phone {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  brand: string;
+
+  // phone表与user表是多对一的关系，1参是回调函数来与谁创建关联关系；
+  @ManyToOne(() => User)
+  user: User;
+}
+```
+
+## CURD
+
+```ts user.service.ts
+import { Injectable } from "@nestjs/common";
+import { CreateUserDto, transferMoneyDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { User } from "./entities/user.entity";
+import { Phone } from "./entities/phone.entity";
+import { Repository, Like } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+
+@Injectable()
+export class UserService {
+  constructor(
+    @InjectRepository(User) private readonly user: Repository<User>,
+    @InjectRepository(Phone) private readonly phone: Repository<Phone>,
+  ) {}
+
+  // 创建
+  create(createUserDto: CreateUserDto) {
+    const data = new User();
+    data.name = createUserDto.name;
+    data.age = createUserDto.age;
+    data.gender = createUserDto.gender;
+    return this.user.save(data);
+  }
+
+  // 查询所有
+  async findAll(query: { keyword: string; page: number; size: number }) {
+    const data = await this.user.find({
+      where: [{ name: Like(`%${query.keyword}%`) }],
+      relations: ["phones"], // 关联查询
+      order: { id: "DESC" },
+      skip: (query.page - 1) * query.size,
+      take: query.size,
+    });
+
+    const total = await this.user.count({
+      where: [{ name: Like(`%${query.keyword}%`) }],
+    });
+
+    return { data, total };
+  }
+
+  async findOne(id: number) {
+    const data = await this.user.findOne({ where: { id } });
+    if (data) {
+      return { data };
+    } else {
+      return { message: "用户不存在" };
+    }
+  }
+
+  // 修改
+  update(id: number, updateUserDto: UpdateUserDto) {
+    return this.user.update(id, updateUserDto);
+  }
+
+  // 删除
+  remove(id: number) {
+    return this.user.delete(id);
+  }
+
+  // 一对多关联表设置数据
+  async buyPhones(params: { userId: number; phones: string[] }) {
+    const { userId, phones } = params;
+
+    // 读取用户信息
+    const userInfo = await this.user.findOne({ where: { id: userId } });
+
+    if (userInfo === null) {
+      return { message: "用户不存在" };
+    }
+
+    const phoneList: Phone[] = [];
+
+    // 先循环添加到phone表中，再插入到user_phone中
+    for (let i = 0; i < phones.length; i++) {
+      // new一个对象并添加信息；
+      const P = new Phone();
+      P.brand = phones[i];
+
+      // 调用类的save方法保存
+      await this.phone.save(P);
+      phoneList.push(P);
+    }
+
+    userInfo.phones = phoneList;
+    // 自动根据id更新用户数据
+    this.user.save(userInfo);
+
+    return {
+      message: "购买成功",
+    };
+  }
+
+  // 事务
+  transferMoney(transferMoneyDto: transferMoneyDto) {
+    try {
+      return this.user.manager.transaction(async (manager) => {
+        let fromUser = await this.user.findOne({
+          where: { id: transferMoneyDto.fromUserId },
+        });
+
+        let toUser = await this.user.findOne({
+          where: { id: transferMoneyDto.toUserId },
+        });
+
+        if (fromUser && toUser && fromUser.salary >= transferMoneyDto.amount) {
+          manager.save(User, {
+            id: fromUser.id,
+            salary: fromUser.salary - transferMoneyDto.amount,
+          });
+          manager.save(User, {
+            id: toUser.id,
+            salary: Number(toUser.salary) + transferMoneyDto.amount,
+          });
+
+          return { message: "转账成功" };
+        } else {
+          return { message: "转账失败" };
+        }
+      });
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
+}
+```
+
+```ts user.controller.ts
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from "@nestjs/common";
+import { UserService } from "./user.service";
+import { CreateUserDto, transferMoneyDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+
+@Controller("user")
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  // 访问 /user/transferMoney
+  @Post("/transferMoney")
+  transferMoney(@Body() transferMoneyDto: transferMoneyDto) {
+    return this.userService.transferMoney(transferMoneyDto);
+  }
+
+  // 访问 /user/buyPhones
+  @Post("/buyPhones")
+  buyPhones(@Body() params: { userId: number; phones: string[] }) {
+    return this.userService.buyPhones(params);
+  }
+
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
+  }
+
+  @Get()
+  findAll(@Query() query: { keyword: string; page: number; size: number }) {
+    return this.userService.findAll(query);
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.userService.findOne(+id);
+  }
+
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(+id, updateUserDto);
+  }
+
+  @Delete(":id")
+  remove(@Param("id") id: string) {
+    return this.userService.remove(+id);
+  }
+}
+```
+
+```ts user.module.ts
+import { Module } from "@nestjs/common";
+import { UserService } from "./user.service";
+import { UserController } from "./user.controller";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { User } from "./entities/user.entity";
+import { Phone } from "./entities/phone.entity";
+
+@Module({
+  // user.module.ts 中关联entity；user.server.ts就可以正常访问数据库了
+  imports: [TypeOrmModule.forFeature([User, Phone])],
+  controllers: [UserController],
+  providers: [UserService],
+})
+export class UserModule {}
+```
+
+```ts create-user.dto.ts
+import { IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
+
+export class CreateUserDto {
+  @IsString()
+  @IsNotEmpty({
+    message: "用户名不能为空",
+  })
+  @Length(2, 20, {
+    message: "用户名长度在2 - 20之间",
+  })
+  name: string;
+
+  @IsNumber()
+  age: number;
+
+  @IsString()
+  gender: string;
+}
+
+export class transferMoneyDto {
+  @IsNumber()
+  @IsNotEmpty({
+    message: "金额不能为空",
+  })
+  amount: number;
+
+  @IsNumber()
+  @IsNotEmpty({
+    message: "发起用户id不能为空",
+  })
+  fromUserId: number;
+
+  @IsNumber()
+  @IsNotEmpty({
+    message: "接收用户id不能为空",
+  })
+  toUserId: number;
 }
 ```
