@@ -212,9 +212,9 @@ nest g module [name] 创建模块
 nest g resource [name] 创建包含以上三个资源统一命令
 nest g middleware [name] 创建中间件
 
-## CRUD & RESTful
+## CURD & RESTful
 
-CRUD 是软件开发和数据库管理中最基础、最核心的四个操作。它是 Create、Read、Update 和 Delete 的首字母缩写.
+CURD 是软件开发和数据库管理中最基础、最核心的四个操作。它是 Create、Read、Update 和 Delete 的首字母缩写.
 RESTful API 是一种架构风格，它利用 HTTP 协议的特性（如方法 method、状态码 status、URI）来描述资源及其操作，也就是只需一个接口，就可以完成对资源的增删改查操作。
 
 ## 项目结构
@@ -1486,13 +1486,25 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 export class AppModule {}
 ```
 
+## CURD
+
 ### entity
 
 定义数据库表及字段
 
 ```ts user.entity.ts
-import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
 import { Phone } from "./phone.entity";
+import { Profile } from "./profile.entity";
+import { Role } from "../../role/entities/role.entity";
 
 @Entity()
 
@@ -1519,29 +1531,89 @@ export class User {
   @Column({ type: "enum", enum: ["male", "female"], default: "male" })
   gender: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
-  nickname: string;
+  // 类似于join(',') 方法将字符串转为数组存储
+  @Column("simple-array")
+  pens: string[];
 
-  @Column({ type: "varchar", length: 255, nullable: true })
-  workNo: string;
-
-  @Column({ type: "varchar", length: 255, nullable: true })
-  superiorId: string;
+  // 将对象转为json存储
+  @Column("simple-json")
+  penJson: { brand: string; id: number };
 
   @Column({ type: "varchar", length: 255, nullable: true })
   salary: number;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
-  position: string;
+  // user表与profile表是一对一关系，cascade 关联表同时会更新、删除操作；
+  @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
+  profile: Profile;
 
-  // user表与phone表是一对多关系，1参是回调函数来与谁创建关联关系，2参定义反向关系；
+  // user表与phone表是一对多关系，1参是回调函数来与谁创建关联关系，2参通过哪个具体字段进行关联查询；
   @OneToMany(() => Phone, (phone) => phone.user)
   phones: Phone[];
+
+  // user表与role表是多对多关系；
+  @ManyToMany(() => Role, (role) => role.users)
+  // 创建中间表；
+  @JoinTable({ name: "user_role" })
+  roles: Role[];
 }
 ```
 
 ```ts phone.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+} from "typeorm";
+import { User } from "./user.entity";
+
+@Entity()
+export class Profile {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ type: "varchar", length: 255 })
+  name: string;
+
+  @Column()
+  age: number;
+
+  @Column()
+  avatar: string;
+
+  @Column({ type: "enum", enum: ["male", "female"], default: "male" })
+  gender: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  nickname: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  address: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  email: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  salary: number;
+
+  // profile表与user表是一对一的关系，1参是回调函数来与谁创建关联关系；
+  @OneToOne(() => User)
+  // 创建关联字段：默认是id + 定义的字段user = userId，也可自定义；
+  @JoinColumn({ name: "user_id" })
+  // user的值就是User实体定义的数据；
+  user: User;
+}
+```
+
+```ts phone.entity.ts
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
 import { User } from "./user.entity";
 
 @Entity()
@@ -1554,11 +1626,33 @@ export class Phone {
 
   // phone表与user表是多对一的关系，1参是回调函数来与谁创建关联关系；
   @ManyToOne(() => User)
+  // ManyToOne可以省略JoinColumn
+  // @JoinColumn()
   user: User;
 }
 ```
 
-## CURD
+```ts role.entity.ts
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from "typeorm";
+import { User } from "src/user/entities/user.entity";
+
+@Entity()
+export class Role {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  description: string;
+
+  @ManyToMany(() => User, (user) => user.roles)
+  users: User[];
+}
+```
+
+### service
 
 ```ts user.service.ts
 import { Injectable } from "@nestjs/common";
@@ -1576,7 +1670,7 @@ export class UserService {
     @InjectRepository(Phone) private readonly phone: Repository<Phone>,
   ) {}
 
-  // 创建
+  // 创建用户
   create(createUserDto: CreateUserDto) {
     const data = new User();
     data.name = createUserDto.name;
@@ -1585,7 +1679,7 @@ export class UserService {
     return this.user.save(data);
   }
 
-  // 查询所有
+  // 查询所有用户
   async findAll(query: { keyword: string; page: number; size: number }) {
     const data = await this.user.find({
       where: [{ name: Like(`%${query.keyword}%`) }],
@@ -1602,6 +1696,7 @@ export class UserService {
     return { data, total };
   }
 
+  // 查单个用户
   async findOne(id: number) {
     const data = await this.user.findOne({ where: { id } });
     if (data) {
@@ -1611,17 +1706,35 @@ export class UserService {
     }
   }
 
-  // 修改
+  // 查询用户详情
+  findProfile(id: number) {
+    const data = this.user.findOne({
+      where: { id },
+      // 关联查询出profile详细数据
+      relations: {
+        profile: true,
+        phones: true,
+        roles: true,
+      },
+      select: {
+        profile: { id: false, avatar: false, email: false, salary: true },
+      },
+    });
+
+    return data;
+  }
+
+  // 修改用户
   update(id: number, updateUserDto: UpdateUserDto) {
     return this.user.update(id, updateUserDto);
   }
 
-  // 删除
+  // 删除用户
   remove(id: number) {
     return this.user.delete(id);
   }
 
-  // 一对多关联表设置数据
+  // 新增一对多关系的数据；
   async buyPhones(params: { userId: number; phones: string[] }) {
     const { userId, phones } = params;
 
@@ -1688,6 +1801,8 @@ export class UserService {
 }
 ```
 
+### controller
+
 ```ts user.controller.ts
 import {
   Controller,
@@ -1734,6 +1849,12 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  // 访问 /user/profile
+  @Get("/profile/:id")
+  findDetail(@Param("id") id: string) {
+    return this.userService.findProfile(+id);
+  }
+
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
@@ -1753,15 +1874,18 @@ import { UserController } from "./user.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import { Phone } from "./entities/phone.entity";
+import { Profile } from "./entities/profile.entity";
 
 @Module({
-  // user.module.ts 中关联entity；user.server.ts就可以正常访问数据库了
-  imports: [TypeOrmModule.forFeature([User, Phone])],
+  // 关联entity
+  imports: [TypeOrmModule.forFeature([User, Phone, Profile])],
   controllers: [UserController],
   providers: [UserService],
 })
 export class UserModule {}
 ```
+
+### dto
 
 ```ts create-user.dto.ts
 import { IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
