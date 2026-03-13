@@ -1384,7 +1384,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || "development"}`;
 export class AppModule {}
 ```
 
-需安装 'npm i cross-dev -S'
+需安装 'npm i cross-env -S'
 
 ```json package.json
 {
@@ -1453,6 +1453,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       retryAttempts: 5, // 重试次数
       retryDelay: 3000, // 重连间隔时间
       synchronize: true, // 自动将实体类同步到数据库中（开发环境可以，生产环境最好false）
+      logging: process.env.NODE_ENV === "development", // 访问接口时，打印原生形式的sql语句
 
       // 方式1：手动添加实体文件 (不推荐)
       // entities: [User, Profile, Log, Role],
@@ -1542,14 +1543,17 @@ export class User {
   @Column({ type: "varchar", length: 255, nullable: true })
   salary: number;
 
+  // 字段不会出现在user表中
   // user表与profile表是一对一关系，cascade 关联表同时会更新、删除操作；
   @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
   profile: Profile;
 
+  // 字段不会出现在user表中
   // user表与phone表是一对多关系，1参是回调函数来与谁创建关联关系，2参通过哪个具体字段进行关联查询；
   @OneToMany(() => Phone, (phone) => phone.user)
   phones: Phone[];
 
+  // 字段不会出现在user表中
   // user表与role表是多对多关系；
   @ManyToMany(() => Role, (role) => role.users)
   // 创建中间表；
@@ -1623,6 +1627,12 @@ export class Phone {
 
   @Column()
   brand: string;
+
+  @Column()
+  model: string;
+
+  @Column()
+  price: number;
 
   // phone表与user表是多对一的关系，1参是回调函数来与谁创建关联关系；
   @ManyToOne(() => User)
@@ -1735,7 +1745,10 @@ export class UserService {
   }
 
   // 新增一对多关系的数据；
-  async buyPhones(params: { userId: number; phones: string[] }) {
+  async buyPhones(params: {
+    userId: number;
+    phones: { brand: string; model: string; price: number }[];
+  }) {
     const { userId, phones } = params;
 
     // 读取用户信息
@@ -1751,7 +1764,9 @@ export class UserService {
     for (let i = 0; i < phones.length; i++) {
       // new一个对象并添加信息；
       const P = new Phone();
-      P.brand = phones[i];
+      P.brand = phones[i].brand;
+      P.model = phones[i].model;
+      P.price = phones[i].price;
 
       // 调用类的save方法保存
       await this.phone.save(P);
@@ -1830,7 +1845,13 @@ export class UserController {
 
   // 访问 /user/buyPhones
   @Post("/buyPhones")
-  buyPhones(@Body() params: { userId: number; phones: string[] }) {
+  buyPhones(
+    @Body()
+    params: {
+      userId: number;
+      phones: { brand: string; model: string; price: number }[];
+    },
+  ) {
     return this.userService.buyPhones(params);
   }
 
@@ -1925,5 +1946,47 @@ export class transferMoneyDto {
     message: "接收用户id不能为空",
   })
   toUserId: number;
+}
+```
+
+### querybuilder
+
+联合查询
+
+```ts user.servie.ts
+export class UserService {
+  findPhonesByGroup(id: number) {
+    // 原生sql查询方式
+    // return this.user.query(
+    //   `SELECT phone.price as price, COUNT(phone.price) as count from phone, user WHERE user.id = phone.userId AND user.id = ${id} GROUP BY phone.price`,
+    // );
+
+    return this.phone
+      .createQueryBuilder("phone")
+      .select("phone.price", "price") // as price
+      .addSelect("COUNT(phone.price)", "count") // COUNT(phone.price) as count
+      .leftJoinAndSelect("phone.user", "user")
+      .where("phone.userId = :id", { id })
+      .groupBy("price")
+      .orderBy("price", "DESC")
+      .addOrderBy("count", "DESC")
+      .getRawMany();
+  }
+}
+```
+
+```ts user.controller.ts
+export class UserController {
+  // 访问 /user/phonesByGroup
+  @Get("/phonesByGroup/:id")
+  async findPhones(@Param("id") id: string) {
+    const res = await this.userService.findPhonesByGroup(+id);
+    // return res;
+    return res.map((i) => ({
+      username: i.user_name,
+      price: i.price,
+      count: i.count,
+    }));
+  }
 }
 ```
