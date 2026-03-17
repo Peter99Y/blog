@@ -723,6 +723,436 @@ async function bootstrap() {
 bootstrap();
 ```
 
+## log
+
+- nest 内置 Logger
+
+```ts user.controller.ts 单文件使用内置 logger
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  Logger,
+} from "@nestjs/common";
+export class UserController {
+  // 初始化一个logger
+  private logger = new Logger(UserController.name);
+
+  constructor(private readonly userService: UserService) {
+    this.logger.warn("nestjs-logger init");
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    // 调用Logger打印一下日志
+    this.logger.log("User Controller findOne");
+    return this.userService.findOne(+id);
+  }
+}
+```
+
+- 第三方库 pino 及 配置 pino 格式和回滚
+  `npm install nestjs-pino pino-pretty --save`
+
+```ts user.controller.ts 单文件调用 pino
+import { UserService } from "./user.service";
+import { Logger } from "nestjs-pino";
+
+export class UserController {
+  constructor(
+    private readonly userService: UserService,
+    private readonly logger: Logger,
+  ) {
+    this.logger.warn("nestjs-pino init");
+  }
+}
+```
+
+```ts app.module.ts 全局配置 pino
+@Module({
+  imports: [
+    // 不传就是默认，可传配置对象定义样式和格式化
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport:
+          process.env.NODE_ENV === "development"
+            ? {
+                // 开发环境
+                target: "pino-pretty",
+                options: {
+                  colorize: true,
+                },
+              }
+            : {
+                // 生产环境
+                target: "pino-roll",
+                options: {
+                  mkdir: true, // 根目录创建logs目录
+                  dateFormat: "yyyy-MM-dd", // 日志文件名
+                  file: join("logs", "log"), // 日志文件后缀名
+                  frequency: "daily", // 日志文件生成频率
+                  size: "20m", // 日志文件大小
+                  maxFiles: 10, // 保留最近10个日志文件
+                },
+              },
+      },
+    }),
+  ],
+})
+export class UserModule {}
+```
+
+## pipe
+
+- 将客户端传递的参数进行**类型转换**
+
+```typescript user.controller.ts
+import {
+  ValidationPipe,
+  ParseIntPipe,
+  ParseFloatPipe,
+  ParseBoolPipe,
+  ParseArrayPipe,
+  ParseUUIDPipe,
+  ParseEnumPipe,
+  DefaultValuePipe,
+} from "@nestjs/common";
+
+@Controller("user")
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  // localhost:3000/user/1  如参数非UUID则自动抛出400错误
+  @Get(":id")
+  // findOne(@Param('id') id: string) {
+
+  // findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param("id", ParseUUIDPipe) id: number) {
+    return this.userService.findOne(+id);
+  }
+}
+```
+
+- 校验参数
+  需安装第三方校验库：npm i class-validator class-transformer -S
+
+```typescript create-user.dto.ts
+import { IsNotEmpty, IsString, Length } from "class-validator";
+
+export class CreateUserDto {
+  @IsString()
+  @IsNotEmpty({
+    message: "用户名不能为空",
+  })
+  @Length(3, 20, {
+    message: "用户名长度在3 - 20之间",
+  })
+  username: string;
+
+  passage: string;
+}
+```
+
+```typescript main.ts
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { ValidationPipe } from "@nestjs/common";
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // 全局配置后，参数报错信息才会根据dto.ts中定义的规则返回
+  app.useGlobalPipes(new ValidationPipe());
+  await app.listen(process.env.PORT ?? 3000);
+}
+
+bootstrap();
+```
+
+## guard
+
+根据条件（例如权限、角色、访问控制列表、token 等）来确定是否允许请求继续执行。
+守卫在每个中间件之后执行，在任何拦截器或管道之前执行。
+
+### 路由守卫
+
+### 控制器守卫
+
+先创建 nest g res [guard]，再切换到创建的目录中，创建 nest g gu [role];
+
+```typescript role.guard.ts
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { Observable } from "rxjs";
+
+@Injectable()
+export class RoleGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    console.log("经过了守卫");
+    return true;
+  }
+}
+```
+
+```typescript guard.controller.ts
+import { Controller, Get, Post, Body, Param, UseGuards } from "@nestjs/common";
+import { GuardService } from "./guard.service";
+import { CreateGuardDto } from "./dto/create-guard.dto";
+import { RoleGuard } from "../guard/role/role.guard";
+
+// localhost:3000/guard 下任意路由都会触发 RoleGuard 中的canActivate方法
+@Controller("guard")
+@UseGuards(RoleGuard) // 添加装饰器
+export class GuardController {
+  constructor(private readonly guardService: GuardService) {}
+
+  @Post()
+  create(@Body() createGuardDto: CreateGuardDto) {
+    return this.guardService.create(createGuardDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.guardService.findAll();
+  }
+}
+```
+
+### 全局守卫
+
+通过所有路由请求触发守卫；
+
+```typescript main.ts
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { RoleGuard } from "./guard/role/role.guard";
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useGlobalGuards(new RoleGuard());
+  await app.listen(process.env.PORT ?? 3000);
+}
+
+bootstrap();
+```
+
+### 自定义守卫
+
+```typescript guard.controller.ts
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  SetMetadata,
+} from "@nestjs/common";
+import { GuardService } from "./guard.service";
+import { CreateGuardDto } from "./dto/create-guard.dto";
+import { RoleGuard } from "./role/role.guard";
+
+// localhost:3000/guard 下任意路由都会触发 RoleGuard 中的canActivate方法
+@Controller("guard")
+@UseGuards(RoleGuard) // 添加装饰器
+export class GuardController {
+  constructor(private readonly guardService: GuardService) {}
+
+  @Post()
+  create(@Body() createGuardDto: CreateGuardDto) {
+    return this.guardService.create(createGuardDto);
+  }
+
+  // 访问 localhost:3000/guard/1?roles=admin 触发路由守卫
+  // 两个参数都可是任意字符，通过第二个参数判断是否能访问此路由；
+  @Get(":id")
+  @SetMetadata("roles", ["admin"])
+  findOne(@Param("id") id: string) {
+    return this.guardService.findOne(+id);
+  }
+}
+```
+
+```typescript role.guard.ts
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { Observable } from "rxjs";
+import { Reflector } from "@nestjs/core";
+import type { Request } from "express";
+
+@Injectable()
+export class RoleGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    // 与controller中定义的key: roles 一致
+    const roles = this.reflector.get<string[]>("roles", context.getHandler());
+    console.log(roles); // [ 'admin' ]
+
+    const req = context.switchToHttp().getRequest<Request>();
+
+    // 读取GET请求中的query中携带的参数
+    if (roles.includes(req.query.roles as string)) {
+      console.log("通过");
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+```
+
+## intercepter
+
+- 在函数前后执行额外的逻辑
+- 转换从函数返回的结果
+- 转换从函数抛出的错误
+- 扩展函数行为
+- 根据所选条件完全重写函数
+
+```typescript src/common/response.ts
+// 响应拦截器
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+} from "@nestjs/common";
+import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
+
+// 使用响应拦截器的 NestInterceptor 类型来约束 Response 类
+// NestInterceptor 是 interface，它要求需要实现 intercept 方法，这方法接收两个参数；
+@Injectable()
+export class Response<T> implements NestInterceptor<T, Response<T>> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    return next.handle().pipe(
+      map((data) => ({
+        data,
+        code: 200,
+        message: "success",
+      })),
+    );
+  }
+}
+```
+
+```typescript main.ts
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { join } from "path";
+import { Response } from "./common/reponse";
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useStaticAssets(join(__dirname, "public"));
+
+  // 注册拦截器；
+  app.useGlobalInterceptors(new Response());
+  await app.listen(process.env.PORT ?? 3000);
+}
+
+bootstrap();
+```
+
+## filter
+
+路由过滤器 ➡️ 控制器过滤器 ➡️ 全局过滤器
+HttpException是nestjs内置的异常，负责处理整个应用的异常并发送响应对象。
+
+### 路由过滤器
+
+```ts user.controller.ts
+import {
+  Get,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  ForbiddenException,
+} from "@nestjs/common";
+
+export class UserController {
+  @Get()
+  findAll(@Query() query: { keyword: string; page: number; size: number }) {
+    const mockData = { isAdmin: false };
+    if (mockData.isAdmin === false) {
+      // throw new HttpException('用户没有授权', HttpStatus.FORBIDDEN);
+      throw new ForbiddenException("用户没有授权");
+    }
+    return this.userService.findAll(query);
+  }
+}
+```
+
+### 全局过滤器
+
+通过**自定义异常过滤器**与结合**logger**设置全局的错误处理逻辑；
+
+```typescript src/common/http-exception-filter.ts
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  Logger,
+} from "@nestjs/common";
+import { Request, Response } from "express";
+
+@Catch()
+export class HttpExceptionFilter implements ExceptionFilter {
+  constructor(private readonly logger: Logger) {}
+
+  catch(exception: HttpException, host: ArgumentsHost) {
+    // 控制台打印异常信息；
+    this.logger.error(`${exception.message} ${exception.stack}`);
+
+    // 获取上下文，host代表进程；
+    const ctx = host.switchToHttp();
+    // 获取请求和响应对象和状态码；
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+    const status = exception.getStatus();
+
+    // 自定义响应数据
+    response.status(status).json({
+      // 将 statusCode 转为 status 字段；
+      status,
+      path: request.url,
+      method: request.method,
+      timestamp: new Date().toISOString(),
+      message: exception.message || HttpException.name,
+    });
+  }
+}
+```
+
+```typescript main.ts
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { Logger, ValidationPipe } from "@nestjs/common";
+import { HttpExceptionFilter } from "./common/http-exception-filter";
+
+async function bootstrap() {
+  const logger = new Logger();
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ["error", "warn"],
+  });
+  app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new HttpExceptionFilter(logger));
+  await app.listen(process.env.PORT ?? 3000);
+  logger.warn(`"Server is running on 127.0.0.1:${process.env.PORT ?? 3000}"`);
+}
+bootstrap();
+```
+
 ## upload
 
 需安装 multer、@types/multer、 @nestjs/platform-express (nest 已经自带) 模块；
@@ -907,290 +1337,6 @@ const subs = interval(1000)
   });
 ```
 
-## intercepter
-
-- 在函数前后执行额外的逻辑
-- 转换从函数返回的结果
-- 转换从函数抛出的错误
-- 扩展函数行为
-- 根据所选条件完全重写函数
-
-```typescript src/common/response.ts
-// 响应拦截器
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-} from "@nestjs/common";
-import { map } from "rxjs/operators";
-import { Observable } from "rxjs";
-
-// 使用响应拦截器的 NestInterceptor 类型来约束 Response 类
-// NestInterceptor 是 interface，它要求需要实现 intercept 方法，这方法接收两个参数；
-@Injectable()
-export class Response<T> implements NestInterceptor<T, Response<T>> {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle().pipe(
-      map((data) => ({
-        code: 200,
-        message: "success",
-        data,
-      })),
-    );
-  }
-}
-```
-
-```typescript src/common/filter.ts
-// 异常拦截器
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-} from "@nestjs/common";
-import { Request, Response } from "express";
-
-@Catch()
-export class HttpFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
-
-    response.status(status).json({
-      status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-    });
-  }
-}
-```
-
-```typescript main.ts
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
-import { NestExpressApplication } from "@nestjs/platform-express";
-import { join } from "path";
-import { Response } from "./common/reponse";
-import { HttpFilter } from "./common/filter";
-
-async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useStaticAssets(join(__dirname, "public"));
-
-  // 注册拦截器；
-  app.useGlobalInterceptors(new Response());
-  app.useGlobalFilters(new HttpFilter());
-
-  await app.listen(process.env.PORT ?? 3000);
-}
-
-bootstrap();
-```
-
-## pipe
-
-- 将客户端传递的参数进行**类型转换**
-
-```typescript user.controller.ts
-import {
-  ValidationPipe,
-  ParseIntPipe,
-  ParseFloatPipe,
-  ParseBoolPipe,
-  ParseArrayPipe,
-  ParseUUIDPipe,
-  ParseEnumPipe,
-  DefaultValuePipe,
-} from "@nestjs/common";
-
-@Controller("user")
-export class UserController {
-  constructor(private readonly userService: UserService) {}
-
-  // localhost:3000/user/1  如参数非UUID则自动抛出400错误
-  @Get(":id")
-  // findOne(@Param('id') id: string) {
-
-  // findOne(@Param('id', ParseIntPipe) id: number) {
-  findOne(@Param("id", ParseUUIDPipe) id: number) {
-    return this.userService.findOne(+id);
-  }
-}
-```
-
-- 校验参数
-  需安装第三方校验库：npm i class-validator class-transformer -S
-
-```typescript create-user.dto.ts
-import { IsNotEmpty, IsString, Length } from "class-validator";
-
-export class CreateUserDto {
-  @IsString()
-  @IsNotEmpty({
-    message: "用户名不能为空",
-  })
-  @Length(3, 20, {
-    message: "用户名长度在3 - 20之间",
-  })
-  username: string;
-
-  passage: string;
-}
-```
-
-```typescript main.ts
-import { NestExpressApplication } from "@nestjs/platform-express";
-import { ValidationPipe } from "@nestjs/common";
-
-async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  // 全局配置后，参数报错信息才会根据dto.ts中定义的规则返回
-  app.useGlobalPipes(new ValidationPipe());
-  await app.listen(process.env.PORT ?? 3000);
-}
-
-bootstrap();
-```
-
-## guard
-
-根据条件（例如权限、角色、访问控制列表、token 等）来确定是否允许请求继续执行。
-守卫在每个中间件之后执行，在任何拦截器或管道之前执行。
-
-### 路由守卫
-
-### 控制器守卫
-
-先创建 nest g res [guard]，再切换到创建的目录中，创建 nest g gu [role];
-
-```typescript role.guard.ts
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { Observable } from "rxjs";
-
-@Injectable()
-export class RoleGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log("经过了守卫");
-    return true;
-  }
-}
-```
-
-```typescript guard.controller.ts
-import { Controller, Get, Post, Body, Param, UseGuards } from "@nestjs/common";
-import { GuardService } from "./guard.service";
-import { CreateGuardDto } from "./dto/create-guard.dto";
-import { RoleGuard } from "../guard/role/role.guard";
-
-// localhost:3000/guard 下任意路由都会触发 RoleGuard 中的canActivate方法
-@Controller("guard")
-@UseGuards(RoleGuard) // 添加装饰器
-export class GuardController {
-  constructor(private readonly guardService: GuardService) {}
-
-  @Post()
-  create(@Body() createGuardDto: CreateGuardDto) {
-    return this.guardService.create(createGuardDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.guardService.findAll();
-  }
-}
-```
-
-### 全局守卫
-
-通过所有路由请求触发守卫；
-
-```typescript main.ts
-import { NestExpressApplication } from "@nestjs/platform-express";
-import { RoleGuard } from "./guard/role/role.guard";
-
-async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalGuards(new RoleGuard());
-  await app.listen(process.env.PORT ?? 3000);
-}
-
-bootstrap();
-```
-
-- 自定义守卫
-
-```typescript guard.controller.ts
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  UseGuards,
-  SetMetadata,
-} from "@nestjs/common";
-import { GuardService } from "./guard.service";
-import { CreateGuardDto } from "./dto/create-guard.dto";
-import { RoleGuard } from "./role/role.guard";
-
-// localhost:3000/guard 下任意路由都会触发 RoleGuard 中的canActivate方法
-@Controller("guard")
-@UseGuards(RoleGuard) // 添加装饰器
-export class GuardController {
-  constructor(private readonly guardService: GuardService) {}
-
-  @Post()
-  create(@Body() createGuardDto: CreateGuardDto) {
-    return this.guardService.create(createGuardDto);
-  }
-
-  // 访问 localhost:3000/guard/1?roles=admin 触发路由守卫
-  // 两个参数都可是任意字符，通过第二个参数判断是否能访问此路由；
-  @Get(":id")
-  @SetMetadata("roles", ["admin"])
-  findOne(@Param("id") id: string) {
-    return this.guardService.findOne(+id);
-  }
-}
-```
-
-```typescript role.guard.ts
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { Observable } from "rxjs";
-import { Reflector } from "@nestjs/core";
-import type { Request } from "express";
-
-@Injectable()
-export class RoleGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
-
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    // 与controller中定义的key: roles 一致
-    const roles = this.reflector.get<string[]>("roles", context.getHandler());
-    console.log(roles); // [ 'admin' ]
-
-    const req = context.switchToHttp().getRequest<Request>();
-
-    // 读取GET请求中的query中携带的参数
-    if (roles.includes(req.query.roles as string)) {
-      console.log("通过");
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-```
-
 ## 自定义装饰器
 
 创建 nest g decorator [decorator]
@@ -1316,14 +1462,13 @@ import { ConfigModule } from "@nestjs/config";
 @Module({
   imports: [
     UserModule,
-    // 使用全局配置只需在 如user.controller.ts中引入 ConfigModule 即可；
 
-    // 方式1：只能在 app.controller.ts 和 app.service.ts 中才能使用（在app.module.ts 这里import）；
+    // 方式1：只能在 app.controller.ts 和 app.service.ts 两个文件中才能使用；
     // ConfigModule,
 
     // 方式2：在 app.module.ts 这里import，可以在任何地方使用；
+    // 其他模块如 user.module.ts 不用imports再引入一遍，只需在 user.controller.ts 中引入 ConfigModule 使用即可；
     ConfigModule.forRoot({
-      // 配置为全局模式，则其他模块 user.module.ts 不用像这里一样再引入；
       isGlobal: true,
       envFilePath: [".env", ".env.development", ".env.production"], // 读取环境文件
     }),
@@ -1424,7 +1569,7 @@ DB_PASSWORD=123456
 DB_SYNC=false
 ```
 
-## database
+## Typeorm
 
 typeorm 是 Typescript 中最成熟的对象关系映射器（ORM: Object Relational Mapping 数据库的对象映射），把面向对象的概念跟数据库中的概念对应起；
 举例：定义一个对象就对应着一张表，这个对象的实例就对应着表中的以表中的一条数据，当创建实体时，会自动创建数据库这张表；
@@ -1491,7 +1636,7 @@ export class AppModule {}
 
 ### entity
 
-定义数据库表及字段
+实体是一个映射到数据库表的类
 
 ```ts user.entity.ts
 import {
