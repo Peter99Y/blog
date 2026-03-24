@@ -221,9 +221,9 @@ RESTful API 是一种架构风格，它利用 HTTP 协议的特性（如方法 m
 
 ### controller 控制器
 
-处理 http 请求并返回响应；
-路由分发：使用 @Get()、@Post() 等装饰器定义资源的 URI 路径；
-参数解析：负责从请求中提取 @Body()、@Query() 或 @Param() 等参数；
+- 处理 http 请求并返回响应；
+- 路由分发：使用 @Get()、@Post() 等装饰器定义资源的 URI 路径；
+- 参数解析：负责从请求中提取 @Body()、@Query() 或 @Param() 等参数；
 
 ```typescript user.controller.ts
 import { Controller, Get, Post, Body, Param, Query } from "@nestjs/common";
@@ -290,7 +290,14 @@ export class AppModule {}
 
 ### service 服务
 
-定义类，处理业务逻辑与数据层的交互（如数据库等），和其他额外的一些三方请求；
+> 定义类，处理业务逻辑与数据层的交互（如数据库等），和其他额外的一些三方请求；
+
+- create 方法：相当于创建了一个实体对象；
+- save 方法：相当于具体的sql语句，把数据写入到数据库中，如果实体ID存在会更新数据，可触发钩子方法；
+- insert 方法：插入不了数据会报错；
+
+- remove 方法：根据实体对象删除，可触发钩子方法；
+- delette 方法：根据ID、ID数组、查询条件删除；
 
 ```typescript user.service.ts
 import { Injectable } from "@nestjs/common";
@@ -1496,8 +1503,7 @@ export class UserController {
   findAll() {
     const db = this.configService.get(ConfigEnum.DB_DATABASE);
     const dbHost = this.configService.get(ConfigEnum.DB_HOST);
-    console.log(db, dbHost); // 运行 start:dev：study 127.0.0.1
-    console.log(db, dbHost); // 运行 start:prod：prodDb 127.0.0.2
+    console.log(db, dbHost); // study 127.0.0.1
     return this.userService.findAll();
   }
 }
@@ -1534,11 +1540,18 @@ export class AppModule {}
 ```json package.json
 {
   "scripts": {
+    // "build": "nest build",
+    "build": "cross-env NODE_ENV=production nest build",
+
     // "start:dev": "nest start --watch",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
 
+    // "start:debug": "nest start --debug --watch",
+    "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
+
+    // npm run build 打包后文件路径有点问题，需加上src，再 npm run start:prod 可运行生产环境；
     // "start:prod": "node dist/main",
-    "start:prod": "cross-env NODE_ENV=production node dist/main"
+    "start:prod": "cross-env NODE_ENV=production node dist/src/main"
   }
 }
 ```
@@ -1550,7 +1563,7 @@ export class AppModule {}
 DB_TYPE=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_SYNC=false
+DB_SYNCHRONIZE=false
 
 // .env.development
 DB_DATABASE=study
@@ -1558,15 +1571,15 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_USERNAME=root
 DB_PASSWORD=123456
-DB_SYNC=true
+DB_SYNCHRONIZE=true
 
 // .env.production
-DB_DATABASE=prodDb
-DB_HOST=127.0.0.2
+DB_DATABASE=study
+DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_USERNAME=admin
+DB_USERNAME=root
 DB_PASSWORD=123456
-DB_SYNC=false
+DB_SYNCHRONIZE=false
 ```
 
 ## Typeorm
@@ -1621,7 +1634,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
         username: configService.get(ConfigEnum.DB_USERNAME),
         password: configService.get(ConfigEnum.DB_PASSWORD),
         host: configService.get(ConfigEnum.DB_HOST),
-        synchronize: configService.get(ConfigEnum.DB_SYNC),
+        synchronize: configService.get(ConfigEnum.DB_SYNCHRONIZE),
         autoLoadEntities: true,
       }),
     }),
@@ -1647,6 +1660,11 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   JoinTable,
+  BeforeInsert,
+  AfterInsert,
+  BeforeUpdate,
+  AfterUpdate,
+  AfterRemove,
 } from "typeorm";
 import { Phone } from "./phone.entity";
 import { Profile } from "./profile.entity";
@@ -1689,7 +1707,7 @@ export class User {
   salary: number;
 
   // 字段不会出现在user表中
-  // user表与profile表是一对一关系，cascade 关联表同时会更新、删除操作；
+  // user表与profile表是一对一关系，cascade 为true, save与remove操作 同时会更新操作关联表数据；
   @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
   profile: Profile;
 
@@ -1704,6 +1722,30 @@ export class User {
   // 创建中间表；
   @JoinTable({ name: "user_role" })
   roles: Role[];
+
+  // save方法可触发钩子，insert不触发；
+  @BeforeInsert()
+  beforeInsert() {
+    console.log("User inserted");
+  }
+  @AfterInsert()
+  afterInsert() {
+    console.log("User inserted");
+  }
+  @BeforeUpdate()
+  beforeUpdate() {
+    console.log("User updated");
+  }
+  @AfterUpdate()
+  afterUpdate() {
+    console.log("User updated");
+  }
+
+  // remove方法可触发钩子，delete不触发；
+  @AfterRemove()
+  afterRemove() {
+    console.log("User removed");
+  }
 }
 ```
 
@@ -1809,6 +1851,10 @@ export class Role {
 
 ### service
 
+原生查询、联合查询、聚合查询
+
+![](/images/nest/join.png)
+
 ```ts user.service.ts
 import { Injectable } from "@nestjs/common";
 import { CreateUserDto, transferMoneyDto } from "./dto/create-user.dto";
@@ -1827,28 +1873,14 @@ export class UserService {
 
   // 创建用户
   create(createUserDto: CreateUserDto) {
-    const data = new User();
-    data.name = createUserDto.name;
-    data.age = createUserDto.age;
-    data.gender = createUserDto.gender;
+    // const data = new User();
+    // data.name = createUserDto.name;
+    // data.age = createUserDto.age;
+    // data.gender = createUserDto.gender;
+    // return this.user.save(data);
+
+    const data = this.user.create(createUserDto);
     return this.user.save(data);
-  }
-
-  // 查询所有用户
-  async findAll(query: { keyword: string; page: number; size: number }) {
-    const data = await this.user.find({
-      where: [{ name: Like(`%${query.keyword}%`) }],
-      relations: ["phones"], // 关联查询
-      order: { id: "DESC" },
-      skip: (query.page - 1) * query.size,
-      take: query.size,
-    });
-
-    const total = await this.user.count({
-      where: [{ name: Like(`%${query.keyword}%`) }],
-    });
-
-    return { data, total };
   }
 
   // 查单个用户
@@ -1862,14 +1894,13 @@ export class UserService {
   }
 
   // 查询用户详情
-  findProfile(id: number) {
-    const data = this.user.findOne({
+  async findProfile(id: number) {
+    const data = await this.user.findOne({
       where: { id },
-      // 关联查询出profile详细数据
+      // 关联查询出profile、phones详细数据
       relations: {
         profile: true,
         phones: true,
-        roles: true,
       },
       select: {
         profile: { id: false, avatar: false, email: false, salary: true },
@@ -1879,9 +1910,122 @@ export class UserService {
     return data;
   }
 
+  // 联合查询
+  async findAll(query: { keyword: string; page: number; size: number }) {
+    let { page, size, keyword } = query;
+    const take = size || 10;
+    const skip = ((page || 1) - 1) * take;
+
+    const data = await this.user.find({
+      where: [{ name: Like(`%${keyword}%`) }],
+      relations: ["phones"], // 关联查询
+      order: { id: "DESC" },
+      skip,
+      take,
+    });
+
+    const total = await this.user.count({
+      where: [{ name: Like(`%${keyword}%`) }],
+    });
+
+    return { data, total };
+  }
+
+  // 联合查询
+  async findAll2(query: UserType) {
+    let { page, size, username, gender, roleId } = query;
+    const take = size || 10;
+    const skip = ((page || 1) - 1) * take;
+
+    return this.user.find({
+      skip,
+      take,
+
+      select: {
+        // user表只展示id、name、nickname等字段
+        id: true,
+        name: true,
+        nickname: true,
+
+        // profile数组只展示salary字段
+        profile: {
+          salary: true,
+        },
+      },
+
+      // 联合查询哪些表；
+      relations: {
+        profile: true,
+        phones: true,
+        roles: true,
+      },
+
+      where: {
+        // 默认就是查的user表，匹配所有名称是username数据
+        name: username,
+
+        // 查询profile表，匹配gender的数据
+        profile: {
+          gender: gender,
+        },
+        // 查询roles表，匹配id的数据
+        roles: {
+          id: roleId,
+        },
+      },
+    });
+  }
+
+  async findAll3(query: UserType) {
+    let { page, size, username, gender, roleId } = query;
+    const take = size || 10;
+    const skip = ((page || 1) - 1) * take;
+
+    const builder = this.user
+      // 创建聚合查询
+      .createQueryBuilder("user")
+      // 左连接并设置别名
+      .leftJoinAndSelect("user.profile", "profile")
+      .leftJoinAndSelect("user.roles", "roles");
+
+    const obj = {
+      "user.username": username,
+      "profile.gender": gender,
+      "roles.id": roleId,
+    };
+    const newBuilder = conditionUtils<User>(builder, obj);
+    return newBuilder.take(take).skip(skip).getMany();
+  }
+
+  // 原始查询
+  findPhonesByGroup(id: number) {
+    // 原生sql查询方式
+    // return this.user.query(
+    //   `SELECT phone.price as price, COUNT(phone.price) as count from phone, user WHERE user.id = phone.userId AND user.id = ${id} GROUP BY phone.price`,
+    // );
+
+    return this.phone
+      .createQueryBuilder("phone")
+      .select("phone.price", "price") // as price
+      .addSelect("COUNT(phone.price)", "count") // COUNT(phone.price) as count
+      .leftJoinAndSelect("phone.user", "user")
+      .where("phone.userId = :id", { id })
+      .groupBy("price")
+      .orderBy("price", "DESC")
+      .addOrderBy("count", "DESC")
+      .getMany();
+  }
+
   // 修改用户
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.user.update(id, updateUserDto);
+    // 只适合单个模型的更新，不适合有关联关系的模型更新；
+    // return this.user.update(id, updateUserDto);
+
+    const data = await this.findProfile(id);
+    if (!data) return { message: "用户不存在" };
+    // 合并新旧数据，生成一个新的对象；
+    const newData = this.user.merge(data, updateUserDto);
+    return this.user.save(newData);
   }
 
   // 删除用户
@@ -1961,6 +2105,24 @@ export class UserService {
 }
 ```
 
+```ts db.helper.ts
+import { SelectQueryBuilder, ObjectLiteral } from "typeorm";
+
+export const conditionUtils = <T extends ObjectLiteral>(
+  builder: SelectQueryBuilder<T>,
+  obj: Record<string, unknown>,
+) => {
+  Object.keys(obj).forEach((key) => {
+    if (obj[key]) {
+      builder.andWhere(`${key} = :${key}`, { [key]: obj[key] });
+    } else {
+      builder.andWhere(`${key} IS NOT NULL`);
+    }
+  });
+  return builder;
+};
+```
+
 ### controller
 
 ```ts user.controller.ts
@@ -2030,6 +2192,13 @@ export class UserController {
   remove(@Param("id") id: string) {
     return this.userService.remove(+id);
   }
+
+  // 访问 /user/phonesByGroup
+  @Get("/phonesByGroup/:id")
+  async findPhones(@Param("id") id: string) {
+    const res = await this.userService.findPhonesByGroup(+id);
+    return res;
+  }
 }
 ```
 
@@ -2094,44 +2263,15 @@ export class transferMoneyDto {
 }
 ```
 
-### querybuilder
+## Typeorm Cli
 
-联合查询
+**数据库升级**、**系统版本升级**、**新增/删除字段**、**修改字段类型**都需要使用 Typeorm Cli 的 migration 命令;
+人为的手动导出再导入数据库，或对数据库进行一些操作可能会遗漏、报错等，在生产环境中使用 Cli 工具大大的提升效率和保证安全；
 
-```ts user.servie.ts
-export class UserService {
-  findPhonesByGroup(id: number) {
-    // 原生sql查询方式
-    // return this.user.query(
-    //   `SELECT phone.price as price, COUNT(phone.price) as count from phone, user WHERE user.id = phone.userId AND user.id = ${id} GROUP BY phone.price`,
-    // );
+1. package.json中添加命令
 
-    return this.phone
-      .createQueryBuilder("phone")
-      .select("phone.price", "price") // as price
-      .addSelect("COUNT(phone.price)", "count") // COUNT(phone.price) as count
-      .leftJoinAndSelect("phone.user", "user")
-      .where("phone.userId = :id", { id })
-      .groupBy("price")
-      .orderBy("price", "DESC")
-      .addOrderBy("count", "DESC")
-      .getRawMany();
-  }
-}
-```
-
-```ts user.controller.ts
-export class UserController {
-  // 访问 /user/phonesByGroup
-  @Get("/phonesByGroup/:id")
-  async findPhones(@Param("id") id: string) {
-    const res = await this.userService.findPhonesByGroup(+id);
-    // return res;
-    return res.map((i) => ({
-      username: i.user_name,
-      price: i.price,
-      count: i.count,
-    }));
-  }
+```json package.json中添加命令
+"script" {
+    "typeorm": "typeorm-ts-node-commonjs"
 }
 ```
