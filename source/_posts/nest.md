@@ -1695,35 +1695,38 @@ export class User {
   @Column({ type: "enum", enum: ["male", "female"], default: "male" })
   gender: string;
 
-  // 类似于join(',') 方法将字符串转为数组存储
-  @Column("simple-array")
-  pens: string[];
+  @Column({ type: "varchar", length: 255, nullable: true })
+  nickname: string;
 
-  // 将对象转为json存储
-  @Column("simple-json")
-  penJson: { brand: string; id: number };
+  @Column({ type: "varchar", length: 255, nullable: true })
+  workNo: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  superiorId: string;
 
   @Column({ type: "varchar", length: 255, nullable: true })
   salary: number;
 
-  // 字段不会出现在user表中
-  // user表与profile表是一对一关系，cascade 为true, save与remove操作 同时会更新操作关联表数据；
+  @Column({ type: "varchar", length: 255, nullable: true })
+  position: string;
+
+  // user表与profile表是一对一关系，cascade 级联操作允许两种表双向的插入、更新、删除操作；
+  // 如删除某条user数据，会同时删除该条profile数据，反之亦然；
   @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
   profile: Profile;
 
-  // 字段不会出现在user表中
   // user表与phone表是一对多关系，1参是回调函数来与谁创建关联关系，2参通过哪个具体字段进行关联查询；
-  @OneToMany(() => Phone, (phone) => phone.user)
+  // 如删除某条user数据，会同时删除关于该user的所有phones数据，反之亦然；
+  @OneToMany(() => Phone, (phone) => phone.user, { cascade: true })
   phones: Phone[];
 
-  // 字段不会出现在user表中
   // user表与role表是多对多关系；
-  @ManyToMany(() => Role, (role) => role.users)
+  // 限制 user 实体 insert 对于 roles 属性的操作; 同样 role.insert 对于 users 属性操作; role 实体 remove 不会删除 user 数据；
+  @ManyToMany(() => Role, (role) => role.users, { cascade: ["insert"] })
   // 创建中间表；
   @JoinTable({ name: "user_role" })
   roles: Role[];
 
-  // save方法可触发钩子，insert不触发；
   @BeforeInsert()
   beforeInsert() {
     console.log("User inserted");
@@ -1740,8 +1743,6 @@ export class User {
   afterUpdate() {
     console.log("User updated");
   }
-
-  // remove方法可触发钩子，delete不触发；
   @AfterRemove()
   afterRemove() {
     console.log("User removed");
@@ -1749,7 +1750,7 @@ export class User {
 }
 ```
 
-```ts phone.entity.ts
+```ts profile.entity.ts
 import {
   Entity,
   Column,
@@ -1770,14 +1771,14 @@ export class Profile {
   @Column()
   age: number;
 
-  @Column()
-  avatar: string;
-
   @Column({ type: "enum", enum: ["male", "female"], default: "male" })
   gender: string;
 
   @Column({ type: "varchar", length: 255, nullable: true })
   nickname: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  avatar: string;
 
   @Column({ type: "varchar", length: 255, nullable: true })
   address: string;
@@ -1789,9 +1790,10 @@ export class Profile {
   salary: number;
 
   // profile表与user表是一对一的关系，1参是回调函数来与谁创建关联关系；
-  @OneToOne(() => User)
+  // profile不能设置 cascade 会导致死循环，只需user单边设置即可；
+  @OneToOne(() => User, { onDelete: "CASCADE" })
   // 创建关联字段：默认是id + 定义的字段user = userId，也可自定义；
-  @JoinColumn({ name: "user_id" })
+  @JoinColumn()
   // user的值就是User实体定义的数据；
   user: User;
 }
@@ -1861,7 +1863,8 @@ import { CreateUserDto, transferMoneyDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
 import { Phone } from "./entities/phone.entity";
-import { Repository, Like } from "typeorm";
+import { Role } from "../role/entities/role.entity";
+import { Repository, Like, In } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
@@ -1869,17 +1872,30 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly user: Repository<User>,
     @InjectRepository(Phone) private readonly phone: Repository<Phone>,
+    @InjectRepository(Role) private readonly role: Repository<Role>,
   ) {}
 
   // 创建用户
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     // const data = new User();
     // data.name = createUserDto.name;
     // data.age = createUserDto.age;
     // data.gender = createUserDto.gender;
     // return this.user.save(data);
 
-    const data = this.user.create(createUserDto);
+    let roleData: Role[] = [];
+    if (createUserDto.roleIds.length > 0) {
+      // 根据id查询出所有角色数据;
+      roleData = await this.role.find({
+        where: { id: In(createUserDto.roleIds) },
+      });
+    }
+
+    const data = this.user.create({
+      ...createUserDto,
+      profile: createUserDto, // cascade: true 级联操作会自动将关联的profile数据插入到 profile 表中；
+      roles: roleData, // cascade: ['insert'] 级联操作会自动将关联的角色数据插入到 user_role 中间表；
+    });
     return this.user.save(data);
   }
 
@@ -2223,7 +2239,13 @@ export class UserModule {}
 ### dto
 
 ```ts create-user.dto.ts
-import { IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Length,
+} from "class-validator";
 
 export class CreateUserDto {
   @IsString()
@@ -2240,6 +2262,9 @@ export class CreateUserDto {
 
   @IsString()
   gender: string;
+
+  @IsArray({ message: "roleIds 必须是数组" })
+  roleIds: number[];
 }
 
 export class transferMoneyDto {
