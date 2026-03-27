@@ -175,18 +175,18 @@ jerry.play(); // Jerry is playing ios game
 
 ## 生命周期
 
-| 生命周期       | 描述                                               |
-| -------------- | -------------------------------------------------- |
-| ⬇️ 客户端      | 发起请求                                           |
-| ⬇️ middleware  | 全局中间件 ➡️ 模块中间件                           |
-| ⬇️ guard       | 全局守卫 ➡️ 控制器守卫 ➡️ 路由守卫                 |
-| ⬇️ interceptor | 全局拦截器pre ➡️ 控制拦截器pre ➡️ 路由拦截器pre    |
-| ⬇️ pipe        | 全局管道 ➡️ 控制器管道 ➡️ 路由管道 ➡️ 路由参数管道 |
-| ⬇️ controller  | -                                                  |
-| ⬇️ service     | -                                                  |
-| ⬇️ interceptor | 全局拦截器post ➡️ 控制拦截器post ➡️ 路由拦截器post |
-| ⬇️ filter      | 路由过滤器 ➡️ 控制器过滤器 ➡️ 全局过滤器           |
-| ⬇️ 响应        | 响应客户端                                         |
+| 生命周期       | 描述                                               |                                                            |
+| -------------- | -------------------------------------------------- | ---------------------------------------------------------- |
+| ⬇️ 客户端      | 发起请求                                           |                                                            |
+| ⬇️ middleware  | 全局中间件 ➡️ 模块中间件                           |                                                            |
+| ⬇️ guard       | 全局守卫 ➡️ 控制器守卫 ➡️ 路由守卫                 | 根据权限/角色/toke等是否允许请求继续执行                   |
+| ⬇️ interceptor | 全局拦截器pre ➡️ 控制拦截器pre ➡️ 路由拦截器pre    |                                                            |
+| ⬇️ pipe        | 全局管道 ➡️ 控制器管道 ➡️ 路由管道 ➡️ 路由参数管道 | 过滤多余字段 (whitelist && DTO中有装饰器修饰的字段)        |
+| ⬇️ controller  | -                                                  |                                                            |
+| ⬇️ service     | -                                                  |                                                            |
+| ⬇️ interceptor | 路由拦截器post ➡️ 控制拦截器post ➡️ 全局拦截器post | 过滤响应的字段 (DTO Exclude/Expose 修饰字段 & Interceptor) |
+| ⬇️ filter      | 路由过滤器 ➡️ 控制器过滤器 ➡️ 全局过滤器           | 处理整个应用的异常并设置公共的响应对象数据结构             |
+| ⬇️ 响应        | 响应客户端                                         |                                                            |
 
 ## 初始化
 
@@ -195,7 +195,8 @@ jerry.play(); // Jerry is playing ios game
 
 ## 常用命令
 
-nest g mo/co/s (-d 查看会创建哪些文件)
+nest g --help 查看所有命令
+nest g mo/co/s (-d 查看会创建哪些文件) (--no-spec 不创建测试文件)
 nest g controller [name] 创建控制器
 nest g service [name] 创建服务
 nest g module [name] 创建模块
@@ -628,87 +629,6 @@ export class UserController {
 }
 ```
 
-## middleware
-
-是在路由处理函数执行之前执行的函数，可对请求对象和响应对象进行修改、调用下一个中间件函数、next 函数若没有调用，则请求将不会继续往下执行。
-
-### 模块中间件
-
-先创建一个名为 logger 的中间件： nest g middleware logger
-
-```typescript logger.middleware.ts
-import { Injectable, NestMiddleware } from "@nestjs/common";
-
-@Injectable()
-export class LoggerMiddleware implements NestMiddleware {
-  use(req: any, res: any, next: () => void) {
-    res.send("若不执行next, 执行send, 中间件拦截了路由的 response");
-    // next();
-  }
-}
-```
-
-```typescript user.module.ts
-import {
-  Module,
-  NestModule,
-  MiddlewareConsumer,
-  RequestMethod,
-} from "@nestjs/common";
-import { UserService } from "./user.service";
-import { UserController } from "./user.controller";
-import { LoggerMiddleware } from "../logger/logger.middleware";
-
-@Module({
-  controllers: [UserController],
-  providers: [UserService],
-  exports: [UserService],
-})
-export class UserModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    // 注入中间件并指定 user 的路由
-    // consumer.apply(LoggerMiddleware).forRoutes('user');
-
-    // 只针对get方法
-    consumer.apply(LoggerMiddleware).forRoutes({
-      path: "user",
-      method: RequestMethod.GET,
-    });
-
-    // 拦截user所有路由
-    // consumer.apply(LoggerMiddleware).forRoutes(UserController);
-  }
-}
-```
-
-### 全局中间件
-
-```typescript main.ts
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
-import * as cors from "cors";
-import { Request, Response, NextFunction } from "express";
-
-const whiteList = ["/user"];
-
-function GlobalMiddleware(req: Request, res: Response, next: NextFunction) {
-  if (whiteList.includes(req.originalUrl)) {
-    next();
-  } else {
-    res.send("全局中间件拦截了 response");
-  }
-}
-
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.use(cors); // 注册第三方中间件
-  app.use(GlobalMiddleware); // 注册全局中间件
-  await app.listen(process.env.PORT ?? 3000);
-}
-
-bootstrap();
-```
-
 ## static
 
 ```typescript main.ts
@@ -815,66 +735,81 @@ export class UserController {
 export class UserModule {}
 ```
 
-## pipe
+## middleware
 
-- 将客户端传递的参数进行**类型转换**
+是在路由处理函数执行之前执行的函数，可对请求对象和响应对象进行修改、调用下一个中间件函数、next 函数若没有调用，则请求将不会继续往下执行。
 
-```typescript user.controller.ts
-import {
-  ValidationPipe,
-  ParseIntPipe,
-  ParseFloatPipe,
-  ParseBoolPipe,
-  ParseArrayPipe,
-  ParseUUIDPipe,
-  ParseEnumPipe,
-  DefaultValuePipe,
-} from "@nestjs/common";
+### 模块中间件
 
-@Controller("user")
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+先创建一个名为 logger 的中间件： nest g middleware logger
 
-  // localhost:3000/user/1  如参数非UUID则自动抛出400错误
-  @Get(":id")
-  // findOne(@Param('id') id: string) {
+```typescript logger.middleware.ts
+import { Injectable, NestMiddleware } from "@nestjs/common";
 
-  // findOne(@Param('id', ParseIntPipe) id: number) {
-  findOne(@Param("id", ParseUUIDPipe) id: number) {
-    return this.userService.findOne(+id);
+@Injectable()
+export class LoggerMiddleware implements NestMiddleware {
+  use(req: any, res: any, next: () => void) {
+    res.send("若不执行next, 执行send, 中间件拦截了路由的 response");
+    // next();
   }
 }
 ```
 
-- 校验参数
-  需安装第三方校验库：npm i class-validator class-transformer -S
+```typescript user.module.ts
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  RequestMethod,
+} from "@nestjs/common";
+import { UserService } from "./user.service";
+import { UserController } from "./user.controller";
+import { LoggerMiddleware } from "../logger/logger.middleware";
 
-```typescript create-user.dto.ts
-import { IsNotEmpty, IsString, Length } from "class-validator";
+@Module({
+  controllers: [UserController],
+  providers: [UserService],
+  exports: [UserService],
+})
+export class UserModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // 注入中间件并指定 user 的路由
+    // consumer.apply(LoggerMiddleware).forRoutes('user');
 
-export class CreateUserDto {
-  @IsString()
-  @IsNotEmpty({
-    message: "用户名不能为空",
-  })
-  @Length(3, 20, {
-    message: "用户名长度在3 - 20之间",
-  })
-  username: string;
+    // 只针对get方法
+    consumer.apply(LoggerMiddleware).forRoutes({
+      path: "user",
+      method: RequestMethod.GET,
+    });
 
-  passage: string;
+    // 拦截user所有路由
+    // consumer.apply(LoggerMiddleware).forRoutes(UserController);
+  }
 }
 ```
 
+### 全局中间件
+
 ```typescript main.ts
-import { NestExpressApplication } from "@nestjs/platform-express";
-import { ValidationPipe } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import * as cors from "cors";
+import { Request, Response, NextFunction } from "express";
+
+const whiteList = ["/user"];
+
+function GlobalMiddleware(req: Request, res: Response, next: NextFunction) {
+  if (whiteList.includes(req.originalUrl)) {
+    next();
+  } else {
+    res.send("全局中间件拦截了 response");
+  }
+}
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  // 全局配置后，参数报错信息才会根据dto.ts中定义的规则返回
-  app.useGlobalPipes(new ValidationPipe());
+  const app = await NestFactory.create(AppModule);
+  app.use(cors); // 注册第三方中间件
+  app.use(GlobalMiddleware); // 注册全局中间件
   await app.listen(process.env.PORT ?? 3000);
 }
 
@@ -890,33 +825,44 @@ bootstrap();
 
 ### 控制器守卫
 
-先创建 nest g res [guard]，再切换到创建的目录中，创建 nest g gu [role];
+如是否是管理员角色的路由守卫 `nest g gu role/role --no-spec`
 
-```typescript role.guard.ts
+```ts role.guard.ts
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Observable } from "rxjs";
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-  canActivate(
+  async canActivate(
     context: ExecutionContext,
+    userService: UserService,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log("经过了守卫");
-    return true;
+    // 获取请求对象
+    const request = context.switchToHttp().getRequest();
+    const user = await this.userService.findOneByUsername(
+      request.user.username,
+    );
+
+    if (user && user.role === "isAdmin") {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 ```
 
-```typescript guard.controller.ts
+```ts user.controller.ts
 import { Controller, Get, Post, Body, Param, UseGuards } from "@nestjs/common";
 import { GuardService } from "./guard.service";
 import { CreateGuardDto } from "./dto/create-guard.dto";
-import { RoleGuard } from "../guard/role/role.guard";
+import { RoleGuard } from "src/guard/role/role.guard";
 
-// localhost:3000/guard 下任意路由都会触发 RoleGuard 中的canActivate方法
-@Controller("guard")
-@UseGuards(RoleGuard) // 添加装饰器
-export class GuardController {
+@Controller("user")
+// 控制器守卫，当前控制器下的所有路由都会触发守卫；
+@UseGuards(RoleGuard)
+export class UserController {
   constructor(private readonly guardService: GuardService) {}
 
   @Post()
@@ -925,6 +871,8 @@ export class GuardController {
   }
 
   @Get()
+  // 路由守卫
+  @UseGuards(RoleGuard)
   findAll() {
     return this.guardService.findAll();
   }
@@ -933,24 +881,36 @@ export class GuardController {
 
 ### 全局守卫
 
-通过所有路由请求触发守卫；
+全局守卫：所有路由请求都会触发此守卫；
 
-```typescript main.ts
-import { NestExpressApplication } from "@nestjs/platform-express";
-import { RoleGuard } from "./guard/role/role.guard";
+```ts
+main.ts;
+// import { NestExpressApplication } from "@nestjs/platform-express";
+// import { RoleGuard } from "src/guard/role/role.guard";
 
-async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalGuards(new RoleGuard());
-  await app.listen(process.env.PORT ?? 3000);
-}
+// async function bootstrap() {
+//   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-bootstrap();
+//   注意：若 RoleGuard 守卫中有引入模块如UserService，会无法访问，需在app.module.ts中引入方式；
+//   app.useGlobalGuards(new RoleGuard());
+//   await app.listen(process.env.PORT ?? 3000);
+// }
+// bootstrap();
+
+app.module.ts
+import { RoleGuard } from "src/guard/role/role.guard";
+
+@Module({
+  providers: [AppService, {
+    provide: 'APP_GUARD',
+    useClass: RoleGuard,
+  }],
+})
 ```
 
 ### 自定义守卫
 
-```typescript guard.controller.ts
+```ts guard.controller.ts
 import {
   Controller,
   Get,
@@ -1017,6 +977,12 @@ export class RoleGuard implements CanActivate {
 
 ## intercepter
 
+> 当一个请求发送后执行顺序:
+> 请求 > middleware > guard > interceptor > pipe > controller > service > interceptor;
+> 拦截器会触发两次，若 service 执行错误，则第二次不会触发；
+
+> 序列化：将 entity 实体转换成对象响应给客户端；
+
 - 在函数前后执行额外的逻辑
 - 转换从函数返回的结果
 - 转换从函数抛出的错误
@@ -1068,6 +1034,83 @@ async function bootstrap() {
 
 bootstrap();
 ```
+
+## pipe
+
+`npm i class-validator class-transformer -S`
+
+### 类型转换
+
+```typescript user.controller.ts
+import {
+  ValidationPipe,
+  ParseIntPipe,
+  ParseFloatPipe,
+  ParseBoolPipe,
+  ParseArrayPipe,
+  ParseUUIDPipe,
+  ParseEnumPipe,
+  DefaultValuePipe,
+} from "@nestjs/common";
+
+@Controller("user")
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  @Get(":id")
+  // findOne(@Param('id') id: string) {}
+
+  // findOne(@Param('id', ParseIntPipe) id: number) {}
+
+  // 参数非 UUID 格式会抛出 400 错误
+  findOne(@Param("id", ParseUUIDPipe) id: number) {
+    return this.userService.findOne(+id);
+  }
+}
+```
+
+### 校验参数
+
+参数校验是根据 DTO 类的验证规则进行校验的；
+
+```typescript create-user.dto.ts
+import { IsNotEmpty, IsString, Length } from "class-validator";
+
+export class CreateUserDto {
+  @IsString()
+  @IsNotEmpty({
+    message: "用户名不能为空",
+  })
+  @Length(3, 20, {
+    message: "用户名长度在3 - 20之间",
+  })
+  username: string;
+
+  passage: string;
+}
+```
+
+```typescript main.ts
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { ValidationPipe } from "@nestjs/common";
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // 需全局配置后，参数报错信息才会根据 dto.ts 中定义的规则返回
+  app.useGlobalPipes(
+    new ValidationPipe({
+      // 参数过滤，只接受 DTO 中定义的有装饰器修饰的参数 (更新操作有风险)，常打开；
+      whitelist: true,
+    }),
+  );
+  await app.listen(process.env.PORT ?? 3000);
+}
+
+bootstrap();
+```
+
+### 自定义校验
 
 ## filter
 
@@ -1652,6 +1695,10 @@ export class AppModule {}
 
 实体是一个映射到数据库表的类
 
+> @IsNotEmpty() 修饰的字段必填，没有用的都允许给数据库写入NUll;
+> @Column({select: false}) 数据库层级，service中查出来的数据对象都没有这个字段;
+> @Exclude() 序列化层，service执行成功后，API**响应对象**中过滤字段;
+
 ```ts user.entity.ts
 import {
   Entity,
@@ -1682,7 +1729,7 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column({ select: true })
+  @Column({ select: false })
   password: string;
 
   @Column({
@@ -2253,6 +2300,9 @@ export class UserModule {}
 
 ### dto
 
+输入参数过滤：DTO中 有装饰器修饰的参数 & pipe.whitelist 设为 true 过滤多余字段，否则更新操作有风险;
+输出参数过滤：DTO中 @Exclude/@Expose() 修饰的字段 & Interceptor 拦截器，过滤响应的字段;
+
 ```ts create-user.dto.ts
 import {
   IsArray,
@@ -2316,7 +2366,7 @@ export class transferMoneyDto {
 
 ## JWT
 
-`npm install passport passport-jwt @nestjs/jwt --S`
+`npm install passport passport-jwt @nestjs/jwt @nestjs/passport --S`
 `npm install @types/passport-jwt --D`
 
 ## Typeorm Cli
