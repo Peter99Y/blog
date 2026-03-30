@@ -981,7 +981,36 @@ export class RoleGuard implements CanActivate {
 > 请求 > middleware > guard > interceptor > pipe > controller > service > interceptor;
 > 拦截器会触发两次，若 service 执行错误，则第二次不会触发；
 
-> 序列化：将 entity 实体转换成对象响应给客户端；
+- ClassSerializerInterceptor & Entity 中 @Exclude/@Expose 响应时需过滤/暴露字段；
+
+```ts User.entity.ts
+export class User {
+  @PrimaryGeneratedColumn()
+  // 返回时显示 id 字段
+  @Expose()
+  id: number;
+
+  @Column()
+  // 返回时排除 password 字段
+  @Exclude()
+  password: string;
+}
+```
+
+```ts auth.controller.ts
+import { ClassSerializerInterceptor } from "@nestjs/common";
+
+@Controller("auth")
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+
+  @Get("/profile/:userId")
+  @UseInterceptors(ClassSerializerInterceptor)
+  getProfile(@Param("userId") id: string, @Req() req) {
+    return this.authService.getProfile(id);
+  }
+}
+```
 
 - 在函数前后执行额外的逻辑
 - 转换从函数返回的结果
@@ -990,7 +1019,6 @@ export class RoleGuard implements CanActivate {
 - 根据所选条件完全重写函数
 
 ```typescript src/common/response.ts
-// 响应拦截器
 import {
   Injectable,
   NestInterceptor,
@@ -1000,8 +1028,6 @@ import {
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
 
-// 使用响应拦截器的 NestInterceptor 类型来约束 Response 类
-// NestInterceptor 是 interface，它要求需要实现 intercept 方法，这方法接收两个参数；
 @Injectable()
 export class Response<T> implements NestInterceptor<T, Response<T>> {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -1071,7 +1097,8 @@ export class UserController {
 
 ### 校验参数
 
-参数校验是根据 DTO 类的验证规则进行校验的；
+接收参数过滤没有装饰器修饰的字段；
+参数将根据 DTO 类的验证规则进行校验；
 
 ```typescript create-user.dto.ts
 import { IsNotEmpty, IsString, Length } from "class-validator";
@@ -1086,6 +1113,7 @@ export class CreateUserDto {
   })
   username: string;
 
+  // 没有装饰器修饰的属性，请求对象中的参数将被过滤掉；
   passage: string;
 }
 ```
@@ -1697,7 +1725,8 @@ export class AppModule {}
 
 > @IsNotEmpty() 修饰的字段必填，没有用的都允许给数据库写入NUll;
 > @Column({select: false}) 数据库层级，service中查出来的数据对象都没有这个字段;
-> @Exclude() 序列化层，service执行成功后，API**响应对象**中过滤字段;
+> @Exclude() **响应对象**过滤字段 (需配合 ClassSerializerInterceptor 拦截器使用);
+> @Expose() **响应对象**返回字段 (需配合 ClassSerializerInterceptor 拦截器使用);
 
 ```ts user.entity.ts
 import {
@@ -1724,12 +1753,14 @@ import { Role } from "../../role/entities/role.entity";
 export class User {
   // 自动递增的主键
   @PrimaryGeneratedColumn()
+  @Expose()
   id: number;
 
   @Column({ unique: true })
   username: string;
 
-  @Column({ select: false })
+  // 响应时排除 password 字段
+  @Exclude()
   password: string;
 
   @Column({
@@ -2300,8 +2331,9 @@ export class UserModule {}
 
 ### dto
 
-输入参数过滤：DTO中 有装饰器修饰的参数 & pipe.whitelist 设为 true 过滤多余字段，否则更新操作有风险;
-输出参数过滤：DTO中 @Exclude/@Expose() 修饰的字段 & Interceptor 拦截器，过滤响应的字段;
+- 输入参数过滤：pipe.whitelist 打开后，只会接收 DTO 中定义的字段 且 有校验装饰器修饰的字段，然后将校验通过的字段传递到 controller 中；(如 createUserDto 定义并校验 username 和 password，updateUserDto 仅定义并校验并只接收username);
+
+- 输出参数过滤：Entity中，使用@Exclude/@Expose() 修饰的字段 & Interceptor 拦截器搭配使用，过滤掉响应的字段;
 
 ```ts create-user.dto.ts
 import {
