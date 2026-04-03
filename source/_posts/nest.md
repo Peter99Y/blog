@@ -2084,13 +2084,8 @@ export class UserService {
   }
 
   // 查单个用户
-  async findOne(id: number) {
-    const data = await this.user.findOne({ where: { id } });
-    if (data) {
-      return { data };
-    } else {
-      return { message: "用户不存在" };
-    }
+  findOne(id: number) {
+    return this.user.findOne({ where: { id }, relations: ["roles"] });
   }
 
   // 查询用户详情
@@ -2398,8 +2393,14 @@ export class transferMoneyDto {
 
 ## JWT
 
+jwtService.sign 生成 token & 自定义 AuthGuard validate 验证 token
 `npm install passport passport-jwt @nestjs/jwt @nestjs/passport --S`
 `npm install @types/passport-jwt --D`
+
+## Encryption
+
+argon2.hash 加密 与 argon2.verify 验证密码
+``npm install argon2`
 
 ## Typeorm Cli
 
@@ -2410,6 +2411,25 @@ export class transferMoneyDto {
 
 ```json package.json中添加命令
 "script" {
-    "typeorm": "typeorm-ts-node-commonjs"
+    "typeorm": "typeorm-ts-node-commonjs -d ormconfig.ts",
+
+    // 生成新的版本；
+    // "migration:generate": "f() { npm run typeorm migration:generate -p \"./src/migrations/$@\"; }; f",
+    "migration:generate": "npm run typeorm migration:generate",
+
+    // 创建migration文件
+    "migration:create": "typeorm-ts-node-commonjs migration:create",
+
+    // 将migration文件执行到数据库中；
+    "migration:run": "npm run typeorm migration:run",
+
+    //把当前执行的数据库往前回一个版本；
+    "migration:revert": "npm run typeorm migration:revert",
 }
 ```
+
+2. 终端运行命令 `npm run migration:create src/migrations/init`;
+   生成migration文件，记录数据库的初始化信息，如表结构、字段、索引等；
+
+3. 在新增或修改 Entity 文件后，
+   如新增 nest g res menu 后, 运行命令 `npm run migration:generate  src/migrations/menu`;
