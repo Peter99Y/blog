@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Peter Yu">
+    
+    <title>
+        
+            RegExp |
+        
+        Peter&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/blog/images/xiaoxin.jpg">
+    
+    
+<link rel="stylesheet" href="/blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"github.com","root":"/blog/","language":"zh-CN"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/xiaoxin.jpg","favicon":"/images/xiaoxin.jpg","avatar":"/images/xiaoxin.jpg","font_size":null,"font_family":"Microsoft YaHei","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":true,"background_img":"https://keep.xpoet.cn/images/bg.svg","description":"我与世界相识，我与世界相蚀","font_color":null,"hitokoto":false},"scroll":{"progress_bar":true,"percent":false}},"local_search":{"enable":false,"preload":true},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":false,"auto":false,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"version":"3.8.6"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/blog/images/xiaoxin.jpg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Peter&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/archives">归档</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        RegExp
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/blog/images/xiaoxin.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">Peter Yu</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2024-07-11 09:00:47</span>
+                <span class="mobile">2024-07-11 09:00</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Mon Apr 07 2025 16:55:20 GMT+0800">2025-04-07 16:55:20</span>
+            </span>
+        
+
+        
+
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <h4 id="正则创建方式"><a href="#正则创建方式" class="headerlink" title="正则创建方式"></a>正则创建方式</h4><ul>
+<li><p>字面量<br>var reg &#x3D; &#x2F;\w+&#x2F;;</p>
+</li>
+<li><p>构造函数<br>用双引号创建正则时需要添加转义符；</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">new RegExp(&quot;^\\w+$&quot;);                       /^\w+$/</span><br><span class="line">new RegExp(/^\w+$/);                        /^\w+$/</span><br><span class="line"></span><br><span class="line">var reg = new RegExp(&quot;\d&quot;);                 /d/ 转义了d仍然是字母d;</span><br><span class="line">reg.test(1)                                 false; 等价于 /d/.test(1);</span><br><span class="line">reg.test(&#x27;d&#x27;)                               true;</span><br><span class="line"></span><br><span class="line">new RegExp(&quot;\\d&quot;).test(1);                  true; 等价于 /\d/.test(1);</span><br><span class="line">new RegExp(/\d+\.\d+/).test(22.33);         true; 等价于 /\d+\.\d+/.test(22.33);</span><br></pre></td></tr></table></figure>
+
+<h6 id="string-replace"><a href="#string-replace" class="headerlink" title="string.replace()"></a>string.replace()</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x27;china是美丽的国家&#x27;.replace(&#x27;china&#x27;, &#x27;中国&#x27;);</span><br><span class="line"></span><br><span class="line">&#x27;CHINA是美丽的国家&#x27;.replace(/china/gi, &#x27;中国&#x27;);</span><br><span class="line"></span><br><span class="line">&quot;2022-22-22&quot;.replace(/[-/]/g, &#x27;/&#x27;);                     2022/22/22</span><br><span class="line"></span><br><span class="line">&quot;2022-22-22&quot;.replace(/[-/]/g, ()=&gt; &#x27;/&#x27;);                2022/22/22</span><br><span class="line"></span><br><span class="line">&quot;/h123h/&quot;.replace(/\d+/g, (f)=&gt; &#x27;-&#x27;+ f +&#x27;-&#x27;);           &#x27;/h-123-h/&#x27;</span><br><span class="line"></span><br><span class="line">main.innerHTML.replace( /教育/g, `&lt;a href=&quot;https://www.baidu.com&quot;&gt;$&amp;&lt;/a&gt;`);</span><br></pre></td></tr></table></figure>
+
+<h6 id="string-match"><a href="#string-match" class="headerlink" title="string.match()"></a>string.match()</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x27;hello&#x27;.match(/\d/g);                       null; 有返回数组;无返回null;</span><br><span class="line">&#x27;中国美丽的国家&#x27;.match(&#x27;中国&#x27;);                [&#x27;中国&#x27;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="修正符"><a href="#修正符" class="headerlink" title="修正符"></a>修正符</h4><table>
+<thead>
+<tr>
+<th align="center">修饰符</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">i</td>
+<td align="center">忽略大小写</td>
+</tr>
+<tr>
+<td align="center">g</td>
+<td align="center">全局匹配,否则只匹配上第一个就停止</td>
+</tr>
+<tr>
+<td align="center">m</td>
+<td align="center">多行匹配</td>
+</tr>
+<tr>
+<td align="center">s (少)</td>
+<td align="center">匹配换行符</td>
+</tr>
+<tr>
+<td align="center">u (少)</td>
+<td align="center">表示按 unicode(utf-8)匹配(主要针对多字节比如汉字)</td>
+</tr>
+<tr>
+<td align="center">y (罕)</td>
+<td align="center">匹配上就进行匹配下一个，否则返回 null 停止匹配(大文本时效率比 g 高)</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;hds&quot;.match(/[a-z]/g);                      [&#x27;h&#x27;,&#x27;d&#x27;,&#x27;s&#x27;]</span><br><span class="line"></span><br><span class="line">&quot;123789&quot;.match(/\d&#123;3&#125;/g);                   [&#x27;123&#x27;,&#x27;789&#x27;]</span><br><span class="line"></span><br><span class="line">&quot;2020 2021&quot;.match(/\d+/g);                  [&#x27;2020&#x27;, &#x27;2021&#x27;]</span><br><span class="line"></span><br><span class="line">&quot;2020 2021&quot;.match(/\d/g);                   [... &#x27;2&#x27;,&#x27;0&#x27;,&#x27;2&#x27;,&#x27;1&#x27;]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;run\rrun\nrun&quot;.match(/^run/g)                [&#x27;run&#x27;]</span><br><span class="line"></span><br><span class="line">&quot;run\rrun\nrun&quot;.match(/^run/gm)               [&#x27;run&#x27;,&#x27;run&#x27;,&#x27;run&#x27;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h4><table>
+<thead>
+<tr>
+<th align="center">元字符</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">*</td>
+<td align="center">&gt;&#x3D; 0 次</td>
+</tr>
+<tr>
+<td align="center">?</td>
+<td align="center">&gt;&#x3D; 1 次</td>
+</tr>
+<tr>
+<td align="center">m</td>
+<td align="center">要么 1 次 or 要么 0 次</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/^a*$/.test(&#x27;&#x27;);                                true</span><br><span class="line">&quot;hds&quot;.match(/[a-z]+/);                          [&#x27;hds&#x27;]</span><br><span class="line">/^a?$/.test(&#x27;a&#x27;);                               true</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="center">元字符</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">{n}</td>
+<td align="center">重复必须 n 次</td>
+</tr>
+<tr>
+<td align="center">{n,}</td>
+<td align="center">n 次 &#x3D;&lt; 重复必须</td>
+</tr>
+<tr>
+<td align="center">{n,m}</td>
+<td align="center">n 次 &lt;&#x3D; 必须重复 且 &lt;&#x3D; m 次</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/\d&#123;3&#125;/.test(&quot;12a903n&quot;);                    true</span><br><span class="line">/^\d&#123;3&#125;$/.test(1290);                       false</span><br><span class="line"></span><br><span class="line">/^a&#123;3,&#125;$/.test(&#x27;aaaa&#x27;);		     true</span><br><span class="line">/^a&#123;3,16&#125;$/.test(&#x27;aaa&#x27;);                    true</span><br></pre></td></tr></table></figure>
+
+<h6 id="贪婪模式"><a href="#贪婪模式" class="headerlink" title="贪婪模式"></a>贪婪模式</h6><p>贪婪模式：匹配多的要求；<br>禁止贪婪：只匹配少的要求；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x27;hddd&#x27;.match(/hd*?/);					    [&#x27;h&#x27;]</span><br><span class="line"></span><br><span class="line">&#x27;hddd&#x27;.match(/hd+/);				        [&#x27;hddd&#x27;]</span><br><span class="line">&#x27;hddd&#x27;.match(/hd+?/);					    [&#x27;hd&#x27;]</span><br><span class="line"></span><br><span class="line">&#x27;hddd&#x27;.match(/hd??/);					    [&#x27;h&#x27;]</span><br><span class="line"></span><br><span class="line">&#x27;hddd&#x27;.match(/hd&#123;2,100&#125;?/);				    [&#x27;hdd&#x27;]</span><br><span class="line">&#x27;hddd&#x27;.match(/hd&#123;2,&#125;?/);			        [&#x27;hdd&#x27;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="边界符"><a href="#边界符" class="headerlink" title="边界符"></a>边界符</h4><table>
+<thead>
+<tr>
+<th align="center">边界符</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">^</td>
+<td align="center">以谁开头; 原子表(中括号)里面的^表示取反</td>
+</tr>
+<tr>
+<td align="center">$</td>
+<td align="center">以谁结尾</td>
+</tr>
+<tr>
+<td align="center">\b</td>
+<td align="center">匹配单词边界</td>
+</tr>
+<tr>
+<td align="center">[ ]</td>
+<td align="center">匹配中括号所有的其中一个字符 (其中特殊字符可不必用转义符，中括号内会自动解析特殊字符)</td>
+</tr>
+<tr>
+<td align="center">[^]</td>
+<td align="center">匹配中括号没有出现的字符</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/^[^a-zA-Z0-9-_,!]$/.test(&#x27;!&#x27;);             false 中括号^取反</span><br><span class="line">/abc/.test(&#x27;wabcw&#x27;);                        true 匹配连着的 abc 字符</span><br><span class="line">/^ab/.test(&#x27;abcddd&#x27;);                       true</span><br><span class="line"></span><br><span class="line">/^\d$/.test(&#x27;33&#x27;);                          false</span><br><span class="line">/^abc$/.test(&#x27;abcabc&#x27;);                     false</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/^hello\b/.test(&#x27;hello world&#x27;)              true</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/[abc]/.test(&#x27;dad&#x27;);                        true abc 其中一个字符出现在字符串中即可;</span><br><span class="line">/^[abc]$/.test(&#x27;dad&#x27;);                      false</span><br><span class="line"></span><br><span class="line">/^[a-zA-Z0-9]$/.test(&#x27;M&#x27;);                  true</span><br><span class="line"></span><br><span class="line">&quot;(sz).+&quot;.match(/[().+]/g);                  [&quot;(&quot;, &quot;)&quot;, &quot;.&quot;, &quot;+&quot;]</span><br><span class="line"></span><br><span class="line">/^[a-zA-Z0-9-_,/!]$/.test(&#x27;-&#x27;);             true</span><br><span class="line">/^[a-zA-Z0-9\-_,/!]$/.test(&#x27;-&#x27;);            true</span><br></pre></td></tr></table></figure>
+
+<h5 id="案例-网址"><a href="#案例-网址" class="headerlink" title="案例-网址"></a>案例-网址</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/https?:\/\/\w+\.\w+\.\w+/.test(&#x27;http://www.cccd.com&#x27;);</span><br><span class="line">&quot;https://www!hou!com&quot;.match(/^https?:\/\/\w+.\w+.\w+$/);    [&#x27;https://www!hou!com&#x27;]</span><br></pre></td></tr></table></figure>
+
+<h4 id="其他字符"><a href="#其他字符" class="headerlink" title="其他字符"></a>其他字符</h4><hr>
+<table>
+<thead>
+<tr>
+<th align="center">字符</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">\</td>
+<td align="center">转义符，将下一个字符标记为原义字符; 如 + . ? * ^</td>
+</tr>
+<tr>
+<td align="center">.</td>
+<td align="center">除换行符(\n)外任何字符</td>
+</tr>
+<tr>
+<td align="center">|</td>
+<td align="center">匹配多个选择项其中一个，范围从｜到开始，从｜到结束</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var str = &quot;这是\&quot;转义符\&quot;&quot;;                   这是&quot;转义符&quot;</span><br><span class="line">/a|\+/.test(&#x27;com+&#x27;);                        true</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/^\d+.\d+$/.test(22033);                    true</span><br><span class="line">/^\d+\.\d+$/.test(22.33);                   true</span><br><span class="line"></span><br><span class="line">let hd = `</span><br><span class="line">    ddd</span><br><span class="line">    mm</span><br><span class="line">`;</span><br><span class="line"></span><br><span class="line">hd.match(/.+/g);                            [&#x27;\tddd&#x27;, &#x27;\tmm&#x27;]</span><br></pre></td></tr></table></figure>
+
+<p><code>用()将多个选择项(子表达式)括起来限制范围</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/t|m/.test(&#x27;ama&#x27;)                           true</span><br><span class="line">&#x27;t2 m3&#x27;.match(/^t|m\d$/g)                   [&#x27;t&#x27;, &#x27;m3&#x27;]</span><br><span class="line"></span><br><span class="line">/(^t$)|(^m$)/.test(&#x27;tt&#x27;)                    false</span><br><span class="line">&#x27;tokkkam&#x27;.match(/^t(o)|(a)m$/g)             [&#x27;to&#x27;, &#x27;am&#x27;] 等价于 /^to|am$/</span><br><span class="line">&#x27;tom tam toam&#x27;.match(/t(o|a)m/g)            [&#x27;tom&#x27;, &#x27;tam&#x27;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<table>
+<thead>
+<tr>
+<th align="center">字符</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">\d</td>
+<td align="center">等价[0-9]</td>
+</tr>
+<tr>
+<td align="center">\D</td>
+<td align="center">非数字</td>
+</tr>
+<tr>
+<td align="center">\w</td>
+<td align="center">等价[a-zA-Z0-9_]</td>
+</tr>
+<tr>
+<td align="center">\W</td>
+<td align="center">非字母</td>
+</tr>
+<tr>
+<td align="center">\s</td>
+<td align="center">匹配任何空白符号; 等价[\t\r\n\v\f]</td>
+</tr>
+<tr>
+<td align="center">\S</td>
+<td align="center">匹配任何非空白字符; 等价于 [^\f\n\r\t\v]</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/^\D$/.test(&#x27;!&#x27;);			              true</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/^\w$/.test(&#x27;_&#x27;);			              true</span><br></pre></td></tr></table></figure>
+
+<p><strong>空白符</strong>：包括空格 \t 制表符 \r 回车符 \n 换行符 \v 垂直制表符 \f 换页符</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/^\s$/.test(&#x27; &#x27;)			              true</span><br><span class="line">/\s/.test(&#x27;\nkk&#x27;)			              true</span><br><span class="line"></span><br><span class="line">let hd = `</span><br><span class="line">	ddd</span><br><span class="line">	mm</span><br><span class="line">`;</span><br><span class="line">var res = hd.match(/.+/g);              [&#x27;\tddd&#x27;, &#x27;\tmm&#x27;]</span><br><span class="line">var res = hd.match(/[\s\S]+/);          [&quot;\n\tddd\n\tmm\n&quot;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="原子组"><a href="#原子组" class="headerlink" title="原子组"></a>原子组</h4><p><code>() 原子组，标记一个子表达式的开始和结束位置; ()会把每个分组里的匹配的值被缓存起来；</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/^abc&#123;3&#125;$/.test(&#x27;abccc&#x27;)                        true</span><br><span class="line"></span><br><span class="line">/^(abc)&#123;3&#125;$/.test(&#x27;abcabcabc&#x27;)                  true; 整个原子组重复3次</span><br><span class="line"></span><br><span class="line">&#x27;1aa2bb&#x27;.match(/[0-9][a-z]+/g);                 [&#x27;1aa&#x27;, &#x27;2bb&#x27;] 等价于</span><br><span class="line">&#x27;1aa2bb&#x27;.match(/([0-9])([a-z]+)/g);             [&#x27;1aa&#x27;, &#x27;2bb&#x27;]</span><br><span class="line"></span><br><span class="line">/(^\d&#123;18&#125;$)|(^\d&#123;17&#125;(\d|X|x)$)/                 身份证号</span><br><span class="line"></span><br><span class="line">/^(0?[1-9]|1[0-2])$/                            月份</span><br><span class="line"></span><br><span class="line">main.innerHTML.replace( /(教育)/g, `&lt;a href=&quot;https://www.baidu.com&quot;&gt;$1&lt;/a&gt;`);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>$n 可使用缓存组内容</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const main = document.querySelector(&quot;main&quot;);</span><br><span class="line"></span><br><span class="line">main.innerHTML = main.innerHTML.replace(</span><br><span class="line">    /&lt;span&gt;([\s\S]+?)&lt;\/span&gt;/gi,</span><br><span class="line">    `&lt;h4 style=&quot;color:red&quot;&gt;$1&lt;/h4&gt;`</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><code>\n 取前面匹配的相同规则</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;2022-12/23&quot;.match( /^\d&#123;4&#125;[-/]\d&#123;2&#125;[-/]\d&#123;2&#125;$/ );          [&#x27;2022-12/23&#x27;]</span><br><span class="line">&quot;2022-12-23&quot;.match( /^\d&#123;4&#125;([-/])\d&#123;2&#125;\1\d&#123;2&#125;$/ );          [&#x27;2022-12-23&#x27;]</span><br></pre></td></tr></table></figure>
+
+<p><code>(?: ) 不记录组</code><br>圆括号会使相关匹配会被缓存，此时可用 ?: 不做缓存；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/https?:\/\/(\w+\.\w+\.(?:com|cn))/i;</span><br></pre></td></tr></table></figure>
+
+<p><code>?&lt;&gt; 组别名</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;&lt;h1&gt;k&lt;/h1&gt;&quot;.replace(</span><br><span class="line">    /&lt;(h[1-6])&gt;(?&lt;m&gt;.\*?)&lt;\/\1&gt;/,</span><br><span class="line">    &quot;&lt;p&gt;$&lt;m&gt;&lt;/p&gt;&quot;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><code>?= 后断言匹配</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">main.innerHTML = main.innerHTML.replace(</span><br><span class="line">    /教育(?=兴国)/g,</span><br><span class="line">    `&lt;a href=&quot;https://baidu.com&quot;&gt;$&amp;&lt;/a&gt;`                    //【教育】后是【兴国】才匹配</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><code>?&lt;= 前断言匹配</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let users = `	mm: 18742129832,</span><br><span class="line">	kk: 19932315894`</span><br><span class="line">users = users.replace(/(?&lt;=\d&#123;7&#125;)\d&#123;4&#125;/gi, f=&gt;&#123;</span><br><span class="line">return &#x27;\*&#x27;.repeat(4); 【4 位数字】前是【7 位数字】才匹配</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><code>?! 不是...为条件匹配</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">let reg = /[a-z]+$/i;</span><br><span class="line">let reg2 = /[a-z]+(?!\d+)$/i;</span><br><span class="line">&#x27;aaa20220215kk&#x27;.match(reg2) kk</span><br><span class="line"></span><br><span class="line">const inp = document.querySelector(`[name=&quot;username&quot;]`);</span><br><span class="line">inp.addEventListener(&quot;keyup&quot;,function()&#123;</span><br><span class="line"></span><br><span class="line">    const reg = /^[a-z]&#123;1,6&#125;$/i;</span><br><span class="line"></span><br><span class="line">    const reg2 = /^(?!sb)[a-z]&#123;1,6&#125;$/i;                         不能是sb开头</span><br><span class="line"></span><br><span class="line">    const reg3 = /^(?!.*sb)[a-z]&#123;1,6&#125;$/i;</span><br><span class="line">                  ^$修饰[a-z],长度1-6位,且里面不含sb字符,并且sb字符前有或没有字符</span><br><span class="line">    console.log(</span><br><span class="line">    	this.value.trim().match(reg3)</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><code>?&lt;!</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let str = `	https: &#x27;//oss.baidu.com/1.jpg&#x27;,</span><br><span class="line">	https: &#x27;//baidu.com/2.jpg&#x27;`</span><br><span class="line"></span><br><span class="line">const reg = /https:\/\/([a-z]+)?(?&lt;!www)\..+?/gi;</span><br><span class="line">str.replace(reg, f=&gt;&#123;</span><br><span class="line">return &#x27;https://www.baidu.com&#x27;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h6 id="案例-匹配中文"><a href="#案例-匹配中文" class="headerlink" title="案例-匹配中文"></a>案例-匹配中文</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x27;12hr你好&#x27;.match(/[\u4e00-\u9fa5]/g)                        [&#x27;你&#x27;, &#x27;好&#x27;]</span><br><span class="line"></span><br><span class="line">&quot;hdr20.爱世界，加油！&quot;.match(/\p&#123;sc=Han&#125;/gu);                 [&#x27;爱&#x27;, &#x27;世&#x27;, &#x27;界&#x27;, &#x27;加&#x27;, &#x27;油&#x27;]</span><br><span class="line"></span><br><span class="line">&#123;sc&#125;表示语言系统, Han 表示汉语,Arabic 表示阿拉伯语等;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let type = &#x27;pdf&#x27;;</span><br><span class="line">let reg = new RegExp(`\\.$&#123;type&#125;$`, &#x27;i&#x27;);                   /\.pdf$/i</span><br></pre></td></tr></table></figure>
+
+<h6 id="案例-用户名验证"><a href="#案例-用户名验证" class="headerlink" title="案例-用户名验证"></a>案例-用户名验证</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type=&quot;text&quot; name=&quot;username&quot;&gt;</span><br><span class="line"></span><br><span class="line">document.querySelector(&quot;[name=&#x27;username&#x27;]&quot;).addEventListener(</span><br><span class="line">    &quot;blur&quot;,</span><br><span class="line">    function()&#123;</span><br><span class="line">        console.log(</span><br><span class="line">            this.value.match(/^[a-zA-Z]\w&#123;6,16&#125;$/)</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h6 id="案例-获取名字"><a href="#案例-获取名字" class="headerlink" title="案例-获取名字"></a>案例-获取名字</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x27;张三:101-33,李四:202-44&#x27;.match( /[^:\-,\d]+/g );       [&#x27;张三&#x27;,&#x27;李四&#x27;]</span><br><span class="line">&#x27;张三:101-33,李四:202-44&#x27;.match( /\p&#123;sc=Han&#125;+/gu );     [&#x27;张三&#x27;,&#x27;李四&#x27;]</span><br></pre></td></tr></table></figure>
+
+<h6 id="案例-原子组替换操作"><a href="#案例-原子组替换操作" class="headerlink" title="案例-原子组替换操作"></a>案例-原子组替换操作</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/&lt;(h[1-6])&gt;([\s\S]_)&lt;\/\1&gt;/i;                           组编号\1，从左往右依次;</span><br><span class="line">&quot;/abc-h123/&quot;.replace(/h([\s\S]_)/, &#x27;$1&#x27;);               &#x27;/abc-123/&#x27;</span><br><span class="line"></span><br><span class="line">`&lt;h1&gt;k&lt;/h1&gt;`.replace( &lt;h1&gt;k&lt;/p&gt;</span><br><span class="line">/&lt;(h[1-6])&gt;([\s\S]\*)&lt;\/\1&gt;/i,</span><br><span class="line">`&lt;$1&gt;$2&lt;/p&gt;`</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">&quot;(010)84498434 (020)84323098&quot;.replace(                  010-84498434 020-84323098</span><br><span class="line">    /\((\d&#123;3,4&#125;)\)(\d&#123;7,8&#125;)/g,</span><br><span class="line">    &#x27;$1-$2&#x27;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h6 id="案例-批量正则验证"><a href="#案例-批量正则验证" class="headerlink" title="案例-批量正则验证"></a>案例-批量正则验证</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">document.querySelector(&#x27;input&#x27;).addEventListener(</span><br><span class="line">    &#x27;keyup&#x27;,</span><br><span class="line">    e =&gt; &#123;</span><br><span class="line">        const val = e.target.value;</span><br><span class="line">        const regs = [</span><br><span class="line">            /^[a-zA-Z0-9]&#123;3,6&#125;$/,                   // 数字或字母 3-6 位</span><br><span class="line">            /[A-Z]/,                                // 这 6 位内需包含一个大写字母</span><br><span class="line">            /[0-9]/,                                // 这 6 位内需包含一个数字</span><br><span class="line">        ];</span><br><span class="line"></span><br><span class="line">        let state = regs.every( it =&gt; it.test(val) );</span><br><span class="line">        console.log(state ? &#x27;正确&#x27; : &#x27;错误&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h6 id="案例-手机号"><a href="#案例-手机号" class="headerlink" title="案例-手机号"></a>案例-手机号</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/^(13[0-9]|14[5|7]|15\d|18[0|1|2|3|5|6|7|8|9])\d&#123;8&#125;$/</span><br></pre></td></tr></table></figure>
+
+<h6 id="案例-标点符号"><a href="#案例-标点符号" class="headerlink" title="案例-标点符号"></a>案例-标点符号</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;hdr20.爱世界，加油！&quot;.match(/\p&#123;P&#125;/gu); [&#x27;.&#x27;, &#x27;，&#x27;，&#x27;！&#x27;]</span><br></pre></td></tr></table></figure>
+
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/blog/2024/07/11/js_little/"
+                                   title="Js"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Js</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/blog/2024/07/11/compositionApi/"
+                                   title="vue3"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">vue3</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F"><span class="nav-text">正则创建方式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#string-replace"><span class="nav-text">string.replace()</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#string-match"><span class="nav-text">string.match()</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%AD%A3%E7%AC%A6"><span class="nav-text">修正符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%83%E5%AD%97%E7%AC%A6"><span class="nav-text">元字符</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%B4%AA%E5%A9%AA%E6%A8%A1%E5%BC%8F"><span class="nav-text">贪婪模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E7%AC%A6"><span class="nav-text">边界符</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E7%BD%91%E5%9D%80"><span class="nav-text">案例-网址</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%AD%97%E7%AC%A6"><span class="nav-text">其他字符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E7%BB%84"><span class="nav-text">原子组</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E5%8C%B9%E9%85%8D%E4%B8%AD%E6%96%87"><span class="nav-text">案例-匹配中文</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E7%94%A8%E6%88%B7%E5%90%8D%E9%AA%8C%E8%AF%81"><span class="nav-text">案例-用户名验证</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E5%90%8D%E5%AD%97"><span class="nav-text">案例-获取名字</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E5%8E%9F%E5%AD%90%E7%BB%84%E6%9B%BF%E6%8D%A2%E6%93%8D%E4%BD%9C"><span class="nav-text">案例-原子组替换操作</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E6%89%B9%E9%87%8F%E6%AD%A3%E5%88%99%E9%AA%8C%E8%AF%81"><span class="nav-text">案例-批量正则验证</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E6%89%8B%E6%9C%BA%E5%8F%B7"><span class="nav-text">案例-手机号</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E6%A0%87%E7%82%B9%E7%AC%A6%E5%8F%B7"><span class="nav-text">案例-标点符号</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2026
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Peter Yu</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F"><span class="nav-text">正则创建方式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#string-replace"><span class="nav-text">string.replace()</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#string-match"><span class="nav-text">string.match()</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%AD%A3%E7%AC%A6"><span class="nav-text">修正符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%83%E5%AD%97%E7%AC%A6"><span class="nav-text">元字符</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%B4%AA%E5%A9%AA%E6%A8%A1%E5%BC%8F"><span class="nav-text">贪婪模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E7%AC%A6"><span class="nav-text">边界符</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E7%BD%91%E5%9D%80"><span class="nav-text">案例-网址</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%AD%97%E7%AC%A6"><span class="nav-text">其他字符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E7%BB%84"><span class="nav-text">原子组</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E5%8C%B9%E9%85%8D%E4%B8%AD%E6%96%87"><span class="nav-text">案例-匹配中文</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E7%94%A8%E6%88%B7%E5%90%8D%E9%AA%8C%E8%AF%81"><span class="nav-text">案例-用户名验证</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E5%90%8D%E5%AD%97"><span class="nav-text">案例-获取名字</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E5%8E%9F%E5%AD%90%E7%BB%84%E6%9B%BF%E6%8D%A2%E6%93%8D%E4%BD%9C"><span class="nav-text">案例-原子组替换操作</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E6%89%B9%E9%87%8F%E6%AD%A3%E5%88%99%E9%AA%8C%E8%AF%81"><span class="nav-text">案例-批量正则验证</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E6%89%8B%E6%9C%BA%E5%8F%B7"><span class="nav-text">案例-手机号</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B-%E6%A0%87%E7%82%B9%E7%AC%A6%E5%8F%B7"><span class="nav-text">案例-标点符号</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/header-shrink.js"></script>
+
+<script src="/blog/js/back2top.js"></script>
+
+<script src="/blog/js/dark-light-toggle.js"></script>
+
+<script src="/blog/js/main.js"></script>
+
+<script src="/blog/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+
+<!-- code-block -->
+
+    
+<script src="/blog/js/code-block.js"></script>
+
+
+
+<!-- lazyload -->
+
+    
+<script src="/blog/js/lazyload.js"></script>
+
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        
+<script src="/blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    
+<script src="/blog/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

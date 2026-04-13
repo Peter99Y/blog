@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Peter Yu">
+    
+    <title>
+        
+            Dom &amp; Bom |
+        
+        Peter&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/blog/images/xiaoxin.jpg">
+    
+    
+<link rel="stylesheet" href="/blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"github.com","root":"/blog/","language":"zh-CN"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/xiaoxin.jpg","favicon":"/images/xiaoxin.jpg","avatar":"/images/xiaoxin.jpg","font_size":null,"font_family":"Microsoft YaHei","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":true,"background_img":"https://keep.xpoet.cn/images/bg.svg","description":"我与世界相识，我与世界相蚀","font_color":null,"hitokoto":false},"scroll":{"progress_bar":true,"percent":false}},"local_search":{"enable":false,"preload":true},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":false,"auto":false,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"version":"3.8.6"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/blog/images/xiaoxin.jpg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Peter&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/archives">归档</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        Dom &amp; Bom
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/blog/images/xiaoxin.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">Peter Yu</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2024-07-11 09:00:47</span>
+                <span class="mobile">2024-07-11 09:00</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Mon Jan 12 2026 08:57:15 GMT+0800">2026-01-12 08:57:15</span>
+            </span>
+        
+
+        
+
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <h3 id="浏览器渲染原理"><a href="#浏览器渲染原理" class="headerlink" title="浏览器渲染原理"></a>浏览器渲染原理</h3><h4 id="解析-HTML"><a href="#解析-HTML" class="headerlink" title="解析 HTML"></a>解析 HTML</h4><p>浏览器从网络或本地文件获取到 HTML 源代码，然后从上到下逐行解析代码；<br>若解析过程中，读取到 css 和 js （不包含图片&#x2F;视频&#x2F;音频）就会停止解析，转而解析 css 和 js，解析完成后再继续之前的解析；</p>
+<blockquote>
+<p>1.为什么要将 css 写到 &lt;head&gt;中，js 写到最后？<br>css 写到开头：是为了让浏览器尽快读取并解析样式，让用户先看到漂亮的页面，同时也是为了避免页面闪烁；如果样式放在元素后面，元素会按默认样式先渲染，然后读取新的样式覆盖了之前读取的样式就会造成闪烁<br>js 写到结尾：js 获取 DOM 元素，需要先等待 DOM 元素加载完成才能获取；js 是做交互作用，交互一般是等待 DOM 加载完成才执行；</p>
+</blockquote>
+<h4 id="生成-DOM"><a href="#生成-DOM" class="headerlink" title="生成 DOM"></a>生成 DOM</h4><p>浏览器一边解析 HTML，一边生成 DOM 树，在 js 中获取到的 dom 就是这里的 DOM 节点；</p>
+<h4 id="生成渲染树"><a href="#生成渲染树" class="headerlink" title="生成渲染树"></a>生成渲染树</h4><p>浏览器一边生成 DOM 树，一边计算 DOM 树中每个节点的样式规则，最终形成渲染树，css 属性的计算过程发生在这一步；</p>
+<h4 id="reflow-重排-回流-就是排列顺序"><a href="#reflow-重排-回流-就是排列顺序" class="headerlink" title="reflow 重排 (回流; 就是排列顺序)"></a>reflow 重排 (回流; 就是排列顺序)</h4><p>浏览器一遍生成渲染树，一边计算每个元素最终的尺寸和位置。完成后，页面中的素有元素的位置和尺寸确定下来了，即将被渲染到页面中。<br>这个步骤会在页面之后的运行过程中不断地重复。</p>
+<p>浏览器为了提升性能，对 js 中连续导致 reflow 的代码，把 reflow 的时间点延迟到结束后进行，在此过程中，如果遇到了获取尺寸和位置的代码，浏览器会立即 reflow；会导致 reflow：</p>
+<ul>
+<li>获取元素的尺寸和位置;</li>
+<li>直接或间接改变元素的尺寸和位置;</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dom.style.width = &#x27;100px&#x27;;</span><br><span class="line">dom.style.height = &#x27;50px&#x27;;</span><br><span class="line">// dom.clientHeight;   若读取，会强行执行reflow;</span><br><span class="line">dom.style.top = &#x27;50px&#x27;;</span><br><span class="line">最后重排只会执行一次</span><br></pre></td></tr></table></figure>
+
+<h4 id="repaint-重绘"><a href="#repaint-重绘" class="headerlink" title="repaint 重绘"></a>repaint 重绘</h4><p>浏览器一边 reflow，一边生成对应的图形绘制到页面，绘制过程称为 repaint，所有会导致 reflow 都会 repaint;<br>不影响盒子排列，仅影响盒子外观的代码不会导致 reflow，一些会导致 repaint 如：</p>
+<ul>
+<li>改变背景颜色</li>
+<li>变更字体颜色</li>
+<li>背景图</li>
+<li>圆角边框</li>
+</ul>
+<h4 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// js放在上面先加载js资源，此时需要两种方式避免js获取不到元素而加载错误；</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">	document.addEventListener(&#x27;DOMContentLoaded&#x27;, function()&#123;</span><br><span class="line">		console.log(&#x27;DOM树全部加载完成&#x27;);</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	window/img/video.addEventListener(&#x27;load&#x27;, function()&#123;</span><br><span class="line">		console.log(&#x27;1.页面上所有资源（包含图片资源）加载完成触发, 2.此事件是注册在window/img等上&#x27;);</span><br><span class="line">	&#125;)</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/head&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h3><p>(Document Object Model)文档对象模型, 通过 DOM 可以改变页面内容、结构和样式.</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/1.webp"
+                     
+                ></p>
+<h6 id="nodeType-节点类型"><a href="#nodeType-节点类型" class="headerlink" title="nodeType 节点类型"></a>nodeType 节点类型</h6><ul>
+<li>9：document;</li>
+<li>1：element(元素节点);</li>
+<li>2：attribute;</li>
+<li>3：text(文本&amp;空格);</li>
+<li>8：comment(注释);</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ul.firstElementChild.nodeType;  // 1</span><br><span class="line">ul.firstElementChild.nodeName;  // LI</span><br></pre></td></tr></table></figure>
+
+<h6 id="获取元素节点-el"><a href="#获取元素节点-el" class="headerlink" title="获取元素节点 el"></a>获取元素节点 el</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">document.documentElement    // &lt;html&gt;</span><br><span class="line">document.head               // &lt;head&gt;</span><br><span class="line">document.body               // &lt;body&gt;</span><br><span class="line"></span><br><span class="line">var ele = document.getElementById(&#x27;box&#x27;);</span><br><span class="line"></span><br><span class="line">document.getElementById(&#x27;ul-box&#x27;);</span><br><span class="line"></span><br><span class="line">document.getElementsByTagName(&#x27;ul-box&#x27;)[0];</span><br><span class="line"></span><br><span class="line">document.getElementsByClassName(&#x27;ul&#x27;)[0];</span><br><span class="line"></span><br><span class="line">document.querySelector(&#x27;#ul-box&#x27;);</span><br><span class="line">document.querySelectorAll(&#x27;li);</span><br><span class="line"></span><br><span class="line">console.log(typeof ele)     // object</span><br><span class="line">console.dir( ele )          // 查看元素对象的属性和方法</span><br></pre></td></tr></table></figure>
+
+<h6 id="el-parentNode"><a href="#el-parentNode" class="headerlink" title="el.parentNode"></a>el.parentNode</h6><p>获取元素父节点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var liTwo = document.getElementsByTagName(&#x27;li&#x27;)[1];</span><br><span class="line">liTwo.parentNode;</span><br><span class="line">liTwo.parentElement;    // 等价于</span><br></pre></td></tr></table></figure>
+
+<h6 id="el-children-el-firstElementChild-el-lastElementChild"><a href="#el-children-el-firstElementChild-el-lastElementChild" class="headerlink" title="el.children, el.firstElementChild, el.lastElementChild"></a>el.children, el.firstElementChild, el.lastElementChild</h6><p>获取元素子节点;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var ul = document.getElementById(&#x27;ul-box&#x27;);</span><br><span class="line"></span><br><span class="line">ul.children[1];</span><br><span class="line"></span><br><span class="line">ul.firstElementChild;</span><br><span class="line">ul.lastElementChild;</span><br></pre></td></tr></table></figure>
+
+<h6 id="el-previousElementSibling-nextElementSibling"><a href="#el-previousElementSibling-nextElementSibling" class="headerlink" title="el.previousElementSibling, .nextElementSibling"></a>el.previousElementSibling, .nextElementSibling</h6><p>获取元素兄弟节点;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var liTwo = document.getElementsByTagName(&#x27;li&#x27;)[1];</span><br><span class="line"></span><br><span class="line">liTwo.previousElementSibling</span><br><span class="line">liTwo.nextElementSibling;</span><br></pre></td></tr></table></figure>
+
+<h6 id="el-style"><a href="#el-style" class="headerlink" title="el.style"></a>el.style</h6><p>注意: el.style 只能获取内联样式（标签 style 的属性值）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">var btn = document.getElementById(&#x27;btn&#x27;);</span><br><span class="line">var img = ele.getElementByClassName(&#x27;img&#x27;)[0];</span><br><span class="line">var inp = document.querySelector(&#x27;input&#x27;);</span><br><span class="line">var check = document.getElementById(&#x27;checkbox&#x27;);</span><br><span class="line"></span><br><span class="line">btn.onclick = function()&#123;</span><br><span class="line">  this.style.backgroundColor = &#x27;orange&#x27;;</span><br><span class="line">  this.className = &#x27;btn btn-orange&#x27;;</span><br><span class="line"></span><br><span class="line">  img.src = &#x27;./img/1.png&#x27;;</span><br><span class="line">  img.alt = &#x27;这是一张图片&#x27;;</span><br><span class="line"></span><br><span class="line">  inp.type = &#x27;password&#x27;;</span><br><span class="line">  inp.value = &#x27;123456&#x27;;</span><br><span class="line">  inp.disable = true;</span><br><span class="line"></span><br><span class="line">  check.checked = !check.checked;</span><br><span class="line"></span><br><span class="line">  this.innerHTML = `&lt;span&gt;123&lt;/span&gt;`; //1.可赋值html标签，2.空格和3.换行</span><br><span class="line">  this.innerText = &#x27;你好&#x27;;             // 只有文本</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="el-attributes-el-setAttribute-el-removeAttribute"><a href="#el-attributes-el-setAttribute-el-removeAttribute" class="headerlink" title="el.attributes, el.setAttribute, el.removeAttribute"></a>el.attributes, el.setAttribute, el.removeAttribute</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type=&quot;text&quot; v-model=&quot;msg&quot;&gt;</span><br><span class="line"></span><br><span class="line">var inp = document.querySelector(&#x27;input&#x27;);</span><br><span class="line">console.log( inp.attributes );  // &#123; 0: type, 1: v-model &#125;</span><br></pre></td></tr></table></figure>
+
+<p>H5 元素规定自定义属性 data- 开头作为自定义属性名，标签自定义属性名（data-Name）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">  if(box.getAttribute(&#x27;data-index&#x27;) == 1)&#123;</span><br><span class="line">      box.setAttribute(&#x27;data-index&#x27;, 2);</span><br><span class="line"></span><br><span class="line">      H5新增 定义属性dataset集合, 不再需要前缀data- ;   (ie 11才支持)</span><br><span class="line">      console.log( box.dataset.listName);</span><br><span class="line">  &#125;else&#123;</span><br><span class="line">      box.removeAttribute(&#x27;data-index&#x27;);</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h6 id="el-className"><a href="#el-className" class="headerlink" title="el.className"></a>el.className</h6><p>获取&#x2F;修改&#x2F;移除 标签属性;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;div</span><br><span class="line">  id=&quot;box&quot;</span><br><span class="line">  class=&quot;bg&quot;</span><br><span class="line">  data-index=&quot;1&quot;</span><br><span class="line">  data-list-name=&quot;hh&quot;</span><br><span class="line">&gt;</span><br><span class="line">  hello</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">  var box = document.getElementById(&#x27;box&#x27;);</span><br><span class="line"></span><br><span class="line">  1.元素本身的属性可直接获取/设置;</span><br><span class="line">  box.id = &#x27;box-wrapper&#x27;;</span><br><span class="line"></span><br><span class="line">  2.或</span><br><span class="line">  var idValue = box.getAttribute(&#x27;id&#x27;);</span><br><span class="line"></span><br><span class="line">  3.获取/设置class属性 需使用 className</span><br><span class="line">  var title = box.className;</span><br><span class="line">  if(title === &#x27;bg&#x27;)&#123;</span><br><span class="line">    box.className = &#x27;change-bg&#x27;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h6 id="el-classList、-add、-remove、-replace、-toggle"><a href="#el-classList、-add、-remove、-replace、-toggle" class="headerlink" title="el.classList、.add、.remove、.replace、.toggle"></a>el.classList、.add、.remove、.replace、.toggle</h6><p>获取&#x2F;修改&#x2F;移除&#x2F;切换 元素属性;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">    let c = document.querySelector(&#x27;#ccc&#x27;);</span><br><span class="line">    let btn = document.querySelector(&#x27;button&#x27;);</span><br><span class="line"></span><br><span class="line">    c.classList.remove(&#x27;bg&#x27;);</span><br><span class="line">    c.classList.add(&#x27;small-bg&#x27;, &#x27;middle-bg&#x27;, &#x27;big-bg&#x27;);</span><br><span class="line"></span><br><span class="line">    btn.addEventListener(&#x27;click&#x27;, function () &#123;</span><br><span class="line">        // 如元素的class值show已存在，则移除它，否则添加它;</span><br><span class="line">        c.classList.toggle(&#x27;show&#x27;)</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h6 id="el-cloneNode-克隆节点"><a href="#el-cloneNode-克隆节点" class="headerlink" title="el.cloneNode 克隆节点"></a>el.cloneNode 克隆节点</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var ul = document.querySelector(&#x27;ul&#x27;);</span><br><span class="line"></span><br><span class="line">//node.cloneNode(false); 不传参或传false-浅拷贝, true-深拷贝</span><br><span class="line">//1.复制节点，2.复制里面的所有子节点;</span><br><span class="line"></span><br><span class="line">var li = ul.children[0].cloneNode();</span><br><span class="line">ul.appendChild(li);</span><br></pre></td></tr></table></figure>
+
+<h6 id="创建-插入-移除节点"><a href="#创建-插入-移除节点" class="headerlink" title="创建&#x2F;插入&#x2F;移除节点"></a>创建&#x2F;插入&#x2F;移除节点</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var li = document.reateElement(&#x27;li&#x27;);</span><br><span class="line">var ul = document.getSelector(&#x27;ul&#x27;);</span><br><span class="line"></span><br><span class="line">li.innerHTML = &#x27;1&#x27;;</span><br><span class="line">ul.appendChild(li);</span><br><span class="line">ul.insertBefore( li, ul.chidren[0] );</span><br><span class="line"></span><br><span class="line">ul.removeChild( ul.children[1] );</span><br></pre></td></tr></table></figure>
+
+<h6 id="example"><a href="#example" class="headerlink" title="example"></a>example</h6><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/2.webp"
+                     
+                ></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">var tbody = document.querySelector(&#x27;tbody&#x27;);</span><br><span class="line"></span><br><span class="line">for(var i = 0; i &lt; datas.length; i++)&#123;</span><br><span class="line">  var tr = document.createElement(&#x27;tr&#x27;);</span><br><span class="line">      tbody.appendChild(tr);</span><br><span class="line"></span><br><span class="line">      var row =  datas[i];</span><br><span class="line">      for(var k in row)&#123;</span><br><span class="line">          var td = document.createElement(&#x27;td&#x27;);</span><br><span class="line">          td.innerHTML = `&lt;a href=&quot;javascript:;&quot;&gt; $&#123;row[k]&#125; &lt;/a&gt;`;</span><br><span class="line">          tr.appendChild(td);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var as = document.querySelectorAll(&#x27;a&#x27;);</span><br><span class="line">for(var i = 0; i &lt; as.length; i++)&#123;</span><br><span class="line">    as[i].onclick = function()&#123;</span><br><span class="line">        tbody.removeChild(this.parentNode.parentNode);  // this-a标签, .parent-td, .parent-tr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="fragment-文档片段"><a href="#fragment-文档片段" class="headerlink" title="fragment 文档片段"></a>fragment 文档片段</h6><blockquote>
+<p>每次使用 appendChild, Dom 树会重新绘制, 浏览器都会重新渲染页面。频繁更新 DOM 节点，会非常消耗内存，影响用户体验; 把所有需要构造的节点都放到文档片段中执行，这样可以不影响文档树，也不会造成页面渲染。当节点都构造完成后， 再将文档片段对象 添加到页面中， 一次性渲染出来， 减少浏览器负担，提高渲染速度;</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var ul = document.querySelector(&#x27;ul&#x27;);</span><br><span class="line">var frag = document.createDocumentFragment();</span><br><span class="line"></span><br><span class="line">for(var i = 0; i &lt; 3; i++)&#123;</span><br><span class="line">	var p = document.createElement(&#x27;p&#x27;);</span><br><span class="line">		p.innerHTML = i;</span><br><span class="line">	frag.appendChild(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ul.appendChild(frag);</span><br></pre></td></tr></table></figure>
+
+<h6 id="移除事件"><a href="#移除事件" class="headerlink" title="移除事件"></a>移除事件</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">elem.onclick = null</span><br><span class="line">// or</span><br><span class="line">elem.removeEventListener(&quot;事件名&quot;, 原处理函数)</span><br></pre></td></tr></table></figure>
+
+<h6 id="事件流-–-捕获-冒泡"><a href="#事件流-–-捕获-冒泡" class="headerlink" title="事件流 – 捕获&amp;冒泡"></a>事件流 – 捕获&amp;冒泡</h6><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/3.webp"
+                     
+                ></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;father&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;son&quot;&gt;&lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">var father = document.querySelector(&#x27;.father&#x27;);</span><br><span class="line">var son = document.querySelector(&#x27;.son&#x27;);</span><br><span class="line"></span><br><span class="line">son.addEventListener(&#x27;click&#x27;, function(e)&#123;</span><br><span class="line">    alert(&#x27;false/省略 是冒泡&#x27;);</span><br><span class="line">    e.preventDeafult()                   // 阻止默认事件;</span><br><span class="line">    window.event.returnValue;            // ie 6/7/8阻止默认事件</span><br><span class="line"></span><br><span class="line">    e.stopProgagation()                  // 阻止冒泡;</span><br><span class="line">    window.event.cancelBubble = true;    // ie 6/7/8阻止冒泡</span><br><span class="line">&#125;, false);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">father.addEventListener(&#x27;click&#x27;, function(e)&#123;</span><br><span class="line">    alert(&#x27;true 是捕获&#x27;);</span><br><span class="line">    console.log(e.type);                     // click 点击事件名字</span><br><span class="line">    var e = e || window.event;               // ie 6/7/8需要(了解)；</span><br><span class="line">    var target = e.target || e.srcElement;   // ie 6/7/8需要(了解)；</span><br><span class="line"></span><br><span class="line">&#125;, true);</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h6 id="事件委托-事件代理"><a href="#事件委托-事件代理" class="headerlink" title="事件委托&#x2F;事件代理"></a>事件委托&#x2F;事件代理</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var ul = document.querySelector(&#x27;ul&#x27;);</span><br><span class="line">ul.addEventListener(&#x27;click&#x27;, function(e)&#123;</span><br><span class="line">	var allNodes = this.children;</span><br><span class="line">	for(var i of allNodes)&#123;</span><br><span class="line">		i.style.background = &#x27;#fff&#x27;;</span><br><span class="line">	&#125;</span><br><span class="line">	var currentNode = e.target;</span><br><span class="line">	currentNode.style.background = &#x27;yellow&#x27;;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h6 id="键盘事件对象"><a href="#键盘事件对象" class="headerlink" title="键盘事件对象"></a>键盘事件对象</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(&#x27;keydown&#x27;,function(e)&#123;</span><br><span class="line">    console.log(e.keyCode);</span><br><span class="line">&#125;);</span><br><span class="line">document.addEventListener(&#x27;keypress&#x27;,function(e)&#123;</span><br><span class="line">    console.log(功能键(ctrl,shift,↑↓↔)无法触发&#x27;keypress&#x27;);</span><br><span class="line">&#125;);</span><br><span class="line">document.addEventListener(&#x27;keyup&#x27;,function(e)&#123;</span><br><span class="line">    console.log(&#x27;keydown &amp; keyup 无法区分大小写;  keypress可识别&#x27;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h6 id="鼠标事件"><a href="#鼠标事件" class="headerlink" title="鼠标事件"></a>鼠标事件</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 禁用右键菜单(了解)</span><br><span class="line">document.addEventListener(&#x27;contextmenu&#x27;, function(e)&#123;</span><br><span class="line">	e.preventDefault();</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">// 禁用选中文字(了解)</span><br><span class="line">document.addEventListener(&#x27;selectstart&#x27;, function(e)&#123;</span><br><span class="line">	e.preventDefault();</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h6 id="鼠标事件对象"><a href="#鼠标事件对象" class="headerlink" title="鼠标事件对象"></a>鼠标事件对象</h6><p>注意：鼠标返回距离和绑定事件的元素无关</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(&#x27;click&#x27;, function(event)&#123;</span><br><span class="line">	console.log(event.offsetX);     // 鼠标相对于最近元素的偏移距离</span><br><span class="line"></span><br><span class="line">	console.log(event.clientX);     // 鼠标相对于浏览器窗口的可视区域（不包括scroll滚出部分）</span><br><span class="line"></span><br><span class="line">	console.log(event.pageX);       // 鼠标相对于文档页面的距离（包括scroll滚出部分）</span><br><span class="line"></span><br><span class="line">	console.log(event.screenX);     // 相对于电脑屏幕的距离</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><a href="/blog/2025/02/27/css_styel">获取元素尺寸</a></p>
+<h6 id="元素偏移量-el-offsetLeft-el-offsetTop"><a href="#元素偏移量-el-offsetLeft-el-offsetTop" class="headerlink" title="元素偏移量 el.offsetLeft &#x2F; el.offsetTop"></a>元素偏移量 el.offsetLeft &#x2F; el.offsetTop</h6><h6 id="获取元素尺寸-el-offsetWidth"><a href="#获取元素尺寸-el-offsetWidth" class="headerlink" title="获取元素尺寸 el.offsetWidth"></a>获取元素尺寸 el.offsetWidth</h6><p>width + padding + border;<br>包含了可能会出现滚动条的宽高</p>
+<h6 id="获取元素尺寸-el-clientWidth"><a href="#获取元素尺寸-el-clientWidth" class="headerlink" title="获取元素尺寸 el.clientWidth"></a>获取元素尺寸 el.clientWidth</h6><p>width + padding;<br>只有可视区域，不计算出现的滚动条的宽高<br>注意：el.clientLeft 获取元素 border 宽度</p>
+<h6 id="获取元素尺寸-el-scrollWidth"><a href="#获取元素尺寸-el-scrollWidth" class="headerlink" title="获取元素尺寸 el.scrollWidth"></a>获取元素尺寸 el.scrollWidth</h6><p>width + padding<br>会包含父元素设置了超出了边界而隐藏的宽度<br>内容大小没有超出元素大小时，也就是没有滚动条时 &#x3D; clientWidth</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">获取带有定位的父级元素，否则相对于body元素</span><br><span class="line">console.log(div.offsetParent)    // &lt;body&gt;&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">不管父级有没有定位,返回最近的父级元素</span><br><span class="line">console.log(div.parentNode)</span><br></pre></td></tr></table></figure>
+
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/4.webp"
+                      alt="scrollWidth"
+                ></p>
+<p>元素偏移量 &amp; style 区别:<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/5.webp"
+                     
+                ></p>
+<h6 id="example-图片跟随鼠标移动"><a href="#example-图片跟随鼠标移动" class="headerlink" title="example 图片跟随鼠标移动"></a>example 图片跟随鼠标移动</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var pic = document.querySelector(&#x27;img&#x27;);</span><br><span class="line"></span><br><span class="line">document.addEventListener(&#x27;mousemove&#x27;, function(e)&#123;</span><br><span class="line">	var x = e.pageX;</span><br><span class="line">	var y = e.pageY;</span><br><span class="line"></span><br><span class="line">	var width = pic.offsetWidth;</span><br><span class="line">	var height = pic.offsetHeight;</span><br><span class="line"></span><br><span class="line">	pic.style.left = x - width/2 + &#x27;px&#x27;;</span><br><span class="line">	pic.style.top = y - height/2 + &#x27;px&#x27;;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h6 id="example-求鼠标点击位置距离-box-元素多有像素"><a href="#example-求鼠标点击位置距离-box-元素多有像素" class="headerlink" title="example 求鼠标点击位置距离 box 元素多有像素"></a>example 求鼠标点击位置距离 box 元素多有像素</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;style type=&quot;text/css&quot;&gt;</span><br><span class="line">	*&#123;</span><br><span class="line">		margin: 0;</span><br><span class="line">		padding: 0;</span><br><span class="line">	&#125;</span><br><span class="line">	div&#123;</span><br><span class="line">		width: 100px;</span><br><span class="line">		height: 100px;</span><br><span class="line">		border: 2px solid orange;</span><br><span class="line">		margin: 100px;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/style&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line"></span><br><span class="line">var box = document.querySelector(&#x27;div&#x27;);</span><br><span class="line"></span><br><span class="line">box.addEventListener(&#x27;click&#x27;, function(e)&#123;</span><br><span class="line">	var e = e || window.event;</span><br><span class="line"></span><br><span class="line">	var x = e.pageX - this.offsetLeft;</span><br><span class="line">	var y = e.pageY - this.offsetTop;</span><br><span class="line"></span><br><span class="line">	console.log(&#x27;x:&#x27;, x, &#x27;y:&#x27;, y);</span><br><span class="line">&#125;)</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/6.webp"
+                      alt="求鼠标点击位置距离box元素多有像素"
+                ></p>
+<h6 id="example-求出当前元素在页面的偏移量"><a href="#example-求出当前元素在页面的偏移量" class="headerlink" title="example 求出当前元素在页面的偏移量"></a>example 求出当前元素在页面的偏移量</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">	&lt;style type=&quot;text/css&quot;&gt;</span><br><span class="line">		*&#123;</span><br><span class="line">			margin: 0;</span><br><span class="line">			padding: 0;</span><br><span class="line">		&#125;</span><br><span class="line">		.grandfather&#123;</span><br><span class="line">			width: 300px;</span><br><span class="line">			height: 300px;</span><br><span class="line">			border: 10px solid #ccc;</span><br><span class="line">			left: 50px;</span><br><span class="line">			position: absolute;</span><br><span class="line">		&#125;</span><br><span class="line">		.father&#123;</span><br><span class="line">			width: 200px;</span><br><span class="line">			height: 200px;</span><br><span class="line">			border: 10px solid green;</span><br><span class="line">			margin-left: 50px;</span><br><span class="line">			position: relative;</span><br><span class="line">		&#125;</span><br><span class="line">		.son&#123;</span><br><span class="line">			width: 100px;</span><br><span class="line">			height: 100px;</span><br><span class="line">			border: 10px solid orange;</span><br><span class="line">			margin-left: 50px;</span><br><span class="line">		&#125;</span><br><span class="line">	&lt;/style&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line"></span><br><span class="line">var son = document.querySelector(&#x27;.son&#x27;);</span><br><span class="line">console.log(son.offsetLeft);</span><br><span class="line">console.log( getElementLeft(son) );</span><br><span class="line"></span><br><span class="line">function getElementLeft(eleObj)&#123;</span><br><span class="line">	// 当前元素距有定位的父元素的左偏移量</span><br><span class="line">	var currentLeft = eleObj.offsetLeft;</span><br><span class="line"></span><br><span class="line">	// 找到当前元素有定位的父元素</span><br><span class="line">	var parent = eleObj.offsetParent;</span><br><span class="line"></span><br><span class="line">	// 最外层是/没有定位父级就是基于&lt;body/&gt;, body.offsetParent是null.</span><br><span class="line">	while(parent != null)&#123;</span><br><span class="line">		// 当前元素做偏移量 + 父元素的border-left + 父元素的左偏移量</span><br><span class="line">		currentLeft = currentLeft + parent.clientLeft + parent.offsetLeft;</span><br><span class="line">		console.log(parent);</span><br><span class="line">		parent = parent.offsetParent;</span><br><span class="line">	&#125;</span><br><span class="line">	return currentLeft;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/7.webp"
+                     
+                ></p>
+<h6 id="example-可拖动弹窗"><a href="#example-可拖动弹窗" class="headerlink" title="example 可拖动弹窗"></a>example 可拖动弹窗</h6><h5 id="scroll-系列"><a href="#scroll-系列" class="headerlink" title="scroll 系列"></a>scroll 系列</h5><p>滚动窗口至文档中的特定位置</p>
+<h5 id="dom-scroll"><a href="#dom-scroll" class="headerlink" title="dom.scroll()"></a>dom.scroll()</h5><p>元素滚动到特定坐标</p>
+<h6 id="el-scrollTop-滚出内容的距离"><a href="#el-scrollTop-滚出内容的距离" class="headerlink" title="el.scrollTop 滚出内容的距离"></a>el.scrollTop 滚出内容的距离</h6><p>区分：el.scrollWidth&#x2F;scrollHeight 获取元素宽度</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/8.webp"
+                     
+                ><br><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/9.webp"
+                     
+                ></p>
+<h6 id="example-滚动到一定距离就固定"><a href="#example-滚动到一定距离就固定" class="headerlink" title="example 滚动到一定距离就固定"></a>example 滚动到一定距离就固定</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">var slidebar = document.querySelector(&#x27;.slide-bar&#x27;);</span><br><span class="line">var header = document.querySelector(&#x27;.header&#x27;);</span><br><span class="line">var goBack = document.querySelector(&#x27;.go-back&#x27;);</span><br><span class="line"></span><br><span class="line">			  // css设置的距离500px高度 - header的高度100;</span><br><span class="line">var slidebarTop = slidebar.offsetTop - header.offsetHeight;</span><br><span class="line"></span><br><span class="line">document.addEventListener(&#x27;scroll&#x27;, function()&#123;</span><br><span class="line"></span><br><span class="line">	// console.log(window.scrollTop);	// undefined;</span><br><span class="line">	console.log(window.pageYOffset);// 获取document滚出距离需用pageYOffset;</span><br><span class="line"></span><br><span class="line">	if(window.pageYOffset &gt;= header.offsetHeight)&#123;</span><br><span class="line">		slidebar.style.position = &#x27;fixed&#x27;;</span><br><span class="line">		slidebar.style.top = slidebarTop + &#x27;px&#x27;;</span><br><span class="line">		goBack.style.display = &#x27;block&#x27;;</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		slidebar.style.position = &#x27;absolute&#x27;;</span><br><span class="line">		slidebar.style.top = &#x27;500px&#x27;;</span><br><span class="line">		goBack.style.display = &#x27;none&#x27;;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">goBack.addEventListener(&#x27;click&#x27;,function()&#123;</span><br><span class="line">	window.scrollTo(0,0)</span><br><span class="line">&#125;);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style type=&quot;text/css&quot;&gt;</span><br><span class="line">	*&#123;</span><br><span class="line">		margin: 0;</span><br><span class="line">		padding: 0;</span><br><span class="line">	&#125;</span><br><span class="line">	.header&#123;</span><br><span class="line">		width: 80%;</span><br><span class="line">		height: 100px;</span><br><span class="line">		background-color: pink;</span><br><span class="line">		margin: 0 auto;</span><br><span class="line">	&#125;</span><br><span class="line">	.wrapper&#123;</span><br><span class="line">		width: 80%;</span><br><span class="line">		height: 1000px;</span><br><span class="line">		background-color: yellowgreen;</span><br><span class="line">		margin: 0 auto;</span><br><span class="line">	&#125;</span><br><span class="line">	.slide-bar&#123;</span><br><span class="line">		width: 50px;</span><br><span class="line">		height: 100px;</span><br><span class="line">		background-color: orange;</span><br><span class="line">		position: absolute;</span><br><span class="line">		right: 20px;</span><br><span class="line">		top: 500px;</span><br><span class="line">	&#125;</span><br><span class="line">	.go-back&#123;</span><br><span class="line">		display: none;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id=""><a href="#" class="headerlink" title=""></a><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/8.webp"
+                     
+                ></h2><h3 id="BOM"><a href="#BOM" class="headerlink" title="BOM"></a>BOM</h3><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/10.webp"
+                     
+                ></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/blog/images/Dom&Bom/11.webp"
+                     
+                ></p>
+<h6 id="window-onload"><a href="#window-onload" class="headerlink" title="window.onload"></a>window.onload</h6><p>当文档内容(图片, 脚本文件, css, 外部文件)完全加载完会触发该事件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">window.onload = function()&#123;</span><br><span class="line">	var btn = document.querySelector(&#x27;button&#x27;);</span><br><span class="line"></span><br><span class="line">	btn.addEventListener(&#x27;click&#x27;, function()&#123;</span><br><span class="line">		console.log(&#x27;多个window.onload事件，最后的 window.onload 注册事件会覆盖以前的&#x27;);</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">window.addEventListener(&#x27;load&#x27;,function()&#123;</span><br><span class="line">	var btn = document.querySelector(&#x27;button&#x27;);</span><br><span class="line"></span><br><span class="line">	btn.addEventListener(&#x27;click&#x27;, function()&#123;</span><br><span class="line">		console.log(&#x27;addEvent方式则不会&#x27;);</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">window.addEventListener(&#x27;load&#x27;,function()&#123;</span><br><span class="line">	alert(22)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">document.addEventListener(&#x27;DOMContentLoaded&#x27;,function()&#123;</span><br><span class="line">	alert(&#x27;DOM加载完毕就执行事件&#x27;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h6 id="window-onresize"><a href="#window-onresize" class="headerlink" title="window.onresize"></a>window.onresize</h6><p>窗口大小发生像素变化触发事件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var div = document.querySelector(&#x27;div&#x27;);</span><br><span class="line"></span><br><span class="line">window.onresize = function()&#123;</span><br><span class="line">	// 当前屏幕的宽度;</span><br><span class="line">	if(window.innerWidth &lt;= 800)&#123;</span><br><span class="line">		div.style.display = &#x27;none&#x27;;</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		div.style.display = &#x27;block&#x27;;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="window-setTimeout-setInterval-定时器"><a href="#window-setTimeout-setInterval-定时器" class="headerlink" title="window.setTimeout &amp; setInterval 定时器"></a>window.setTimeout &amp; setInterval 定时器</h6><h6 id="window-location"><a href="#window-location" class="headerlink" title="window.location"></a>window.location</h6><p>解析&#x2F;获取&#x2F;设置访问的 URL 的对象</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">属性:</span><br><span class="line">     location.href        完整url</span><br><span class="line">     location.protocol    http/https/tcp 协议</span><br><span class="line">     location.host        主机名+端口号: 比如localhost:3000</span><br><span class="line">     location.hostname    主机名: 比如localhost</span><br><span class="line">     location.port        端口号: 3000</span><br><span class="line">     location.pathname    相对路径</span><br><span class="line">     location.hash        #锚点链接地址</span><br><span class="line">     location.search      ?name=tom&amp;password=123查询字符串</span><br><span class="line"></span><br><span class="line">方法:</span><br><span class="line"> location.href=&quot;新url&quot;</span><br><span class="line"> location.assign(&quot;新url&quot;)  也可实现在当前窗口打开，可后退</span><br><span class="line"> location.replace(&quot;新url&quot;)  实现禁止后退      原理: 用新url替换history中旧的url</span><br><span class="line"></span><br><span class="line">刷新:</span><br><span class="line"> history.go(0) == location.reload()     1. 普通刷新: 优先从浏览器本地缓存中获取资源。缓存中没有或过期，才去服务器下载新的。</span><br><span class="line"> location.reload(true)                  2. 强制刷新: 跳过浏览器缓存，总是从服务器下载最新的资源</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">window.addEventListener(&#x27;hashChange&#x27;, (e)=&gt;&#123;</span><br><span class="line">	console.log(&#x27;hash地址改变&#x27;, e)</span><br><span class="line">	let oldUrl = e.oldURL;</span><br><span class="line">	let newUrl = e.oldURL;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h6 id="window-navigator"><a href="#window-navigator" class="headerlink" title="window.navigator"></a>window.navigator</h6><p>浏览器保存的配置信息对象</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">if((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|WOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)))&#123;</span><br><span class="line">	console.log(&#x27;手机&#x27;);</span><br><span class="line">&#125;else&#123;</span><br><span class="line">	console.log(&#x27;pc&#x27;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">属性:</span><br><span class="line"> cookieEnabled: 判断当前浏览器是否启用了cookie。</span><br><span class="line"> plugins: 保存浏览器安装的所有插件信息的集合</span><br><span class="line"> userAgent: 保存浏览器名称和版本号的字符串</span><br><span class="line"> geolocation: 该对象提供用户地理位置信息，通过getCurrentPosition获取;</span><br><span class="line">	latitude 维度</span><br><span class="line">	longitude 经度</span><br><span class="line">	accuracy 经纬度精确度</span><br><span class="line">	altitude 海拔高度</span><br><span class="line">	altitudeAccuracy 海拔高度经度</span><br><span class="line">	heading 设备方向</span><br><span class="line">	speed 速度</span><br><span class="line"></span><br><span class="line"> 	navigator.geolocation.getCurrentPosition( position =&gt; &#123;</span><br><span class="line">		console.log(&#x27;用户地理信息:&#x27;, position)</span><br><span class="line">	&#125;);</span><br></pre></td></tr></table></figure>
+
+<h6 id="window-history"><a href="#window-history" class="headerlink" title="window.history"></a>window.history</h6><p>保存当前窗口打开后，成功访问过的 url 的历史记录栈的对象</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">history.forward()  ==  history.go(1) 前进一步</span><br><span class="line">history.back()   ==  history.go(-2) 后退两步</span><br><span class="line">history.go(0) 刷新</span><br></pre></td></tr></table></figure>
+
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/blog/2024/07/11/compositionApi/"
+                                   title="vue3"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">vue3</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/blog/2024/07/11/contructure/"
+                                   title="数据结构与算法"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">数据结构与算法</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86"><span class="nav-text">浏览器渲染原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90-HTML"><span class="nav-text">解析 HTML</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90-DOM"><span class="nav-text">生成 DOM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%B8%B2%E6%9F%93%E6%A0%91"><span class="nav-text">生成渲染树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reflow-%E9%87%8D%E6%8E%92-%E5%9B%9E%E6%B5%81-%E5%B0%B1%E6%98%AF%E6%8E%92%E5%88%97%E9%A1%BA%E5%BA%8F"><span class="nav-text">reflow 重排 (回流; 就是排列顺序)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#repaint-%E9%87%8D%E7%BB%98"><span class="nav-text">repaint 重绘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-text">扩展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM"><span class="nav-text">DOM</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#nodeType-%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="nav-text">nodeType 节点类型</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E8%8A%82%E7%82%B9-el"><span class="nav-text">获取元素节点 el</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-parentNode"><span class="nav-text">el.parentNode</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-children-el-firstElementChild-el-lastElementChild"><span class="nav-text">el.children, el.firstElementChild, el.lastElementChild</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-previousElementSibling-nextElementSibling"><span class="nav-text">el.previousElementSibling, .nextElementSibling</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-style"><span class="nav-text">el.style</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-attributes-el-setAttribute-el-removeAttribute"><span class="nav-text">el.attributes, el.setAttribute, el.removeAttribute</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-className"><span class="nav-text">el.className</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-classList%E3%80%81-add%E3%80%81-remove%E3%80%81-replace%E3%80%81-toggle"><span class="nav-text">el.classList、.add、.remove、.replace、.toggle</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-cloneNode-%E5%85%8B%E9%9A%86%E8%8A%82%E7%82%B9"><span class="nav-text">el.cloneNode 克隆节点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-%E6%8F%92%E5%85%A5-%E7%A7%BB%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-text">创建&#x2F;插入&#x2F;移除节点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example"><span class="nav-text">example</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#fragment-%E6%96%87%E6%A1%A3%E7%89%87%E6%AE%B5"><span class="nav-text">fragment 文档片段</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E4%BA%8B%E4%BB%B6"><span class="nav-text">移除事件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%B5%81-%E2%80%93-%E6%8D%95%E8%8E%B7-%E5%86%92%E6%B3%A1"><span class="nav-text">事件流 – 捕获&amp;冒泡</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%A7%94%E6%89%98-%E4%BA%8B%E4%BB%B6%E4%BB%A3%E7%90%86"><span class="nav-text">事件委托&#x2F;事件代理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1"><span class="nav-text">键盘事件对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%BC%A0%E6%A0%87%E4%BA%8B%E4%BB%B6"><span class="nav-text">鼠标事件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%BC%A0%E6%A0%87%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1"><span class="nav-text">鼠标事件对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%83%E7%B4%A0%E5%81%8F%E7%A7%BB%E9%87%8F-el-offsetLeft-el-offsetTop"><span class="nav-text">元素偏移量 el.offsetLeft &#x2F; el.offsetTop</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E5%B0%BA%E5%AF%B8-el-offsetWidth"><span class="nav-text">获取元素尺寸 el.offsetWidth</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E5%B0%BA%E5%AF%B8-el-clientWidth"><span class="nav-text">获取元素尺寸 el.clientWidth</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E5%B0%BA%E5%AF%B8-el-scrollWidth"><span class="nav-text">获取元素尺寸 el.scrollWidth</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E5%9B%BE%E7%89%87%E8%B7%9F%E9%9A%8F%E9%BC%A0%E6%A0%87%E7%A7%BB%E5%8A%A8"><span class="nav-text">example 图片跟随鼠标移动</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E6%B1%82%E9%BC%A0%E6%A0%87%E7%82%B9%E5%87%BB%E4%BD%8D%E7%BD%AE%E8%B7%9D%E7%A6%BB-box-%E5%85%83%E7%B4%A0%E5%A4%9A%E6%9C%89%E5%83%8F%E7%B4%A0"><span class="nav-text">example 求鼠标点击位置距离 box 元素多有像素</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E6%B1%82%E5%87%BA%E5%BD%93%E5%89%8D%E5%85%83%E7%B4%A0%E5%9C%A8%E9%A1%B5%E9%9D%A2%E7%9A%84%E5%81%8F%E7%A7%BB%E9%87%8F"><span class="nav-text">example 求出当前元素在页面的偏移量</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E5%8F%AF%E6%8B%96%E5%8A%A8%E5%BC%B9%E7%AA%97"><span class="nav-text">example 可拖动弹窗</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#scroll-%E7%B3%BB%E5%88%97"><span class="nav-text">scroll 系列</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#dom-scroll"><span class="nav-text">dom.scroll()</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#el-scrollTop-%E6%BB%9A%E5%87%BA%E5%86%85%E5%AE%B9%E7%9A%84%E8%B7%9D%E7%A6%BB"><span class="nav-text">el.scrollTop 滚出内容的距离</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E6%BB%9A%E5%8A%A8%E5%88%B0%E4%B8%80%E5%AE%9A%E8%B7%9D%E7%A6%BB%E5%B0%B1%E5%9B%BA%E5%AE%9A"><span class="nav-text">example 滚动到一定距离就固定</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BOM"><span class="nav-text">BOM</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#window-onload"><span class="nav-text">window.onload</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-onresize"><span class="nav-text">window.onresize</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-setTimeout-setInterval-%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="nav-text">window.setTimeout &amp; setInterval 定时器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-location"><span class="nav-text">window.location</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-navigator"><span class="nav-text">window.navigator</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-history"><span class="nav-text">window.history</span></a></li></ol></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2026
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Peter Yu</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86"><span class="nav-text">浏览器渲染原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90-HTML"><span class="nav-text">解析 HTML</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90-DOM"><span class="nav-text">生成 DOM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%B8%B2%E6%9F%93%E6%A0%91"><span class="nav-text">生成渲染树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reflow-%E9%87%8D%E6%8E%92-%E5%9B%9E%E6%B5%81-%E5%B0%B1%E6%98%AF%E6%8E%92%E5%88%97%E9%A1%BA%E5%BA%8F"><span class="nav-text">reflow 重排 (回流; 就是排列顺序)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#repaint-%E9%87%8D%E7%BB%98"><span class="nav-text">repaint 重绘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-text">扩展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM"><span class="nav-text">DOM</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#nodeType-%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="nav-text">nodeType 节点类型</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E8%8A%82%E7%82%B9-el"><span class="nav-text">获取元素节点 el</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-parentNode"><span class="nav-text">el.parentNode</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-children-el-firstElementChild-el-lastElementChild"><span class="nav-text">el.children, el.firstElementChild, el.lastElementChild</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-previousElementSibling-nextElementSibling"><span class="nav-text">el.previousElementSibling, .nextElementSibling</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-style"><span class="nav-text">el.style</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-attributes-el-setAttribute-el-removeAttribute"><span class="nav-text">el.attributes, el.setAttribute, el.removeAttribute</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-className"><span class="nav-text">el.className</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-classList%E3%80%81-add%E3%80%81-remove%E3%80%81-replace%E3%80%81-toggle"><span class="nav-text">el.classList、.add、.remove、.replace、.toggle</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#el-cloneNode-%E5%85%8B%E9%9A%86%E8%8A%82%E7%82%B9"><span class="nav-text">el.cloneNode 克隆节点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-%E6%8F%92%E5%85%A5-%E7%A7%BB%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-text">创建&#x2F;插入&#x2F;移除节点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example"><span class="nav-text">example</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#fragment-%E6%96%87%E6%A1%A3%E7%89%87%E6%AE%B5"><span class="nav-text">fragment 文档片段</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E4%BA%8B%E4%BB%B6"><span class="nav-text">移除事件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%B5%81-%E2%80%93-%E6%8D%95%E8%8E%B7-%E5%86%92%E6%B3%A1"><span class="nav-text">事件流 – 捕获&amp;冒泡</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%A7%94%E6%89%98-%E4%BA%8B%E4%BB%B6%E4%BB%A3%E7%90%86"><span class="nav-text">事件委托&#x2F;事件代理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1"><span class="nav-text">键盘事件对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%BC%A0%E6%A0%87%E4%BA%8B%E4%BB%B6"><span class="nav-text">鼠标事件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%BC%A0%E6%A0%87%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1"><span class="nav-text">鼠标事件对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%83%E7%B4%A0%E5%81%8F%E7%A7%BB%E9%87%8F-el-offsetLeft-el-offsetTop"><span class="nav-text">元素偏移量 el.offsetLeft &#x2F; el.offsetTop</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E5%B0%BA%E5%AF%B8-el-offsetWidth"><span class="nav-text">获取元素尺寸 el.offsetWidth</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E5%B0%BA%E5%AF%B8-el-clientWidth"><span class="nav-text">获取元素尺寸 el.clientWidth</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E5%B0%BA%E5%AF%B8-el-scrollWidth"><span class="nav-text">获取元素尺寸 el.scrollWidth</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E5%9B%BE%E7%89%87%E8%B7%9F%E9%9A%8F%E9%BC%A0%E6%A0%87%E7%A7%BB%E5%8A%A8"><span class="nav-text">example 图片跟随鼠标移动</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E6%B1%82%E9%BC%A0%E6%A0%87%E7%82%B9%E5%87%BB%E4%BD%8D%E7%BD%AE%E8%B7%9D%E7%A6%BB-box-%E5%85%83%E7%B4%A0%E5%A4%9A%E6%9C%89%E5%83%8F%E7%B4%A0"><span class="nav-text">example 求鼠标点击位置距离 box 元素多有像素</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E6%B1%82%E5%87%BA%E5%BD%93%E5%89%8D%E5%85%83%E7%B4%A0%E5%9C%A8%E9%A1%B5%E9%9D%A2%E7%9A%84%E5%81%8F%E7%A7%BB%E9%87%8F"><span class="nav-text">example 求出当前元素在页面的偏移量</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E5%8F%AF%E6%8B%96%E5%8A%A8%E5%BC%B9%E7%AA%97"><span class="nav-text">example 可拖动弹窗</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#scroll-%E7%B3%BB%E5%88%97"><span class="nav-text">scroll 系列</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#dom-scroll"><span class="nav-text">dom.scroll()</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#el-scrollTop-%E6%BB%9A%E5%87%BA%E5%86%85%E5%AE%B9%E7%9A%84%E8%B7%9D%E7%A6%BB"><span class="nav-text">el.scrollTop 滚出内容的距离</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#example-%E6%BB%9A%E5%8A%A8%E5%88%B0%E4%B8%80%E5%AE%9A%E8%B7%9D%E7%A6%BB%E5%B0%B1%E5%9B%BA%E5%AE%9A"><span class="nav-text">example 滚动到一定距离就固定</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BOM"><span class="nav-text">BOM</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#window-onload"><span class="nav-text">window.onload</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-onresize"><span class="nav-text">window.onresize</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-setTimeout-setInterval-%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="nav-text">window.setTimeout &amp; setInterval 定时器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-location"><span class="nav-text">window.location</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-navigator"><span class="nav-text">window.navigator</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#window-history"><span class="nav-text">window.history</span></a></li></ol></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/header-shrink.js"></script>
+
+<script src="/blog/js/back2top.js"></script>
+
+<script src="/blog/js/dark-light-toggle.js"></script>
+
+<script src="/blog/js/main.js"></script>
+
+<script src="/blog/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+
+<!-- code-block -->
+
+    
+<script src="/blog/js/code-block.js"></script>
+
+
+
+<!-- lazyload -->
+
+    
+<script src="/blog/js/lazyload.js"></script>
+
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        
+<script src="/blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    
+<script src="/blog/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

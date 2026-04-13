@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Peter Yu">
+    
+    <title>
+        
+            Eslint |
+        
+        Peter&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/blog/images/xiaoxin.jpg">
+    
+    
+<link rel="stylesheet" href="/blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"github.com","root":"/blog/","language":"zh-CN"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/xiaoxin.jpg","favicon":"/images/xiaoxin.jpg","avatar":"/images/xiaoxin.jpg","font_size":null,"font_family":"Microsoft YaHei","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":true,"background_img":"https://keep.xpoet.cn/images/bg.svg","description":"我与世界相识，我与世界相蚀","font_color":null,"hitokoto":false},"scroll":{"progress_bar":true,"percent":false}},"local_search":{"enable":false,"preload":true},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":false,"auto":false,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"version":"3.8.6"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/blog/images/xiaoxin.jpg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Peter&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/archives">归档</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        Eslint
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/blog/images/xiaoxin.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">Peter Yu</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2024-07-11 09:00:47</span>
+                <span class="mobile">2024-07-11 09:00</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Tue Aug 20 2024 17:23:13 GMT+0800">2024-08-20 17:23:13</span>
+            </span>
+        
+
+        
+
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <h1 id="项目配置流程"><a href="#项目配置流程" class="headerlink" title="项目配置流程"></a>项目配置流程</h1><ol>
+<li><p>vsCode 中 先安装 eslint 和 prettier 扩展；</p>
+</li>
+<li><p>创建 vue 项目<br><code>npm create vite@latest</code> or <code>npm create vite my-vue-project --template vue-ts</code></p>
+</li>
+<li><p>安装 eslint<br><code>npm install eslint -D</code></p>
+</li>
+<li><p>生成 eslint.config.js 配置文件<br><code>npx eslint --init</code></p>
+</li>
+<li><p>安装 prettier 和相关插件(非必选)</p>
+</li>
+<li><p>安装 husky</p>
+</li>
+</ol>
+<hr>
+<h1 id="Eslint"><a href="#Eslint" class="headerlink" title="Eslint"></a>Eslint</h1><p>检测 js 代码语法和潜在 bug，但无法检测 css、html、vue 文件等；</p>
+<p>插件安装: <code>npm i eslint -D</code>;</p>
+<p>互动式命令，选择需要的配置 并 生成 eslint.config.js 配置文件:<br><code>npx eslint --init</code> or <code>npm init @eslint/config@latest</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 互动式命令</span><br><span class="line"></span><br><span class="line">How would you like to use ESLint? problems - eslint检测语法，检测语法并警告，检测语法并警告并修复</span><br><span class="line"></span><br><span class="line">What type of modules does your project use? - 选择 ECMA or CommonJs 模块</span><br><span class="line"></span><br><span class="line">Which framework does your project use? - vue，最后会提示安装 eslint-plugin-vue</span><br><span class="line"></span><br><span class="line">Does your project use Typescript? - 会自动安装typescript插件， 最后会提示安装typescript-eslint</span><br><span class="line"></span><br><span class="line">Where does your code run? - 运行在browser 或 node环境</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// eslint-config.js; 根据全部选择的结果，生成对应的配置；</span><br><span class="line"></span><br><span class="line">import globals from &quot;globals&quot;;</span><br><span class="line">import pluginJs from &quot;@eslint/js&quot;;</span><br><span class="line">import tseslint from &quot;typescript-eslint&quot;;</span><br><span class="line">import pluginVue from &quot;eslint-plugin-vue&quot;;</span><br><span class="line"></span><br><span class="line">export default [</span><br><span class="line">  &#123;files: [&quot;**/*.&#123;js,mjs,cjs,ts,vue&#125;&quot;]&#125;,</span><br><span class="line">  &#123;languageOptions: &#123; globals: globals.browser &#125;&#125;,</span><br><span class="line">   pluginJs.configs.recommended,            // 使用 JavaScript 的推荐规则配置</span><br><span class="line">  ...tseslint.configs.recommended,          // 使用 TypeScript 的推荐规则配置</span><br><span class="line">  ...pluginVue.configs[&quot;flat/essential&quot;],   // 使用 vue 规则配置插件</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<h2 id="mjs-文件-js-文件-区别"><a href="#mjs-文件-js-文件-区别" class="headerlink" title=".mjs 文件 &amp; .js 文件 区别"></a>.mjs 文件 &amp; .js 文件 区别</h2><ul>
+<li><p>根据安装 eslint 版本：eslint 9.0 版本前生成 eslint.config.mjs，9.0 版本后生成 eslint.config.js</p>
+</li>
+<li><p>根据安装时选择配置的 module 类型</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">What type of modules does your project use?</span><br><span class="line">&gt; JavaScript modules (import/export)</span><br><span class="line">  CommonJS (require/exports)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>选择 CommonJS 模块，将生成 eslint.config.js 文件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// eslint.config.js</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  env: &#123;</span><br><span class="line">    browser: true,</span><br><span class="line">    es2021: true,</span><br><span class="line">  &#125;,</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &#x27;no-unused-vars&#x27;: &#x27;warn&#x27;,</span><br><span class="line">  &#125;,</span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>选择 JavaScript modules 模块，将生成 eslint.config.mjs 文件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// eslint.config.mjs</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  env: &#123;</span><br><span class="line">    browser: true,</span><br><span class="line">    es2021: true,</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // extends是扩展eslint检测规范范围，且省略了前缀 &#x27;eslint-config-prettier&#x27;</span><br><span class="line">  extends: [</span><br><span class="line">    &#x27;eslint:recommended&#x27;,  // eslint默认推荐的规则</span><br><span class="line">    &#x27;plugin:vue/vue3-strongly-recommended&#x27;, // 使用 vue3强烈推荐规则</span><br><span class="line">    &#x27;prettier&#x27;  // 使用prettier规则</span><br><span class="line">  ],</span><br><span class="line">  parserOptions: &#123;</span><br><span class="line">    ecmaVersion: 12,</span><br><span class="line">    sourceType: &#x27;module&#x27;,</span><br><span class="line">  &#125;,</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &#x27;no-unused-vars&#x27;: &#x27;warn&#x27;,</span><br><span class="line">    &#x27;no-console&#x27;: &#x27;off&#x27;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">// eslint.config.js （ESlint 9.0版本后文件结构）</span><br><span class="line"></span><br><span class="line">import globals from &quot;globals&quot;;</span><br><span class="line">import pluginJs from &quot;@eslint/js&quot;;</span><br><span class="line">import tseslint from &quot;typescript-eslint&quot;;</span><br><span class="line">import pluginVue from &quot;eslint-plugin-vue&quot;;</span><br><span class="line"></span><br><span class="line">export default [</span><br><span class="line">	&#123;</span><br><span class="line">		// 指定eslint检测哪些文件</span><br><span class="line">		files: [&quot;src/**/*.&#123;js,ts,vue&#125;&quot;],  // 例如：检测src下以及嵌套的文件夹下，所有的js、ts、和vue文件；</span><br><span class="line">                files: [&#x27;src/**/*.ts&#x27;],           // 例如：检测src下以及嵌套的文件夹下，所有的ts文件；</span><br><span class="line"></span><br><span class="line">		// 指定eslint忽略检测哪些文件</span><br><span class="line">		ignores: [</span><br><span class="line">			&quot;.git/&quot;,              // 忽略 .git 目录及其所有内容</span><br><span class="line">			&quot;.config/&quot;,           // 忽略 .config 目录及其所有内容</span><br><span class="line">			&quot;**/node_modules/&quot;,   // 忽略项目中任意位置的 node_modules 目录及其所有内容</span><br><span class="line">		],</span><br><span class="line"></span><br><span class="line">		// 插件省略了前缀 &#x27;eslint-plugin-&#x27; &gt; &#x27;eslint-plugin-vue&#x27;</span><br><span class="line">		plugins: [&quot;vue&quot;],</span><br><span class="line"></span><br><span class="line">                // 自定义规则，会覆盖extends继承的第三方库规则，权限比第三方库高</span><br><span class="line">		rules: &#123;</span><br><span class="line">			&quot;example/dollar-sign&quot;: &quot;error&quot;,</span><br><span class="line">		&#125;,</span><br><span class="line"></span><br><span class="line">		// 可配置解析器</span><br><span class="line">		languageOptions: &#123;</span><br><span class="line">                  ecmaVersion: &#x27;latest&#x27;,</span><br><span class="line">                  sourceType: &#x27;module&#x27;,</span><br><span class="line">                  globals: globals.browser,</span><br><span class="line">                  parser: &#x27;@typescript-eslint/parser&#x27;,</span><br><span class="line">			// parserOptions: &#123;</span><br><span class="line">			// 	requireConfigFile: false,</span><br><span class="line">			// 	babelOptions: &#123;</span><br><span class="line">			// 		babelrc: false,</span><br><span class="line">			// 		configFile: false,</span><br><span class="line">			// 		presets: [&quot;@babel/preset-env&quot;],</span><br><span class="line">			// 	&#125;,</span><br><span class="line">			// &#125;,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;,</span><br><span class="line"></span><br><span class="line">	pluginJs.configs.recommended,</span><br><span class="line">	...tseslint.configs.recommended,</span><br><span class="line">	...pluginVue.configs[&quot;flat/essential&quot;],</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ps: ignores 涉及到的符号<br>. 这个点通常表示一个隐藏目录或文件<br>例如 .git .vscode 文件；</p>
+</blockquote>
+<blockquote>
+<p>&#x2F; 匹配目录。<br>例如 .config&#x2F; 就是忽略目录，和它目录下其所有内容；</p>
+</blockquote>
+<blockquote>
+<p>* 匹配任意数量的字符（除了斜杠 &#x2F;）。<br>1 例如 *.js: 匹配所有以 .js 结尾的文件,<br>2 例如 .config&#x2F;* 忽略.config 目录下的所有文件，但不包括子目录下的内容。如 .config 目录中有子目录不会被忽略。</p>
+</blockquote>
+<blockquote>
+<p>** 匹配任意数量的目录和子目录。<br>1 例如 **&#x2F;node_modules&#x2F; 匹配项目中任意位置（如根目录或嵌套在其他目录中）的 node_modules 都会忽略。<br>2 例如 files: [“src&#x2F;**&#x2F;*.{js,ts,vue}”]，src&#x2F;表示匹配 src 目录，**&#x2F; 表示匹配 src 目录下的任意层级的子目录，*.{js,ts,vue} 表示匹配文件名可以是任何字符，只要扩展名是 .js、.ts 或 .vue 之一；</p>
+</blockquote>
+<hr>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><p>全局命令<br><code>eslint demo.js</code> - 执行检测某个文件；<br><code>eslint demo.js --fix</code> - 执行检测某文件并强制修复 (如根据规则把双引号 变 单引号等)；</p>
+<p>弊端：每次手动操作命令检测文件中的 js 语法；可在 vsCode 中安装 eslint 插件，即可在编码过程中检测错误；</p>
+<h2 id="script"><a href="#script" class="headerlink" title="script"></a>script</h2><p>添加脚本命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  // eslint校验 src 目录下的文件</span><br><span class="line">  &quot;lint&quot;: &quot;eslint src&quot;,</span><br><span class="line">  &quot;lint&quot;: &quot;eslint \&quot;src/**/*.&#123;js,ts,vue&#125;\&quot;&quot;,</span><br><span class="line"></span><br><span class="line">  // eslint修复 src 目录下的文件</span><br><span class="line">  &quot;fix&quot;: &quot;eslint src --fix&quot;</span><br><span class="line">  &quot;fix&quot;: &quot;eslint \&quot;src/**/*.&#123;js,ts,vue&#125;\&quot; --fix&quot;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<h2 id="ignore"><a href="#ignore" class="headerlink" title="ignore"></a>ignore</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">// eslint.config.js</span><br><span class="line"></span><br><span class="line">export default [</span><br><span class="line">  &#123;</span><br><span class="line">    // 忽略与 eslint.config.js 文件同级的文件</span><br><span class="line">    ignores: [</span><br><span class="line">        &quot;.config/&quot;, // config 目录</span><br><span class="line">        &quot;.config/*&quot;, // config 目录下所有文件</span><br><span class="line">        &quot;**/node_modules/&quot;,</span><br><span class="line">        &quot;.git/&quot; // 后缀.git 文件</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="rules"><a href="#rules" class="headerlink" title="rules"></a>rules</h2><p>关闭规则：”off” &#x2F; 0<br>打开规则作为警告：”warn” &#x2F; 1<br>打开规则作为错误： “error” &#x2F; 2</p>
+<ul>
+<li><p><code>npm install eslint-config-airbnb-base eslint-plugin-import -D</code></p>
+<blockquote>
+<p>eslint-config-airbnb-base 代码配置插件，当前业界最火的 ESlint 规范就是 Airbnb;（需依赖 eslint-plugin-import）</p>
+</blockquote>
+</li>
+<li><p>自己配置规则</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// eslint.config.js</span><br><span class="line"></span><br><span class="line">import js from &quot;@eslint/js&quot;;</span><br><span class="line"></span><br><span class="line">export default [</span><br><span class="line">  js.configs.recommended,</span><br><span class="line">  &#123;</span><br><span class="line">    rules: &#123;</span><br><span class="line">      &quot;no-unused-vars&quot;: &quot;warn&quot;, // 未使用的变量</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h2 id="eslint-与-typescript-相关的插件"><a href="#eslint-与-typescript-相关的插件" class="headerlink" title="eslint 与 typescript 相关的插件"></a>eslint 与 typescript 相关的插件</h2><ul>
+<li>@typescript-eslint&#x2F;parser: ESLint 用来解析 typescript,从而检测 ts 代码；</li>
+<li>@typescript-eslint&#x2F;eslint-plugin: ESLint 插件，包含各类定义好的检测 ts 的规范；</li>
+<li>@types&#x2F;eslint: ts eslint 声明插件；</li>
+<li>@types&#x2F;node: ts node 声明插件；</li>
+</ul>
+<!-- npm install typescript -D 是否已选安装过了 -->
+<!-- npm install @types/eslint @types/node - D-->
+<!-- --legacy-peer-deps 安装 @typescript-eslint/parser时会报错，此时加上 -->
+
+<p><code>npm install @typescript-eslint/parser  @typescript-eslint/eslint-plugin --legacy-peer-deps -D</code></p>
+<h1 id="Prettier"><a href="#Prettier" class="headerlink" title="Prettier"></a>Prettier</h1><p><a class="link"   target="_blank" rel="noopener" href="https://prettier.io/" >prettier<i class="fas fa-external-link-alt"></i></a> 是代码格式化的编码风格工具，比如单行的代码长度、tab 长度、空格等；<br>主要为了团队代码风格统一，非必须安装；</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ul>
+<li><code>npm install prettier -D</code></li>
+</ul>
+<h4 id="创建-prettierrc-文件"><a href="#创建-prettierrc-文件" class="headerlink" title="创建 prettierrc 文件"></a>创建 prettierrc 文件</h4><p>在根文件中创建.prettierrc.json 或 .prettierrc.js 文件，并添加格式规则；</p>
+<blockquote>
+<p>PS<br>.prettierrc.json 使用 JSON 格式 且 只能包含静态配置，不支持动态逻辑；<br>.prettierrc.js 允许使用动态逻辑，可以包含条件语句、函数调用等，更加灵活，适合复杂配置的情况；</p>
+</blockquote>
+<ul>
+<li>.prettierrc.json</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;printWidth&quot;: 80,</span><br><span class="line">  &quot;tabWidth&quot;: 2,</span><br><span class="line">  &quot;useTabs&quot;: false,</span><br><span class="line">  &quot;semi&quot;: true,</span><br><span class="line">  &quot;singleQuote&quot;: true,</span><br><span class="line">  &quot;trailingComma&quot;: &quot;all&quot;,</span><br><span class="line">  &quot;bracketSpacing&quot;: true,</span><br><span class="line">  &quot;arrowParens&quot;: &quot;always&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>.prettierrc.js</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  printWidth: 80, // 一行最多100个字符</span><br><span class="line">  tabWidth: 2, // 空格缩进</span><br><span class="line">  useTabs: false, // 不适用缩进符，而使用空格</span><br><span class="line">  semi: true, // 分号</span><br><span class="line">  singleQuote: true, // 单引号</span><br><span class="line">  trailingComma: &#x27;all&#x27;,</span><br><span class="line">  bracketSpacing: true,</span><br><span class="line">  arrowParens: &#x27;always&#x27;,</span><br><span class="line">  overrides: [</span><br><span class="line">    &#123;</span><br><span class="line">      files: &#x27;*.test.js&#x27;,</span><br><span class="line">      options: &#123;</span><br><span class="line">        printWidth: 100,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  ],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="命令-1"><a href="#命令-1" class="headerlink" title="命令"></a>命令</h4><p>prettier 全局命令</p>
+<p><code>npx prettier --write 某文件</code><br>根据配置的 prettierrc.json 文件，格式化代码；</p>
+<h4 id="prettier-eslint-规则冲突"><a href="#prettier-eslint-规则冲突" class="headerlink" title="prettier &amp; eslint 规则冲突"></a>prettier &amp; eslint 规则冲突</h4><ol>
+<li>自定义规则时，eslint.config.js 中的 rules 规则 和 .prettierrc.json 规则保持统一，否则会冲突；</li>
+<li>工程化时可安装插件避免冲突；</li>
+</ol>
+<p><code>npm install eslint-plugin-prettier -D</code><br><code>npm install eslint-config-prettier -D</code></p>
+<blockquote>
+<p>PS：eslint-plugin-prettier 是一个 ESLint 插件，它将 Prettier 作为一个 ESLint 规则运行，并报告代码格式问题。这使得在使用 ESLint 进行代码检查时，自动应用和报告 Prettier 的格式化规则。</p>
+</blockquote>
+<blockquote>
+<p>PS： eslint-config-prettier 是一个 ESLint 配置扩展库，用于禁用所有不必要或可能与 Prettier 冲突的 ESLint 规则；例如，Prettier 会自动处理代码的行宽、缩进、括号和分号等格式，而 ESLint 中的一些规则也可能会尝试处理这些格式。因此，为避免冲突和重复劳动，eslint-config-prettier 会禁用这些 ESLint 规则。</p>
+</blockquote>
+<h4 id="ignore-1"><a href="#ignore-1" class="headerlink" title="ignore"></a>ignore</h4><p>在根文件中创建.prettierignore 文件，prettier 格式化时会忽略需要执行的文件&#x2F;目录；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// .prettierignore</span><br><span class="line"></span><br><span class="line">/dist/*</span><br><span class="line">/html</span><br><span class="line">.local</span><br><span class="line">/node*modules/**</span><br><span class="line">**/*.svg</span><br><span class="line">/public/*</span><br></pre></td></tr></table></figure>
+
+<h1 id="Husky"><a href="#Husky" class="headerlink" title="Husky"></a>Husky</h1><p><a class="link"   target="_blank" rel="noopener" href="https://typicode.github.io/husky/#/" >husky<i class="fas fa-external-link-alt"></i></a> 是为 git 客户端增加 hook 的插件，在一些 git 操作前自动触发的函数；</p>
+<h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><p><code>npm install husky -D</code></p>
+<h3 id="命令-2"><a href="#命令-2" class="headerlink" title="命令"></a>命令</h3><ul>
+<li><ol>
+<li>在根目录下生成.husky 目录，其中会有 pre-commit 文件，此文件就是在执行推送命令时执行的命令</li>
+</ol>
+</li>
+</ul>
+<p><code>npx husky-init</code></p>
+<p>or</p>
+<p>添加脚本命令，再执行脚本命令也能自动生成 .husky&#x2F;pre-commit 文件；<br><code>husky install</code></p>
+<h3 id="添加执行命令"><a href="#添加执行命令" class="headerlink" title="添加执行命令"></a>添加执行命令</h3><ul>
+<li><ol start="2">
+<li>给 .husky&#x2F;pre-commit 文件添加执行命令</li>
+</ol>
+</li>
+</ul>
+<p><code>npx husky add .husky/pre-commit &quot;npm run fix&quot;</code></p>
+<p>or</p>
+<p>直接在 .husky&#x2F;pre-commit 文件中添加命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#/usr/bin/en sh</span><br><span class="line">. &quot;$(dirname -- &quot;$0&quot;)/\_/husky.sh&quot;</span><br><span class="line"></span><br><span class="line">npm run fix         // 此处的 fix 就是 script 中的脚本命令&quot;fix&quot;: &quot;eslint src --fix&quot;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><ol start="3">
+<li>git commit -m ‘feat: 新增’，git 每次提交时执行脚本命令，没问题的文件直接提交到暂存区，有问题文件将报错；</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="安装-commit-限制"><a href="#安装-commit-限制" class="headerlink" title="安装 commit 限制"></a>安装 commit 限制</h2><p>commitlint 对 git commit 提交注释进行校验；</p>
+<p><code>npm install @commitlint/config-conventional @commitlint/cli -D</code></p>
+<h3 id="命令-3"><a href="#命令-3" class="headerlink" title="命令"></a>命令</h3><p>生成 .husky&#x2F;commit-msg 文件<br><code>npx husky add .husky/commit-msg &quot;npx --no -- commitlint --edit $&#123;1&#125;&quot;</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env sh</span><br><span class="line">. &quot;$(dirname &quot;$0&quot;)/h&quot;</span><br><span class="line"></span><br><span class="line">npx --no -- commitlint --edit</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>在根目录中添加 commit 配置文件 commitlint.config.cjs</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">	extends: [&#x27;@commitlint/config-conventional&#x27;],</span><br><span class="line">	rules: &#123;</span><br><span class="line">		&#x27;type-enum&#x27;: [</span><br><span class="line">			2,</span><br><span class="line">			&#x27;always&#x27;,</span><br><span class="line">			[</span><br><span class="line">				// 编译相关的修改，例如发布版本，对项目构建或者依赖的改动</span><br><span class="line">				&#x27;build&#x27;,</span><br><span class="line">				// 新功能(feature)</span><br><span class="line">				&#x27;feat&#x27;,</span><br><span class="line">				// 修复bug</span><br><span class="line">				&#x27;fix&#x27;,</span><br><span class="line">				// 更新某功能</span><br><span class="line">				&#x27;update&#x27;,</span><br><span class="line">				// 重构</span><br><span class="line">				&#x27;refactor&#x27;,</span><br><span class="line">				// 文档</span><br><span class="line">				&#x27;docs&#x27;,</span><br><span class="line">				// 构建过程或者辅助工具的变动,如增加依赖库等</span><br><span class="line">				&#x27;chore&#x27;,</span><br><span class="line">				// 不影响代码运行的变动</span><br><span class="line">				&#x27;style&#x27;,</span><br><span class="line">				// 撤销commit,回滚到上一个版本</span><br><span class="line">				&#x27;revert&#x27;,</span><br><span class="line">				// 性能优化</span><br><span class="line">				&#x27;perf&#x27;,</span><br><span class="line">				// 测试(单元,集成测试)</span><br><span class="line">				&#x27;test&#x27;,</span><br><span class="line">			],</span><br><span class="line">		],</span><br><span class="line">		&#x27;type-case&#x27;: [0],</span><br><span class="line">		&#x27;type-empty&#x27;: [0],</span><br><span class="line">		&#x27;scope-empty&#x27;: [0],</span><br><span class="line">		&#x27;scope-case&#x27;: [0],</span><br><span class="line">		&#x27;subject-full-stop&#x27;: [0, &#x27;never&#x27;],</span><br><span class="line">		&#x27;subject-case&#x27;: [0, &#x27;never&#x27;],</span><br><span class="line">		&#x27;header-max-length&#x27;: [0, &#x27;always&#x27;, 74],</span><br><span class="line">	&#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>git commit -m ‘feat: 新增’，git 每次提交时执行脚本命令；</li>
+</ul>
+
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/blog/2024/07/11/interview/"
+                                   title="Interview"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Interview</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/blog/2024/07/11/js_fn/"
+                                   title="Function"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Function</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B"><span class="nav-text">项目配置流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eslint"><span class="nav-text">Eslint</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mjs-%E6%96%87%E4%BB%B6-js-%E6%96%87%E4%BB%B6-%E5%8C%BA%E5%88%AB"><span class="nav-text">.mjs 文件 &amp; .js 文件 区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-text">命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#script"><span class="nav-text">script</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ignore"><span class="nav-text">ignore</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rules"><span class="nav-text">rules</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eslint-%E4%B8%8E-typescript-%E7%9B%B8%E5%85%B3%E7%9A%84%E6%8F%92%E4%BB%B6"><span class="nav-text">eslint 与 typescript 相关的插件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Prettier"><span class="nav-text">Prettier</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-prettierrc-%E6%96%87%E4%BB%B6"><span class="nav-text">创建 prettierrc 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4-1"><span class="nav-text">命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#prettier-eslint-%E8%A7%84%E5%88%99%E5%86%B2%E7%AA%81"><span class="nav-text">prettier &amp; eslint 规则冲突</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ignore-1"><span class="nav-text">ignore</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Husky"><span class="nav-text">Husky</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-1"><span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4-2"><span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-text">添加执行命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-commit-%E9%99%90%E5%88%B6"><span class="nav-text">安装 commit 限制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4-3"><span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">配置文件</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2026
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Peter Yu</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B"><span class="nav-text">项目配置流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eslint"><span class="nav-text">Eslint</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mjs-%E6%96%87%E4%BB%B6-js-%E6%96%87%E4%BB%B6-%E5%8C%BA%E5%88%AB"><span class="nav-text">.mjs 文件 &amp; .js 文件 区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-text">命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#script"><span class="nav-text">script</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ignore"><span class="nav-text">ignore</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rules"><span class="nav-text">rules</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eslint-%E4%B8%8E-typescript-%E7%9B%B8%E5%85%B3%E7%9A%84%E6%8F%92%E4%BB%B6"><span class="nav-text">eslint 与 typescript 相关的插件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Prettier"><span class="nav-text">Prettier</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-prettierrc-%E6%96%87%E4%BB%B6"><span class="nav-text">创建 prettierrc 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4-1"><span class="nav-text">命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#prettier-eslint-%E8%A7%84%E5%88%99%E5%86%B2%E7%AA%81"><span class="nav-text">prettier &amp; eslint 规则冲突</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ignore-1"><span class="nav-text">ignore</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Husky"><span class="nav-text">Husky</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-1"><span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4-2"><span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-text">添加执行命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-commit-%E9%99%90%E5%88%B6"><span class="nav-text">安装 commit 限制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4-3"><span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">配置文件</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/header-shrink.js"></script>
+
+<script src="/blog/js/back2top.js"></script>
+
+<script src="/blog/js/dark-light-toggle.js"></script>
+
+<script src="/blog/js/main.js"></script>
+
+<script src="/blog/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+
+<!-- code-block -->
+
+    
+<script src="/blog/js/code-block.js"></script>
+
+
+
+<!-- lazyload -->
+
+    
+<script src="/blog/js/lazyload.js"></script>
+
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        
+<script src="/blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    
+<script src="/blog/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

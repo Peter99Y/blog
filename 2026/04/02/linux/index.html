@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Peter Yu">
+    
+    <title>
+        
+            Linux |
+        
+        Peter&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/blog/images/xiaoxin.jpg">
+    
+    
+<link rel="stylesheet" href="/blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"github.com","root":"/blog/","language":"zh-CN"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/xiaoxin.jpg","favicon":"/images/xiaoxin.jpg","avatar":"/images/xiaoxin.jpg","font_size":null,"font_family":"Microsoft YaHei","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":true,"background_img":"https://keep.xpoet.cn/images/bg.svg","description":"我与世界相识，我与世界相蚀","font_color":null,"hitokoto":false},"scroll":{"progress_bar":true,"percent":false}},"local_search":{"enable":false,"preload":true},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":false,"auto":false,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"version":"3.8.6"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/blog/images/xiaoxin.jpg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Peter&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/archives">归档</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        Linux
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/blog/images/xiaoxin.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">Peter Yu</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2026-04-02 14:02:54</span>
+                <span class="mobile">2026-04-02 14:02</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Mon Apr 13 2026 16:32:32 GMT+0800">2026-04-13 16:32:32</span>
+            </span>
+        
+
+        
+
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <h2 id="IP"><a href="#IP" class="headerlink" title="IP"></a>IP</h2><ul>
+<li><p>IP</p>
+<p>每台联网的电脑都会有一个ip地址用于和其他计算机进行通信；<br>127.0.0.1 是本机ip地址；<br>0.0.0.0 可用于指代本机；也可在端口用来绑定关系；在一些情况下可允许任意ip访问；</p>
+</li>
+<li><p>主机名<br>除了ip地址，每台电脑都有一个名字，称为主机名；<br><code>hostname</code> 显示主机名；</p>
+</li>
+<li><p>域名解析<br>IP地址不便记忆，可通过主机名或字符串地址去代替数字化的IP地址，比如 <a class="link"   target="_blank" rel="noopener" href="http://www.baidu.com;/" >www.baidu.com；<i class="fas fa-external-link-alt"></i></a><br>访问 <a class="link"   target="_blank" rel="noopener" href="http://www.baidu.com/" >www.baidu.com<i class="fas fa-external-link-alt"></i></a> 时，操作系统首先会去本地的hosts文件中查找字符化的主机名与ip的映射关系 (windows是C:&#x2F;Windows&#x2F;System32&#x2F;drivers&#x2F;etc&#x2F;hosts, linux是&#x2F;etc&#x2F;hosts)，若没有找到，则联网去DNS服务器查询，还是没有就是 404；</p>
+<p><code>ifconfig</code> 显示网卡信息</p>
+<p>ens33：CentOS 7 默认网卡名称<br>ens33 &gt; inet：网卡ip地址</p>
+</li>
+<li><p>固定ip<br>虚拟机每次重启设备后都会获取一次新的ip，所以需要固定ip (步骤省略，自行搜索)；</p>
+</li>
+</ul>
+<h2 id="concept"><a href="#concept" class="headerlink" title="concept"></a>concept</h2><ul>
+<li><p>Linux 系统最大权限账户是 root；</p>
+</li>
+<li><p>Linux 只有一个<strong>根目录</strong> ‘&#x2F;‘, 所有文件都存放在根目录下；<br>如 ‘&#x2F;usr&#x2F;local&#x2F;hello.txt’ 起始斜杠 ‘&#x2F;‘ 表示根目录，后面的斜杠就是目录层级关系；</p>
+</li>
+<li><p>Linux 系统的命令行终端，在启动的时候，默认会加载当前用户的 home 目录 ‘~’ 作为<strong>工作目录</strong>；</p>
+</li>
+<li><p>每个用户的个人账户目录路径：<code>/home/username</code>;</p>
+</li>
+</ul>
+<h3 id="shortcut"><a href="#shortcut" class="headerlink" title="shortcut"></a>shortcut</h3><table>
+<thead>
+<tr>
+<th align="left">key</th>
+<th align="left">功能</th>
+<th align="left">栗子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">history</td>
+<td align="left">显示历史命令</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">! + 首字母</td>
+<td align="left">在历史命令中，执行匹配上的最近的一条命令</td>
+<td align="left">!ls</td>
+</tr>
+<tr>
+<td align="left">ctrl + d</td>
+<td align="left">退出当前登录用户</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">ctrl + l &#x2F; clear</td>
+<td align="left">清屏</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h2 id="sudo"><a href="#sudo" class="headerlink" title="sudo"></a>sudo</h2><p>普通用户一般只有 home 目录内操作的权限，以及其他地方只读权限；<br>使这条命令<strong>临时赋予管理员权限</strong>去执行一些命令，</p>
+<ul>
+<li>配置 sudo 认证<ol>
+<li>先切换到 root 账号，</li>
+<li>执行 <code>visudo</code> 命令后会自动通过 vim 编辑器打开 &#x2F;etc&#x2F;sudoers (或通过 <code>vim /etc/sudoers</code>)；</li>
+<li>文件最后添加 username All &#x3D; (ALL) NOPASSWD: ALL；</li>
+<li>保存后切换普通用户运行 sudo 命令即可；</li>
+</ol>
+</li>
+<li><code>sudo mkdir /test.txt</code><br>如在根目录中创建一个目录&#x2F;文件 (需临时赋予 root 权限才能创建)</li>
+</ul>
+<h2 id="common"><a href="#common" class="headerlink" title="common"></a>common</h2><ul>
+<li><p><code>whoami</code><br>显示当前用户名</p>
+</li>
+<li><p><code>su - root</code> (switch user)<br>&#39;-&#39; 表示加载环境变量；若没跟用户名默认切换到 root 用户</p>
+</li>
+<li><p><code>exit / ctrl d</code><br>回退到上一个用户；</p>
+</li>
+<li><p><code>pwd</code><br>打印当前所处的工作目录 (print working directory);</p>
+</li>
+<li><p><code>cd</code> (change directory)<br><code>cd /</code> 切换到根目录；<br><code>cd</code> or <code>cd ~</code> 切换到home目录；</p>
+</li>
+<li><p><code>ls</code><br>-a: 显示所有文件，包括隐藏文件；<br>-l: 以列表的形式显示文件 (默认平铺方式)；<br>-al &#x2F; -l -a: 显示所有文件，并显示列表形式；<br>-lh: 显示文件大小，并展示单位 (默认单位的就是KB; h需和l一起使用)；<br>parameter: 参数是 &#x2F;home&#x2F;admin 路径；</p>
+</li>
+<li><p>mkdir (创建目录)<br><code>mkdir test</code> 创建一个名为test的目录；<br><code>mkdir -p father/son</code> 创建多层级的目录；</p>
+</li>
+<li><p>touch<br><code>touch text.txt</code> 创建一个名为test.txt的文件；<br><code>cat text.txt</code> 查看文件全部内容；<br><code>more text.txt</code> 查看文件内容，若文件内容过多，通过键盘<strong>空格</strong>分页展示，通过键盘q退出；</p>
+</li>
+<li><p>cp<br>-r：递归复制；<br><code>cp -r test test2</code> 复制目录 test 到 test2，<br><code>cp text.txt text2.txt</code> 复制文件；</p>
+</li>
+<li><p>mv<br>移动文件&#x2F;移动目录&#x2F;改名<br><code>mv text2.txt ./text3.txt</code> 若 text3.txt 不存在，则改名为text3.txt；<br><code>mv test2 test</code> 将 test2 目录移动到 test 目录下；<br><code>mv test2 ..</code> 将 test2 目录移动上个目录；</p>
+</li>
+<li><p>rm<br>-f：强制删除 (使用 -f 直接删除不会出现确认提示)<br>-r：删除目录及目录下的所有文件<br><code>rm text3.txt</code> 删除文件(空格跟多个文件)；<br><code>rm -r test</code> 删除目录及目录下的所有文件；<br><code>rm tes*</code> tes* 匹配任何以test开头的文件，*test 匹配任何以test结尾的文件，*test* 匹配任何包含test的文件；</p>
+</li>
+</ul>
+<h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>Linux中权限管控分为针对用户权限，针对用户组权限；<br>某个文件可以控制用户的权限，也可以控制用户组权限；</p>
+<p>创建用户组需要root权限；</p>
+<ul>
+<li><code>groupadd groupname</code><br>创建用户组</li>
+<li><code>groupdel groupname</code><br>删除用户组</li>
+<li><code>getent group</code><br>(get entries 获取条目的缩写)<br>显示所有用户组</li>
+</ul>
+<hr>
+<ul>
+<li><code>useradd [-g -d] username</code><br>-g：指定用户组(前提是必须存在用户组)，不加-g选项默认会创建同名用户组并自动加入；<br>-d：创建用户时指定用户目录，默认是 &#x2F;home&#x2F;username；<br><code>useradd -g testGroup test1 -d /home/test111</code><br>创建用户 test1，并加入 testGroup 用户组，并指定用户目录为 &#x2F;home&#x2F;test111<br><code>su test1</code>切换到 test1 用户、<code>pwd</code> 显示test1 用户目录；</li>
+<li><code>userdel [-r] username</code><br>-r 删除用户 &#x2F;home&#x2F;username 目录，否则保留；<br>test1用户需先退出登录；</li>
+</ul>
+<hr>
+<ul>
+<li><p><code>usermod -aG groupname username</code><br>将指定的用户加入指定的用户组</p>
+</li>
+<li><p><code>id [username]</code></p>
+</li>
+<li><p><code>groups [username]</code><br>显示用户所属哪些用户组</p>
+</li>
+</ul>
+<h2 id="find"><a href="#find" class="headerlink" title="find"></a>find</h2><p>find 起始路径 -name “keyword”</p>
+<p><code>find ~ -name &quot;text3&quot;</code> 查找目录&#x2F;文件，按关键字从 home 目录开始<br><code>find ./ -name &quot;te*&quot;</code> 查找任何以 te 开头的目录&#x2F;文件，从当前目录开始</p>
+<h2 id="tail"><a href="#tail" class="headerlink" title="tail"></a>tail</h2><p>显示文件最后几行</p>
+<ul>
+<li><code>tail [-f -10] 文件路径</code><br>-f 表示持续跟踪；<br>-10 表示查看尾部显示的行数，默认10行；</li>
+<li><code>tail -10 hello.txt</code></li>
+<li><code>tail -f hello.txt</code><br>持续跟踪文件 hello.txt, 另外一个终端对 hello.txt 修改就可以实时查看；</li>
+</ul>
+<h2 id="date"><a href="#date" class="headerlink" title="date"></a>date</h2><p>Linux 默认时区是非中国的东八区，需切换到root用户修改为东八区时区；<br><code>rm -f /etc/localtime</code><br><code>sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</code></p>
+<ul>
+<li><p><code>date</code> 查看日期和时间； (2026年 04月 08日 星期三 23:00:29 PDT)<br>-d 按照给的字符串显示日期，一般用于日期计算</p>
+<p><code>date &quot;+%Y-%m-%d %H:%M:%S&quot;</code> 根据格式查看时间 (2026-04-08 23:03:12)<br><code>date -d &quot;+1 day&quot;</code> 显示明天的日期<br><code>date -d &quot;+1 month&quot;</code> 显示下个月的日期</p>
+</li>
+<li><p>扩展：通过ntp自动联网校准系统时间<br><code>yum -y install ntp</code><br><code>systemctl start ntpd</code> ntp安装完后会自动注册为系统服务，此时就能通过systemctl命令启动服务了；<br><code>systemctl enable ntpd</code> 设置为开机自启动；</p>
+</li>
+</ul>
+<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><p>筛选文件中的内容</p>
+<ul>
+<li><p><code>grep [-n] &quot;keyword&quot; 文件路径</code><br>-n 显示行号</p>
+</li>
+<li><p><code>grep -n &quot;hello&quot; test/text.txt</code><br>搜索 hello 关键字从 text.txt 文件中</p>
+</li>
+<li><p><code>cat text.txt | grep -n &quot;hello&quot;</code><br>若使用管道符 ‘|’，grep 筛选关键字 ‘hello’, 从左侧命令的结果作为 grep 的输入数据 (从text.txt 文件中搜索 hello 关键字)</p>
+</li>
+<li><p><code>ls | grep &quot;text&quot;</code><br>搜索 text 关键字 从 ls 查询出的所有文件数据中 (查询出目录&#x2F;文件)</p>
+</li>
+</ul>
+<h2 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h2><p>(Word Count) 统计内容数量</p>
+<ul>
+<li><p><code>wc [-l -w -c -m] 文件路径</code><br>-l：统计行数<br>-w：统计空格&#x2F;换行所隔开的单词数量<br>-c：统计bytes字节数量 (字节数和字符数可能相同)<br>-m：统计字符数量</p>
+</li>
+<li><p><code>wc text.txt</code><br>4 (总行数) 14 (单词数量) 72 (字节数) text.txt (文件名)</p>
+</li>
+<li><p><code>cat text.txt | wc -l -w</code><br>4 (总行数) 14 (单词数量) ， 统计行数与数量从管道中读取</p>
+</li>
+<li><p><code>ls ./test | wc -l</code><br>统计文件数量从test目录中</p>
+</li>
+<li><p><code>cat text.txt | grep &quot;hello&quot; | wc -l</code><br>统计行数从 grep 筛选关键字 ‘hello’ 的结果</p>
+</li>
+</ul>
+<h2 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h2><ul>
+<li><p><code>echo &quot;hello world&quot;</code><br>等价于 console.log(“hello world”)</p>
+</li>
+<li><p><code>echo `pwd` </code><br>打印命令执行的结果，而不是打印字符串</p>
+</li>
+<li><p><code>echo &quot;hello world&quot; &gt; text.txt</code><br>使用重定向符将 “hello world” 覆盖 text.txt 文件内容</p>
+</li>
+<li><p><code>echo &quot;hello world&quot; &gt;&gt; text.txt</code><br>使用重定向符将 “hello world” 追加到 text.txt 文件中</p>
+</li>
+<li><p><code>cat &quot;text.txt&quot; &gt; text2.txt </code><br>使用重定向符将 text.txt 文件所有内容覆盖到 text2.txt 文件</p>
+</li>
+<li><p><code>cat &quot;text.txt&quot; &gt;&gt; text2.txt </code><br>使用重定向符 将 text.txt 文件的内容追加到 text2.txt 文件</p>
+</li>
+</ul>
+<h2 id="vim"><a href="#vim" class="headerlink" title="vim"></a>vim</h2><p>Linux 的文本编辑器</p>
+<p><code>vim text.txt</code><br>进入文本编辑的命令模式界面，通过编辑 text.txt 文件 (若 text.txt 文件不存在, 则会创建该文件)；</p>
+<table>
+<thead>
+<tr>
+<th align="left">当前模式</th>
+<th align="left">命令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">命令</td>
+<td align="left"><code>/</code></td>
+<td>搜索</td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left"><code>n</code></td>
+<td>向下搜索</td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left"><code>N</code></td>
+<td>向上搜索</td>
+</tr>
+<tr>
+<td align="left">-</td>
+<td align="left">-</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left">yy</td>
+<td>复制当前行</td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left">p</td>
+<td>粘贴</td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left">dd</td>
+<td>删除当前行</td>
+</tr>
+<tr>
+<td align="left">-</td>
+<td align="left">-</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left">u</td>
+<td>撤销修改</td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left">ctrl+r</td>
+<td>重做修改</td>
+</tr>
+<tr>
+<td align="left">-</td>
+<td align="left">-</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left">gg</td>
+<td>光标跳到开头</td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left">G</td>
+<td>光标跳到末尾</td>
+</tr>
+<tr>
+<td align="left">-</td>
+<td align="left">-</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left"><code>i</code></td>
+<td>从命令模式切换到插入模式</td>
+</tr>
+<tr>
+<td align="left">插入</td>
+<td align="left"><code>Esc</code></td>
+<td>从插入模式切换到命令模式</td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left"><code>:</code></td>
+<td>从命令模式切换到底线模式</td>
+</tr>
+<tr>
+<td align="left">-</td>
+<td align="left">-</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">底线</td>
+<td align="left"><code>:set nu</code></td>
+<td>显示行号</td>
+</tr>
+<tr>
+<td align="left">底线</td>
+<td align="left"><code>:q</code></td>
+<td>退出</td>
+</tr>
+<tr>
+<td align="left">底线</td>
+<td align="left"><code>:q!</code></td>
+<td>强制退出 (不保存)</td>
+</tr>
+<tr>
+<td align="left">底线</td>
+<td align="left"><code>:w</code></td>
+<td>保存</td>
+</tr>
+<tr>
+<td align="left">底线</td>
+<td align="left"><code>:wq</code></td>
+<td>保存并退出</td>
+</tr>
+</tbody></table>
+<h2 id="yum"><a href="#yum" class="headerlink" title="yum"></a>yum</h2><p>Linux 支持的安装软件方式有 yum 为 CentOs 安装软件，apt 为 Ubuntu 安装；<br>yum 命令需要 root 权限, 可通过 sudo 方式 或 su root 切换到 root 用户；<br>yum -y install wget 需要先安装 wget，再通过 wget 安装其他软件；</p>
+<ul>
+<li><code>yum [-y] [search | install  | remove | update] 软件名称</code><br>-y 表示自动安装，无需手动确认安装&#x2F;卸载过程;<br>yum 安装的服务所有用户都共享;</li>
+</ul>
+<h2 id="systemctl"><a href="#systemctl" class="headerlink" title="systemctl"></a>systemctl</h2><p>Linux 的服务管理工具，可查看、启动、停止、重启服务；</p>
+<ul>
+<li><p><code>systemctl [status | start | stop | restart | enable | disable] 服务名称</code><br>查看&#x2F;启动&#x2F;停止&#x2F;重启&#x2F;开机自启动&#x2F;开机不自启动；</p>
+</li>
+<li><p>Linux 内置服务<br>firewalld 防火墙服务<br>NetworkManager 主网络服务<br>network 副网络服务<br>sshd&#x2F;ssh 登录服务 (FinalShell远程登录使用的就是这个服务)</p>
+</li>
+<li><p>外置服务，部分第三方服务有注册 如：<br>httpd 服务<br>nginx 服务<br>mysql 数据库服务<br>ntp 时间同步服务</p>
+</li>
+</ul>
+<h2 id="network"><a href="#network" class="headerlink" title="network"></a>network</h2><ul>
+<li><p><code>ping [-c count] ip/domain</code><br>ping 命令用于测试指定的网络服务器是否联通状态；</p>
+</li>
+<li><p><code>wget [-b] url</code><br>(Web Get 从网络中获取文件) 类似于 windows 的迅雷下载文件一样；<br>-b 命令表示后台运行；<br>wget 命令用于下载网络文件，并把日志文件保存当前工作目录的 wget-log 文件中；</p>
+</li>
+<li><p><code>curl [-O] url</code><br>(See URL) 发送http请求，可获取 html 内容，也可用于下载文件；<br>-O 仅限下载文件，当url是下载链接时，此项可保存文件；</p>
+</li>
+</ul>
+<h2 id="port"><a href="#port" class="headerlink" title="port"></a>port</h2><p>计算机之间通信，IP地址只能代表一台电脑，通过端口就能锁定这台电脑某个具体程序；<br>公认端口 1 - 1023之间，通常是系统内置预留使用，如22是ssh远程链接服务端口，80是 http 端口，443是 https 服务的端口；<br>注册端口 1024 - 49151之间，通常用于自定义绑定程序、服务使用；<br>动态端口 49152 - 65535之间，通常用于临时使用，不会固定绑定程序，当程序对外网络请求时临时使用；</p>
+<ul>
+<li><code>sudo yum -y install nmap</code><br><code>nmap 127.0.0.1</code><br>nmap 命令用于查看本机计算机有哪些端口正在运行状态</li>
+</ul>
+<h2 id="process"><a href="#process" class="headerlink" title="process"></a>process</h2><p>程序运行在操作系统中，每一个程序在运行时，便被操作系统注册为一个进程，并为每一个进程分配一个进程PID；</p>
+<p><code>ps [-ef]</code><br>-e 表示显示所有进程；<br>-f 显示进程的详细信息；</p>
+<p><code>kill [-9] PID</code><br>-9 强制结束进程；</p>
+<h2 id="evnironment"><a href="#evnironment" class="headerlink" title="evnironment"></a>evnironment</h2><p>使用一系列的命令本质上就是一个个可执行的程序，无论当前处工作目录在哪里都能执行这些命令，比如 cd 命令本体就是 ‘&#x2F;usr&#x2F;bin&#x2F;cd’ 程序，ls命令本体就是 ‘&#x2F;bin&#x2F;ls’ 程序;<br>这些命令就是通过环境变量中 PATH 的值来执行的，PATH存储了所有可执行程序的目录；</p>
+<ul>
+<li><p><code>env</code><br>查看所有环境变量；</p>
+</li>
+<li><p><code>env | grep PATH</code><br>PATH&#x3D;&#x2F;usr&#x2F;local&#x2F;bin:&#x2F;usr&#x2F;bin:&#x2F;usr&#x2F;local&#x2F;sbin:&#x2F;usr&#x2F;sbin:&#x2F;home&#x2F;admin&#x2F;.local&#x2F;bin:&#x2F;home&#x2F;admin&#x2F;bin<br>值里面有多个目录，多个目录之间用冒号分隔；<br>比如执行cd时，会先从’&#x2F;usr&#x2F;local&#x2F;bin’目录中查找，再从’&#x2F;usr&#x2F;bin’目录中查找… 直到找到该命令，最后找不到就会报错；</p>
+</li>
+<li><p><code>echo $PATH</code><br>通过 $ + 环境变量的key，可以获取这个环境变量的值，并通过echo命令输出到屏幕上；</p>
+</li>
+<li><p>设置环境变量</p>
+<ol>
+<li>当前用户通过vim 打开 <code>vim ~/.bashrc</code> 文件 (所有用户 <code>vim /etc/profile</code>)；</li>
+<li>文件最后添加 export MYNAME&#x3D;xxx；</li>
+<li>保存退出 并执行 <code>source ~/.bashrc</code>使文件中环境变量立即生效 (所有用户 <code>source /etc/profile</code>)；</li>
+<li>通过 <code>echo $MYNAME</code> 获取到环境变量的值；</li>
+</ol>
+</li>
+</ul>
+<h2 id="download-upload"><a href="#download-upload" class="headerlink" title="download &amp; upload"></a>download &amp; upload</h2><p>方式1：使用 FinalShell 直接在目录中右键上传和下载即可 (推荐)；<br>方式2：lrzsz；</p>
+<ul>
+<li><code>yum -y install lrzsz</code><br>lrzsz 命令用于上传下载文件;</li>
+<li><code>sz 文件路径</code><br>下载文件；</li>
+<li><code>rz</code><br>上传文件，会弹出一个窗口，选择要上传的文件；</li>
+</ul>
+<h2 id="compression-decompression"><a href="#compression-decompression" class="headerlink" title="compression &amp; decompression"></a>compression &amp; decompression</h2><p>Linux和 Mac常见2中压缩格式，后缀分为.tar 和 .gz；<br>.tar 称为barball归档文件，简单的讲文件组装到一个 .tar 文件中，并没有太多文件体积的减少，仅仅是简单的封装；<br>.gz 也常见为 .tar.gz，gzip格式压缩文件，使用gzip压缩算法将文件压缩到一个文件内，极大地减少了文件体积；</p>
+<ul>
+<li><p><code>tar [-c -v -x -f -z -C] 参数1 ... 参数n</code><br>-z 使用gzip压缩&#x2F;解压算法进行压缩&#x2F;解压，不使用就是普通的tarball格式压缩文件 (一般处于第一位)；</p>
+<p>-c 创建压缩文件； -x 解压压缩文件；<br>-v 显示压缩进度；<br>-f 压缩&#x2F;解压文件名 (必须处于最后一位)；</p>
+<p>-C 将压缩文件解压到指定目录下；</p>
+</li>
+<li><p><code>tar -cvf test.tar text1.txt text2.txt</code><br>将 text1.txt 和 text2.txt 两个文件压缩到 test.tar 文件中；</p>
+</li>
+<li><p><code>tar -zcvf test.tar.gz text1.txt text2.txt</code><br>将 text1.txt 和 text2.txt 压缩到 test.tar.gz 文件中，并使用gzip压缩算法；</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p><code>tar -xvf test.tar</code><br>解压 test.tar 文件，并解压到当前目录下 (如工作目录处于 &#x2F;home&#x2F;admin&#x2F;test 中, 解压 test.tar 内的文件会覆盖掉 test 目录下的同名所有文件)；</p>
+</li>
+<li><p><code>tar -zxvf test.tar.gz</code><br>解压 test.tar.gz 文件，并解压到 &#x2F;home&#x2F;admin&#x2F;compression 目录下，并使用gzip算法；</p>
+</li>
+<li><p><code>tar -xvf test.tar -C /compression</code><br>解压 test.tar 文件，并解压到 &#x2F;home&#x2F;admin&#x2F;test&#x2F;compression 目录下 (需先mkdir compression目录)；</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p><code>zip [-r] test.zip 参数1 ... 参数n</code><br>-r 如果选择的<strong>有文件夹</strong>需要带上-r参数；</p>
+</li>
+<li><p><code>zip -r test.zip text1.txt test.tar</code><br>将 text1.txt文件、test.tar文件夹 压缩到 test.zip 文件中；</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p><code>unzip [-d] 参数</code><br>-d 指定解压目录</p>
+</li>
+<li><p><code>unzip test.zip -d /compression</code><br>将test.zip 文件解压到当前目录下 (如解压 test.zip 内的文件与当前工作目录相同文件会有确认提示) (不用先创建compression目录)；</p>
+</li>
+</ul>
+<h2 id="MySql"><a href="#MySql" class="headerlink" title="MySql"></a>MySql</h2><p>需 root 权限；</p>
+<ul>
+<li><code>wget https://dev.mysql.com/get/mysql80-community-release-el7-11.noarch.rpm</code></li>
+<li><code>rpm -ivh mysql80-community-release-el7-11.noarch.rpm</code></li>
+<li><code>yum install mysql-community-server</code><br>安装完成</li>
+</ul>
+<hr>
+<ul>
+<li><code>systemctl start mysqld</code></li>
+<li><code>systemctl enable mysqld</code></li>
+<li><code>systemctl status mysqld</code><br>启动并设为开机自启</li>
+</ul>
+<hr>
+<ul>
+<li><p><code>grep &#39;temporary password&#39; /var/log/mysqld.log</code><br>通过日志查看初始密码</p>
+</li>
+<li><p><code>mysql -u root -p</code><br>登录 mysql，粘贴上面拿到的初始密码；</p>
+</li>
+<li><p><code>ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;Study333!&#39;;</code><br>在mysql内修改 mysql 登录密码 (需有大写字母、小写字母、数字、特殊字符、不能123连续字符)</p>
+</li>
+<li><p><code>exit</code></p>
+</li>
+<li><p><code>mysql -u root -p </code><br>使用新密码重新登录</p>
+</li>
+</ul>
+<hr>
+<p>默认MySql只允许本机连接访问，可以修改配置允许远程访问 (正式环境不推荐)</p>
+<ul>
+<li><code>grant all privileges on *.* to &#39;root&#39;@&#39;%&#39; identified by &#39;Study333!&#39;;</code></li>
+<li>or <code>UPDATE mysql.user SET Host=&#39;%&#39; WHERE User=&#39;root&#39;;</code><br>%代表允许所有ip访问；</li>
+<li><code>FLUSH PRIVILEGES;</code><br>刷新权限立即生效；</li>
+</ul>
+<hr>
+<ul>
+<li><code>netstat -antp | grep 3306</code></li>
+<li>or <code>nmap 127.0.0.1</code><br>mysql默认绑定了3306端口，可以通过端口检测查看mysql是否启动；</li>
+</ul>
+
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="article-nav">
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/blog/2026/01/12/class/"
+                                   title="class"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">class</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#IP"><span class="nav-text">IP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#concept"><span class="nav-text">concept</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shortcut"><span class="nav-text">shortcut</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sudo"><span class="nav-text">sudo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#common"><span class="nav-text">common</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#root"><span class="nav-text">root</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#find"><span class="nav-text">find</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tail"><span class="nav-text">tail</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#date"><span class="nav-text">date</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#grep"><span class="nav-text">grep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wc"><span class="nav-text">wc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#echo"><span class="nav-text">echo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vim"><span class="nav-text">vim</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yum"><span class="nav-text">yum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemctl"><span class="nav-text">systemctl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#network"><span class="nav-text">network</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#port"><span class="nav-text">port</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#process"><span class="nav-text">process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#evnironment"><span class="nav-text">evnironment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#download-upload"><span class="nav-text">download &amp; upload</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compression-decompression"><span class="nav-text">compression &amp; decompression</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySql"><span class="nav-text">MySql</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2026
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Peter Yu</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#IP"><span class="nav-text">IP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#concept"><span class="nav-text">concept</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shortcut"><span class="nav-text">shortcut</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sudo"><span class="nav-text">sudo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#common"><span class="nav-text">common</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#root"><span class="nav-text">root</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#find"><span class="nav-text">find</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tail"><span class="nav-text">tail</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#date"><span class="nav-text">date</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#grep"><span class="nav-text">grep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wc"><span class="nav-text">wc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#echo"><span class="nav-text">echo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vim"><span class="nav-text">vim</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yum"><span class="nav-text">yum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemctl"><span class="nav-text">systemctl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#network"><span class="nav-text">network</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#port"><span class="nav-text">port</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#process"><span class="nav-text">process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#evnironment"><span class="nav-text">evnironment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#download-upload"><span class="nav-text">download &amp; upload</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compression-decompression"><span class="nav-text">compression &amp; decompression</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySql"><span class="nav-text">MySql</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/header-shrink.js"></script>
+
+<script src="/blog/js/back2top.js"></script>
+
+<script src="/blog/js/dark-light-toggle.js"></script>
+
+<script src="/blog/js/main.js"></script>
+
+<script src="/blog/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+
+<!-- code-block -->
+
+    
+<script src="/blog/js/code-block.js"></script>
+
+
+
+<!-- lazyload -->
+
+    
+<script src="/blog/js/lazyload.js"></script>
+
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        
+<script src="/blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    
+<script src="/blog/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

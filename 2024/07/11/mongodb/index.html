@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Peter Yu">
+    
+    <title>
+        
+            Mongodb |
+        
+        Peter&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/blog/images/xiaoxin.jpg">
+    
+    
+<link rel="stylesheet" href="/blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"github.com","root":"/blog/","language":"zh-CN"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/xiaoxin.jpg","favicon":"/images/xiaoxin.jpg","avatar":"/images/xiaoxin.jpg","font_size":null,"font_family":"Microsoft YaHei","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":true,"background_img":"https://keep.xpoet.cn/images/bg.svg","description":"我与世界相识，我与世界相蚀","font_color":null,"hitokoto":false},"scroll":{"progress_bar":true,"percent":false}},"local_search":{"enable":false,"preload":true},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":false,"auto":false,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"version":"3.8.6"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/blog/images/xiaoxin.jpg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Peter&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/blog/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/blog/archives">归档</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        Mongodb
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/blog/images/xiaoxin.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">Peter Yu</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2024-07-11 09:00:47</span>
+                <span class="mobile">2024-07-11 09:00</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Thu Jul 11 2024 09:00:47 GMT+0800">2024-07-11 09:00:47</span>
+            </span>
+        
+
+        
+
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <h5 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h5><ul>
+<li>非关系型数据库 &amp; 关系型数据库<br>NoSql： Not Only SQL 指的是非关系型的数据库，是已 key-value 形式存储，和传统关系型数据库不一样，不一定遵循传统数据库的一些标准要求，比如说 SQL 标准、表结构等.<br>强调的是与关系数据库区别对待，最近这些年被提及更多的是强调协助解决大数据相关问题.</li>
+<li>MongoDb (非关系型数据库)<br>最像关系数据库的 NoSql 数据库；没有行、列的概念。用 JSON 来存储数据。<br>“集合” &#x3D; “表”，”文档” &#x3D; “行”</li>
+</ul>
+<hr>
+<h4 id="表与表之间的关系"><a href="#表与表之间的关系" class="headerlink" title="表与表之间的关系"></a>表与表之间的关系</h4><ul>
+<li>一对一关系：一个身份证对应一个驾驶证；</li>
+<li>一对多关系：一个班级对应多名学生；</li>
+<li>多对多关系：一个商品有多个关注用户；一个用户关注多个商品；</li>
+</ul>
+<hr>
+<blockquote>
+<p>cmd 打开命令行，输入 mongo 连接数据库;</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">show dbs;</span><br><span class="line">use itying;                         切换到 itying数据库(如没有就会创建);</span><br><span class="line">show collections;</span><br><span class="line">db.dropDatabase();                  删除数据库(先use切换到某个数据库);</span><br><span class="line">db.user.drop();                     删除user集合;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>插入数据</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">插入一条数据代表 该集合还没有集合的数据库就创建成功;</span><br><span class="line">db.user.insert( &#123;&quot;name&quot;:&quot;xiaoming&quot;&#125; );</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询数据</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.user.find();</span><br><span class="line">db.user.findOne();</span><br><span class="line">db.user.find(&#123;age:&#123;$gte:25&#125;&#125;).count();</span><br><span class="line">db.user.find(&#123;&#125;, &#123;age:1&#125;);                      /*查询只展示 age 这一列*/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>1 升序; -1 降序</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">db.user.find().sort(&#123;age:1&#125;);		            /*查询只展示 age 这一列*/</span><br><span class="line">db.user.find().limit(5); 	                    /*查询 前5条数据*/</span><br><span class="line">db.user.find.skip(10);		                    /* 查询 第10条以后的数据*/</span><br><span class="line">db.user.find.skip(5).limit(2);                  /*查询 第6,7条 的数据*/</span><br><span class="line"></span><br><span class="line">    /*查询 第3页，每页10条数据;	起始页 = 第3页 - 1 * 10条*/</span><br><span class="line">db.user.find.skip(20).limit(10);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.user.find( &#123;&quot;age&quot;:22&#125; );                       /*查询 age = 22的数据*/</span><br><span class="line">db.user.find( &#123;&quot;age&quot;:22, name:&quot;zhangsan&quot;&#125; );      /* 查询 age = 22 &amp; name = &quot;zhangsan&quot;的数据*/</span><br><span class="line">db.user.find( &#123; $or: [ &#123;age:22, &#123;age:12&#125;&#125; ]&#125; );   /*查询 age = 22 or age = 12的数据*/</span><br><span class="line"></span><br><span class="line">db.user.find( &#123;age:&#123; $gt:22&#125; &#125;);    		      /*查询 age &gt; 22的数据*/</span><br><span class="line">db.user.find( &#123;age:&#123; $gt:22&#125; &#125;,&#123;age:1&#125;)</span><br><span class="line">db.user.find( &#123;age:&#123; $gte:22&#125; &#125;);  		          /*查询 age &gt;= 22的数据*/</span><br><span class="line">db.user.find( &#123;age:&#123; $gte:20, $lte:25&#125; &#125;);        /*查询 age &gt;= 20 并且 age &lt;= 25*/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>模糊查询(搜索)</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">db.user.find( &#123;name: /zhang/&#125; );		 		/*查询 name中包含 &quot;zhang&quot; 的所有数据*/</span><br><span class="line">db.user.find( name: /^zhang/ );        		    /*查询 name中包含 &quot;zhang&quot; 开头的所有数据		*/</span><br><span class="line">db.user.find( name: /zhang$/ );                 /*查询 name中包含 &quot;zhang&quot; 结尾的所有数据*/</span><br><span class="line"></span><br><span class="line">db.user.find(&#123;&#125;,&#123;name:1,age:1&#125;);                /*查询指定列age; name、age数据*/</span><br><span class="line">db.user.find( &#123; age:&#123;$gt:25&#125;&#125;, &#123;name:1&#125;);       /*查询指定name、age数据，age&gt;25*/</span><br><span class="line">db.user.find().sort(&#123;age:1&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.user.update(&#123;name: &quot;zhangsan&quot;, age: 20&#125;, &#123;$set:&#123;male:&#x27;female&#x27;&#125;&#125;);</span><br><span class="line">/*  &#123; &quot;name&quot; : &quot;zhangsan&quot;, &quot;age&quot; : 20, &quot;male&quot; : &quot;female&quot;, &quot;uid&quot; : 110011 &#125;  */</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>没有$set 就会整条替换数据;</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.user.update(&#123;uid:110011&#125;, &#123;male:&#x27;female&#x27;&#125;);</span><br><span class="line">/*  &#123; &quot;male&quot; : &quot;female&quot; &#125; */</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>批量修改；添加{multiple:true}; 否则只是第一条数据被修改</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.user.update(&#123;&#125;, &#123;$set:&#123;male:&quot;female&quot;&#125;&#125;, &#123;multi: true&#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除数据;<br><code>注意：(&#123;&#125;); 空对象会把集合所有数据删除</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.user.remove(&#123;uid:110011&#125;);</span><br><span class="line">db.user.remove(&#123;age:&#123;$gt:30&#125;&#125;);</span><br><span class="line">db.user.remove(&#123;age:&#123;$gt:30&#125;&#125;,&#123;justOne:true&#125;)    /*只删除一条*/</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><p>索引是对数据库中一列 or 多列的值进行排序的一种结构，可以让查询数据库变得更快，但更新 or 增加操作变得慢一些<br>MongoDB 的索引几乎与传统的关系型数据库一样，这其中包括依稀额基本的查询优化。</p>
+<ul>
+<li>获取当前列表索引</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.user.getIndexes();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询具体的执行时间</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.collectionName.find().explain(&quot;executionStats&quot;);</span><br><span class="line">/*  executionStats.executionTimeMillis: 8  */</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置索引; 1 表示某个键的索引按照升序存储，-1 表示降序；</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.collectionName. createIndex(&#123;&quot;columnName&quot;: 1&#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除索引</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.collectionName.dropIndex(&#123;&quot;columnName&quot;: 1&#125;);</span><br></pre></td></tr></table></figure>
+
+<h6 id="复合索引"><a href="#复合索引" class="headerlink" title="复合索引"></a>复合索引</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.collectionName. createIndex(&#123;&quot;userName&quot;: 1, &quot;age&quot;: 1&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>该索引被创建后，基于 userName 和 age (查询的索引顺序无关系)的查询会用到该索引，or userName 的查询会用到该索引。只有 age 不行！<br>也就是说查询条件中必须包含索引的前 N 个索引列。<br><code>注意：随着集合的增长，如果没有对索引的键调用sort，MongoDB需要将所有数据提取到内存做排序。因此在做无索引排序时，如果数据量过大以致于无法在内存中进行排序，MongoDB会报错</code></p>
+<h6 id="唯一索引"><a href="#唯一索引" class="headerlink" title="唯一索引"></a>唯一索引</h6><p>给某个字段设置唯一索引，这个字段将不能重复; 重复插入相同的唯一索引的字段时会报错</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.collectionName. createIndex(&#123;userId: 1&#125;, &#123;unique: true&#125;);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="账户权限"><a href="#账户权限" class="headerlink" title="账户权限"></a>账户权限</h4><ul>
+<li>MongoDB 数据库角色<ul>
+<li>超级管理员账户: root (只 admin 数据库中可用)</li>
+<li>数据库管理角色: dbAdmin、dbOwner(常用)、userAdmin;</li>
+<li>数据库用户角色: read、readWrite;</li>
+<li>所有数据库权限: readAnyDatabase、readWriteAnyDatabase、userAdminAnyDatabase、dbAdminAnyDatabase;</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use sthCollection;</span><br><span class="line">show users;</span><br><span class="line">//  &quot;user&quot;: &quot;testAccount&quot;</span><br><span class="line">db.dropUser(&quot;testAccount&quot;)</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>创建超级管理员账户</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">use sthCollection;</span><br><span class="line"></span><br><span class="line">db.createUser(&#123;</span><br><span class="line">  	user: &quot;testAccount&quot;,</span><br><span class="line">  	pwd:  &quot;123456&quot;,</span><br><span class="line">  	roles:[ &#123;role:&quot;dbAdminAnyDatabase&quot;, db:&quot;admin&quot;&#125; ]</span><br><span class="line">&#125;);</span><br><span class="line">// Successfully added user;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>C:&#x2F;Program Files&#x2F;MongoDB&#x2F;Server&#x2F;4.4&#x2F;bin&#x2F;mongod.cfg<br>security:<br>authorization: enabled(启动权限认证)</p>
+</li>
+<li><p>重启服务器</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://upload-images.jianshu.io/upload_images/20409039-165d41ec10a4a1b4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+                     
+                ></th>
+<th><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://upload-images.jianshu.io/upload_images/20409039-0df70e81ab69a0d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+                     
+                ></th>
+</tr>
+</thead>
+</table>
+<ol start="4">
+<li>用账户连接数据库</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongo 数据库名( or 远程方式192.168.1.200:27017) -u 用户名 -p 密码</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>在服务器中连接数据库</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const url = &quot;mongodb://testAccount:123456@localhost:27017&quot;;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="aggregate-聚合管道"><a href="#aggregate-聚合管道" class="headerlink" title="aggregate 聚合管道"></a>aggregate 聚合管道</h4><p>使用聚合管道可以对集合中的文档进行变换和组合。<br>应用场景：<strong>表关联查询</strong>、数据统计。</p>
+<ul>
+<li>$project: 修改文档的结构，用来增加、删除、重命名、显示某些字段；</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.order.find(&#123;&#125;, &#123; order_id:1, all_price:1 &#125;);</span><br><span class="line"></span><br><span class="line">db.order.aggregate([</span><br><span class="line">  &#123;$project: &#123;order_id:1, all_price: 1&#125;&#125;</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">  &#123; &quot;order_id&quot; : &quot;1&quot;, &quot;all_price&quot; : 100 &#125;</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$match：过滤文档</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.order.find(</span><br><span class="line">  &#123;all_price: &#123;$lte:30&#125;&#125;,</span><br><span class="line">  &#123;order_id: 1, all_price: 1&#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">db.order.aggregate([</span><br><span class="line">  &#123;$project: &#123;order_id:1, all_price:1&#125;&#125;,</span><br><span class="line">  &#123;$match: &#123;all_price: &#123;$lte: 30&#125;&#125;&#125;</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$group：对集合中的文档进行分组，可用于统计结果</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 以order_id进行分组，每组的num进行相加 放入到total中;</span><br><span class="line"></span><br><span class="line">db.order_item.aggregate([</span><br><span class="line">  &#123;</span><br><span class="line">     $group:  &#123;</span><br><span class="line">       _id: &quot;$order_id&quot;,</span><br><span class="line">       total: &#123;$sum:  &quot;$num&quot;&#125;</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$sort：将集合中的文档进行排序</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">db.order_item.aggregate([</span><br><span class="line">  &#123;</span><br><span class="line">    $project: &#123;price: 1&#125;               // 展示price列</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    $match: &#123; price: &#123;$gte: 10&#125; &#125;     // 条件是price大于等于10</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    $sort: &#123;price: -1&#125;                //  price降序排列</span><br><span class="line">  &#125;</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>limit + skip</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">db.order_item.aggregate([</span><br><span class="line">  &#123;</span><br><span class="line">    $project: &#123;price: 1&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    $match: &#123;price: &#123;$gte: 10&#125; &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    $sort: &#123;price: -1&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    $limit: 10               // 每页10条</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    $skip: 20,               // 从第3页开始</span><br><span class="line">  &#125;</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>$lookup 表关联查询</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">db.order.aggregate([</span><br><span class="line">  &#123;</span><br><span class="line">    $lookup:&#123;</span><br><span class="line">      from: &quot;order_item&quot;,        // 需要关联的表</span><br><span class="line">      localField: &quot;id&quot;,          // 关联字段</span><br><span class="line">      foreignField: &quot;pid&quot;,       // 关联表的字段</span><br><span class="line">      as:  &quot;items&quot;               // 关联后的数据放在items字段中</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    $match: &#123;price: &#123;$gte: 10&#125;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    $sort: &#123;price: -1&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h5 id="Nodejs-项目中连接-MongoDB"><a href="#Nodejs-项目中连接-MongoDB" class="headerlink" title="Nodejs 项目中连接 MongoDB"></a>Nodejs 项目中连接 MongoDB</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install mongodb --save</span><br></pre></td></tr></table></figure>
+
+<p>github 详情: <a class="link"   target="_blank" rel="noopener" href="https://mongodb.github.io/node-mongodb-native/3.5/quick-start/quick-start/" >https://mongodb.github.io/node-mongodb-native/3.5/quick-start/quick-start/<i class="fas fa-external-link-alt"></i></a></p>
+
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/blog/2024/07/11/vue/"
+                                   title="Vue"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Vue</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/blog/2024/07/11/layout/"
+                                   title="Layout"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Layout</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-text">概念</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E4%B8%8E%E8%A1%A8%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">表与表之间的关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95"><span class="nav-text">索引</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%A4%8D%E5%90%88%E7%B4%A2%E5%BC%95"><span class="nav-text">复合索引</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95"><span class="nav-text">唯一索引</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%A6%E6%88%B7%E6%9D%83%E9%99%90"><span class="nav-text">账户权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#aggregate-%E8%81%9A%E5%90%88%E7%AE%A1%E9%81%93"><span class="nav-text">aggregate 聚合管道</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Nodejs-%E9%A1%B9%E7%9B%AE%E4%B8%AD%E8%BF%9E%E6%8E%A5-MongoDB"><span class="nav-text">Nodejs 项目中连接 MongoDB</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2026
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Peter Yu</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-text">概念</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E4%B8%8E%E8%A1%A8%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">表与表之间的关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95"><span class="nav-text">索引</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%A4%8D%E5%90%88%E7%B4%A2%E5%BC%95"><span class="nav-text">复合索引</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95"><span class="nav-text">唯一索引</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%A6%E6%88%B7%E6%9D%83%E9%99%90"><span class="nav-text">账户权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#aggregate-%E8%81%9A%E5%90%88%E7%AE%A1%E9%81%93"><span class="nav-text">aggregate 聚合管道</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Nodejs-%E9%A1%B9%E7%9B%AE%E4%B8%AD%E8%BF%9E%E6%8E%A5-MongoDB"><span class="nav-text">Nodejs 项目中连接 MongoDB</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/header-shrink.js"></script>
+
+<script src="/blog/js/back2top.js"></script>
+
+<script src="/blog/js/dark-light-toggle.js"></script>
+
+<script src="/blog/js/main.js"></script>
+
+<script src="/blog/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+
+<!-- code-block -->
+
+    
+<script src="/blog/js/code-block.js"></script>
+
+
+
+<!-- lazyload -->
+
+    
+<script src="/blog/js/lazyload.js"></script>
+
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        
+<script src="/blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    
+<script src="/blog/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
