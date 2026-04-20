@@ -175,12 +175,10 @@ const jerry = new DIStudent('Jerry', new Iphone());
 jerry.play(); // Jerry is playing ios game
 ```
 
-## 初始化
+## command
 
-- 创建项目脚手架： npm i @nestjs/cli -g
-- 创建项目：nest new demo
-
-## 常用命令
+`npm i @nestjs/cli -g` 创建项目脚手架
+`nest new nest-project` 创建 nest 服务项目
 
 nest g --help 查看所有命令
 nest g mo/co/s (-d 查看会创建哪些文件) (--no-spec 不创建测试文件)
@@ -2399,13 +2397,103 @@ export class transferMoneyDto {
 }
 ```
 
-## JWT
+## Prisma
+
+Prisma 是一个 Node.js / TypeScript 的 ORM（对象关系映射）工具，用于简化数据库操作
+
+### command
+
+| 命令               | 用途                                                                                                |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| prisma init        | 初始化项目 - 创建一个新的本地 Prisma Postgres 开发项目，生成 schema.prisma 等基础文件               |
+| prisma dev         | 启动开发服务器 - 启动一个本地的 Prisma Postgres 服务器用于开发                                      |
+| prisma generate    | 生成 Prisma Client - 根据 schema 生成类型安全的数据库客户端代码，每次修改 schema 后都需要运行       |
+| prisma studio      | 可视化数据库 - 打开一个 Web 界面，让你可以浏览和编辑数据库中的数据                                  |
+| prisma migrate dev | 开发环境迁移 - 根据 schema 变更创建迁移文件，应用到数据库，并重新生成 Prisma Client（开发时最常用） |
+| prisma db pull     | 拉取数据库结构 - 从现有数据库反向生成/更新 schema.prisma（适用于已有数据库的项目）                  |
+| prisma db push     | 推送 schema 到数据库 - 直接将 schema 变更同步到数据库，不创建迁移文件（适合原型开发阶段）           |
+| prisma validate    | 验证 schema - 检查 schema.prisma 文件的语法和配置是否正确                                           |
+| prisma format      | 格式化 schema - 自动格式化 schema.prisma 文件，使其更易读                                           |
+| prisma version     | 显示版本 - 查看当前安装的 Prisma 版本信息                                                           |
+| prisma debug       | 调试信息 - 显示 Prisma 的调试信息，排查问题时有用                                                   |
+
+### init
+
+1. 在 nest 项目中安装 prisma 依赖包；
+   `npm i @prisma/client prisma --save`
+   `npm i dotenv --save-dev`
+
+2. 执行命令，初始化项目 (只需初始化一次)，生成 .env文件(有连接数据库信息)、prisma.config.ts 文件、Prisma/schema.prisma 文件；
+   `npx prisma init`
+
+3. 定义表、字段
+
+```ts schema.prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql" // 数据库类型
+}
+
+// 定义User表
+model User {
+  // 字段   类型      @id设置为主键 @default(cuid())设置cuid类型的默认id；
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now()) // 创建时自动生成时间戳
+  updatedAt DateTime  @updatedAt // 修改时自动更新时间戳
+  articles  Article[] // 一对多关系
+
+  /**
+   * @@map 表的别名
+   * @@index([field1, field2]) 增加索引，提升查询速度
+   * @unique 唯一值
+   * @igmore 忽略字段
+   * @map 字段别名
+   * @relation 关联表
+   */
+}
+
+// 定义文章表
+model Article {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 定义外键字段userId 关联用户表的id
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /**
+   * @relation 关联 User 表
+   * 外键字段 fields 设为当前定义的 userId
+   * 与 Article 表的id关键
+   * onDelete: Cascade 级联删除
+   * onUpdate Cascade 级联更新 (一般是主表id值改了后与关联表id进行升级)
+   */
+}
+```
+
+4. 执行命令，根据 shema 生成数据库表 (每次修改 shema 后都需要执行此命令)
+   `npx prisma migrate dev --name init`
+   生成目录及文件 Prsma > migrations目录>2021-05-05-09-05-05_init.sql,
+   `npx prisma generate`
+   根据 sql文件 生成数据库 User、Article 表
+
+## Others
+
+### JWT
 
 jwtService.sign 生成 token & 自定义 AuthGuard validate 验证 token
 `npm install passport passport-jwt @nestjs/jwt @nestjs/passport --S`
 `npm install @types/passport-jwt --D`
 
-## Encryption
+### Encryption
 
 argon2.hash 加密 与 argon2.verify 验证密码
 ``npm install argon2`
