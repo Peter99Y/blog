@@ -181,7 +181,7 @@ jerry.play(); // Jerry is playing ios game
 `nest new nest-project` 创建 nest 服务项目
 
 nest g --help 查看所有命令
-nest g mo/co/s (-d 查看会创建哪些文件) (--no-spec 不创建测试文件)
+nest g mo/co/s (-d 查看会创建哪些文件) (\-\-no-spec 不创建测试文件)
 nest g controller [name] 创建控制器
 nest g service [name] 创建服务
 nest g module [name] 创建模块
@@ -1063,7 +1063,7 @@ import {
 } from "@nestjs/common";
 import { Request, Response } from "express";
 
-@Catch()
+@Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   constructor(private readonly logger: Logger) {}
 
@@ -1509,7 +1509,7 @@ export class CreateUserDto {
 
 ## config
 
-全局配置
+需全局配置，就能读取环境变量；
 
 `npm i @nestjs/config -S`
 
@@ -1572,15 +1572,12 @@ import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
 import { ConfigModule } from "@nestjs/config";
 
-const envFilePath = `.env.${process.env.NODE_ENV || "development"}`;
-
 @Module({
   imports: [
     UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      // envFilePath: [".env", ".env.development", ".env.production"],
-      envFilePath,
+      envFilePath: [`.env.${process.env.NODE_ENV}`, ".env"],
     }),
   ],
   controllers: [AppController],
@@ -2373,27 +2370,70 @@ export class transferMoneyDto {
 
 #### Typeorm Cli
 
-**数据库升级**、**系统版本升级**、**新增/删除字段**、**修改字段类型**都需要使用 Typeorm Cli 的 migration 命令;
-人为的手动导出再导入数据库，或对数据库进行一些操作可能会遗漏、报错等，在生产环境中使用 Cli 工具大大的提升效率和保证安全；
+> 定义数据库结构的变化（数据升级、系统版本升级、新增/删除表、添加或修改列字段、修改列字段类型）
+> 维护一个有序的数据库版本，方便追踪数据库版本，并回滚；
+> 人为的手动导出再导入数据库，或对数据库进行一些操作可能会遗漏、报错等，在生产环境中使用 Cli 工具大大的提升效率和保证安全；
+> synchronize 正式环境不允许使用 synchronize，此时需要 migration 每个版本精细化操作 (开发环境可以开启，就能实时将对typeorm修改更新到数据库)；
 
-1. package.json中添加命令
+- 在script 添加命令 或使用 npx typeorm 命令
 
 ```json package.json中添加命令
 "script" {
     "typeorm": "typeorm-ts-node-commonjs -d ormconfig.ts",
 
-    // 生成新的版本；
-    // "migration:generate": "f() { npm run typeorm migration:generate -p \"./src/migrations/$@\"; }; f",
-    "migration:generate": "npm run typeorm migration:generate",
-
-    // 创建migration文件
+    // 生成新的 migration 版本文件
     "migration:create": "typeorm-ts-node-commonjs migration:create",
 
-    // 将migration文件执行到数据库中；
+    // 运行 migration 文件下的所有文件；
     "migration:run": "npm run typeorm migration:run",
 
-    //把当前执行的数据库往前回一个版本；
+    // 回滚版本；
     "migration:revert": "npm run typeorm migration:revert",
+
+    // 生成差异版本 (新增/修改表结构 生成新的差异版本)；
+    "migration:generate": "npm run typeorm -- migration:generate src/migrations/%npm_config_name%",
+}
+```
+
+- `npm run migration:create src/migrations/init`
+  生成初始的迁移目录及文件 migrations/1774854099173-init.ts
+
+- `npm run migration:generate --name=addLevelColumn`
+  生成迁移文件 newCategory，里面有生成好的 up 与 down 语句的方法；
+
+- `npm run migration:run`
+  运行一下，执行migration下所有迁移文件，将数据库结构更新到最新版本；
+
+- `npm run migration:revert`
+  回滚迁移文件，将数据库结构回滚到上一个版本；
+
+```ts 1776844760881-init.ts
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class Init1776839102541 implements MigrationInterface {
+  // 执行迁移的代码
+  public async up(queryRunner: QueryRunner): Promise<void> {}
+
+  // 执行回滚的代码
+  public async down(queryRunner: QueryRunner): Promise<void> {}
+}
+```
+
+```ts 1776845959238-addLevelColumn.ts
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class NewCategory1776845959238 implements MigrationInterface {
+  name = "NewCategory1776845959238";
+
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE \`category\` ADD \`level\` int NOT NULL`,
+    );
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`ALTER TABLE \`category\` DROP COLUMN \`level\``);
+  }
 }
 ```
 
