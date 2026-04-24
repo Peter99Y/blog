@@ -987,9 +987,8 @@ bootstrap();
 
 #### 案例 - 过滤响应字段
 
-ClassSerializerInterceptor
-与
-Entity 中 @Exclude/@Expose 响应时需过滤/暴露字段；
+使用内置的 ClassSerializerInterceptor 与 @Exclude/@Expose 配合使用，过滤/暴露响应时的字段；
+ps: 另一方案是通过自定义拦截器过滤过滤字段；
 
 ```ts User.entity.ts
 export class User {
@@ -1700,10 +1699,24 @@ export class AppModule {}
 
 实体是一个映射到数据库表的类
 
-> @IsNotEmpty() 修饰的字段必填，没有用的都允许给数据库写入NUll;
-> @Column({select: false}) 数据库层级，service中查出来的数据对象都没有这个字段;
-> @Exclude() **响应对象**过滤字段 (需配合 ClassSerializerInterceptor 拦截器使用);
-> @Expose() **响应对象**返回字段 (需配合 ClassSerializerInterceptor 拦截器使用);
+##### 属性
+
+- entity中定义的属性，默认前端就是必传参数，否则会报500 (非必传设置 nullable:true)，dto 验证是报 400 (非必传设置IsOptional)；
+- 没添加任意有关列的修饰符 (如 Column, Exclude 等)，数据库没有这个字段；
+
+##### @Column()
+
+- @Column({select: false}) 数据库层级隐藏字段 (service 层都查出来的数据都没有这个字段);
+
+##### @Exclude()
+
+- @Exclude() **响应对象**过滤字段 (需配合 ClassSerializerInterceptor 拦截器使用；默认所有字段都是暴露状态);
+
+##### @JoinColumn
+
+- 哪张表是关系的所有者就这一侧设置外键 @JoinColumn，如 user与profile 一对一关系，就在user设置；如 order 与 user 多对一关系，就在order设置 @JoinColumn;
+- 定义外键字段，默认外键字段名为 '属性名\_id', 只需在一侧表定义即可，另一侧无需定义，默认就是主键;
+- 在 @OneToOne 一对一的关系中，必须有 @JoinColumn，在@ManyToOne 多对一关系可省略 @JoinColumn；
 
 ```ts user.entity.ts
 import {
@@ -1712,6 +1725,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  JoinColumn,
   ManyToMany,
   JoinTable,
   BeforeInsert,
@@ -1752,9 +1766,6 @@ export class User {
 
   @Column({ type: "enum", enum: ["male", "female"], default: "male" })
   gender: string;
-
-  @Column({ type: "varchar", length: 255, nullable: true })
-  salary: number;
 
   // user表与profile表是一对一关系，cascade 级联操作允许两种表双向的插入、更新、删除操作；
   // 如删除某条user数据，会同时删除该条profile数据，反之亦然；
@@ -1814,32 +1825,20 @@ export class Profile {
   @Column({ type: "varchar" })
   username: string;
 
-  @Column()
-  age: number;
-
   @Column({ type: "enum", enum: ["male", "female"], default: "male" })
   gender: string;
 
   @Column({ type: "varchar", length: 255, nullable: true })
   nickname: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
-  avatar: string;
-
-  @Column({ type: "varchar", length: 255, nullable: true })
-  address: string;
-
-  @Column({ type: "varchar", length: 255, nullable: true })
-  email: string;
-
-  @Column({ type: "varchar", length: 255, nullable: true })
-  salary: number;
-
   // profile表与user表是一对一的关系，1参是回调函数来与谁创建关联关系；
   // profile不能设置 cascade 会导致死循环，只需user单边设置即可；
   @OneToOne(() => User, { onDelete: "CASCADE" })
   // 创建关联字段：默认是id + 定义的字段user = userId，也可自定义；
-  @JoinColumn()
+  @JoinColumn({
+    // name: "fk_user_id", // 创建外键列，可自定义外键列名
+    // referencedColumnName: "id", // 创建外键列，可自定义外键列名（默认 'id'）
+  })
   // user的值就是User实体定义的数据；
   user: User;
 }
@@ -2531,7 +2530,7 @@ model Article {
 
 jwtService.sign 生成 token & 自定义 AuthGuard validate 验证 token
 `npm install passport passport-jwt @nestjs/jwt @nestjs/passport --S`
-`npm install @types/passport-jwt --D`
+`npm install @types/passport-jwt -D`
 
 ### Encryption
 
