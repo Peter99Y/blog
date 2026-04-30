@@ -1995,6 +1995,7 @@ await categoryRepository.save(foundCategory);
 - cascade: [\'remove\']
 
 注意：
+情况0：有 cascade + 有 relations，子类有 onDelete: 'RESTRICT'，（父子记录都不会删除）；
 情况1：有 cascade + 有 relations，（父+子都删除）；
 情况2：有 cascade + 无 relations，只删除父记录，子记录不会删除（可能因外键约束失败）；
 情况3：无 cascade + 有/无 relations，只删除父记录，子记录保留；
@@ -2038,7 +2039,7 @@ await categoryRepository.remove(category);
   categoryRepository.delete(1); 删除分类1，执行删除时会报错，因为该分类有关联的文章，无法删除；
   正确的做法是先删除或转移文章，再删除分类；
 
-```ts
+```ts onDelete: 'RESTRICT'
 // 尝试删除有关联文章的分类
 try {
   await categoryRepository.delete(1);
