@@ -1704,15 +1704,15 @@ export class AppModule {}
 - entity中定义的属性，默认前端就是必传参数，否则会报500 (非必传设置 nullable:true)，dto 验证是报 400 (非必传设置IsOptional)；
 - 没添加任意有关列的修饰符 (如 Column, Exclude 等)，数据库没有这个字段；
 
-##### @Column()
+##### Column
 
 - @Column({select: false}) 数据库层级隐藏字段 (service 层都查出来的数据都没有这个字段);
 
-##### @Exclude()
+##### Exclude
 
 - @Exclude() **响应对象**过滤字段 (需配合 ClassSerializerInterceptor 拦截器使用；默认所有字段都是暴露状态);
 
-##### @JoinColumn
+##### JoinColumn
 
 - 哪张表是关系的所有者就这一侧设置外键 @JoinColumn，如 user与profile 一对一关系，就在user设置；如 order 与 user 多对一关系，就在order设置 @JoinColumn;
 - 定义外键字段，默认外键字段名为 '属性名\_id', 只需在一侧表定义即可，另一侧无需定义，默认就是主键;
@@ -1774,7 +1774,10 @@ export class User {
 
   // user表与phone表是一对多关系，1参是回调函数来与谁创建关联关系，2参通过哪个具体字段进行关联查询；
   // 如删除某条user数据，会同时删除关于该user的所有phones数据，反之亦然；
-  @OneToMany(() => Phone, (phone) => phone.user, { cascade: true })
+  @OneToMany(() => Phone, (phone) => phone.user, {
+    cascade: true,
+    eager: true, // 查询主实体时，无需再设置relations就会自动关联查询；
+  })
   phones: Phone[];
 
   // user表与role表是多对多关系；
@@ -1894,6 +1897,159 @@ export class Role {
   @ManyToMany(() => User, (user) => user.roles)
   users: User[];
 }
+```
+
+##### cascade
+
+- cascade 是在 '一' 侧，onDelete是在 '多' 侧；
+
+- cascade: [\'insert\']
+
+在父类中直接保存所有新建父类和子类对象；
+
+```ts
+const category = new Category();
+category.name = "技术文章";
+
+const article1 = new Article();
+article1.title = "NestJS 入门教程";
+
+const article2 = new Article();
+article2.title = "TypeORM 高级技巧";
+
+category.articles = [article1, article2];
+
+// ✅ 只保存分类，2篇文章也会自动保存
+await categoryRepository.save(category);
+// 1. 先保存 category（生成 id）
+// 2. 自动为每个 article 设置 category.id
+// 3. 自动保存所有 article
+// 结果：1 条 SQL INSERT 分类 + 2 条 SQL INSERT 文章
+
+
+-----------------------------------------------------------
+
+
+// 若没有设置 cascade: ['insert']，则需要手动保存每个实体，需要 3 次 save 操作
+const category = new Category();
+category.name = '技术文章';
+await categoryRepository.save(category);  // 先保存分类
+
+const article1 = new Article();
+article1.title = 'NestJS 入门教程';
+article1.category = category;
+await articleRepository.save(article1);  // 再保存文章
+
+const article2 = new Article();
+article2.title = 'TypeORM 高级技巧';
+article2.category = category;
+await articleRepository.save(article2);  // 再保存另一篇文章
+```
+
+- cascade: [\'update\']
+  在父类中，对关联的子类对象进行更新时，也会更新父类对象。
+
+```ts
+// 查询已存在的分类和文章
+const category = await categoryRepository.findOne({
+  where: { id: 1 },
+  relations: ["articles"],
+});
+
+// 修改分类名称
+category.name = "前端技术";
+
+// 修改文章标题
+category.articles[0].title = "React 18 新特性";
+category.articles[1].title = "Vue 3 组合式 API";
+
+// ✅ 一次 save 自动更新所有
+await categoryRepository.save(category);
+// 自动执行：
+// UPDATE categories SET name = '前端技术' WHERE id = 1
+// UPDATE articles SET title = 'React 18 新特性' WHERE id = ?
+// UPDATE articles SET title = 'Vue 3 组合式 API' WHERE id = ?
+
+
+------------------------------------------------------
+
+
+// 若没有设置 cascade:['update']
+const foundCategory = await categoryRepository.findOne({
+  where: { id: category.id },
+  relations: ['articles']
+});
+
+// 修改分类名称和文章标题
+foundCategory.name = '前端技术';
+foundCategory.articles[0].title = 'React 18 新特性';  // 修改标题
+foundCategory.articles[1].title = 'Vue 3 组合式 API'; // 修改标题
+
+// 保存父实体
+await categoryRepository.save(foundCategory);
+
+// ✅ category.name 更新成功（'前端技术'）
+// ❌ article.title 没有更新（仍然是 'NestJS 教程' 和 'TypeORM 指南'）
+```
+
+- cascade: [\'remove\']
+
+注意：
+情况1：有 cascade + 有 relations，（父+子都删除）；
+情况2：有 cascade + 无 relations，只删除父记录，子记录不会删除（可能因外键约束失败）；
+情况3：无 cascade + 有/无 relations，只删除父记录，子记录保留；
+
+```ts
+// 查询分类及其文章
+const category = await categoryRepository.findOne({
+  where: { id: 1 },
+  relations: ["articles"],
+});
+
+// ✅ 删除分类时，自动删除所有关联文章
+await categoryRepository.remove(category);
+// 自动执行：
+// DELETE FROM articles WHERE categoryId = 1
+// DELETE FROM categories WHERE id = 1
+
+
+-------------------------------------------------------
+
+
+// 另外注意一个点 relations： 如果只删除分类（不加载 articles）
+const category = await categoryRepository.findOne({
+  where: { id: 1 }
+  // 注意：没有加载 relations: ['articles']
+});
+
+// ❌ 不会级联删除文章！
+await categoryRepository.remove(category);
+// 只执行：DELETE FROM categories WHERE id = 1
+// 但会因为外键约束失败（如果有文章关联）
+```
+
+##### onDelete
+
+- onDelete: 'CASCADE'
+  categoryRepository.delete(1)；删除分类1，所有 categoryId = 1 的文章被自动删除；
+- onDelete: 'SET NULL'
+  categoryRepository.delete(1); 删除分类1，所有文章的 categoryId 变为 NULL，文章本身仍然存在；
+- onDelete: 'RESTRICT'
+  categoryRepository.delete(1); 删除分类1，执行删除时会报错，因为该分类有关联的文章，无法删除；
+  正确的做法是先删除或转移文章，再删除分类；
+
+```ts
+// 尝试删除有关联文章的分类
+try {
+  await categoryRepository.delete(1);
+} catch (error) {
+  // ❌ 抛出错误：有文章引用此分类，无法删除
+  console.error("无法删除，该分类下还有文章");
+}
+
+// 正确的做法：先删除或转移文章
+await articleRepository.delete({ categoryId: 1 });
+await categoryRepository.delete(1); // ✅ 现在可以删除
 ```
 
 #### service
