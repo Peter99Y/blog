@@ -1901,7 +1901,8 @@ export class Role {
 
 ##### cascade
 
-- cascade 是在 '一' 侧，onDelete是在 '多' 侧；
+> cascade 是在 '一' 侧，onDelete是在 '多' 侧；
+> 在多对多的关系中，不使用 cascade，可使用 onDelete；
 
 - cascade: [\'insert\']
 
@@ -2031,6 +2032,7 @@ await categoryRepository.remove(category);
 
 ##### onDelete
 
+
 - onDelete: 'CASCADE'
   categoryRepository.delete(1)；删除分类1，所有 categoryId = 1 的文章被自动删除；
 - onDelete: 'SET NULL'
@@ -2051,6 +2053,33 @@ try {
 // 正确的做法：先删除或转移文章
 await articleRepository.delete({ categoryId: 1 });
 await categoryRepository.delete(1); // ✅ 现在可以删除
+```
+
+> 在多对多的关系中，不使用 cascade，可使用 onDelete；
+
+```ts
+// WordSheet.entity.ts
+
+// 多对多：一个单词表包含多个单词
+@ManyToMany(() => Word, (word) => word.wordSheets, {
+  onDelete: 'CASCADE', // 删除单词表时，自动删除中间表关联
+})
+@JoinTable({
+  name: 'md-sheets_words', // 中间表名
+  joinColumn: { name: 'sheet_id', referencedColumnName: 'id' },
+  inverseJoinColumn: { name: 'word_id', referencedColumnName: 'id' },
+})
+words: Word[];
+
+---------------------------------------------------------------
+
+// Word.entity.ts
+
+// 关联词表, 多对多：一个单词属于多个单词表
+@ManyToMany(() => WordSheet, (wordSheet) => wordSheet.words, {
+  onDelete: 'CASCADE', // 删除 Word 时，自动删除中间表关联
+})
+wordSheets: WordSheet[];
 ```
 
 #### service
