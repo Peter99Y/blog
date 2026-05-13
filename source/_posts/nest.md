@@ -2053,6 +2053,106 @@ await articleRepository.delete({ categoryId: 1 });
 await categoryRepository.delete(1); // ✅ 现在可以删除
 ```
 
+##### eager
+
+双边 eager 可能导致循环嵌套的关系；
+
+```ts
+// ❌ 不适合：用户有大量文章，在service查询时手动加载关联查询
+@Entity("users")
+export class User {
+  @OneToMany(() => Article, (article) => article.author, {
+    eager: true, // 如果用户有1000篇文章，每次查询用户都会加载1000条
+  })
+  articles: Article[];
+}
+
+---------------------------------------------------------
+
+// ✅ 适合：用户和用户配置（一对一，数据量小）
+@Entity('users')
+export class User {
+  @OneToOne(() => UserProfile, profile => profile.user, {
+    eager: true  // 总是需要显示用户配置
+  })
+  profile: UserProfile;
+}
+
+// ❌ 不适合：用户的高级配置（很少用到）
+@Entity('users')
+export class User {
+  @OneToOne(() => AdvancedSettings, settings => settings.user, {
+    eager: true  // 大部分情况下不需要，浪费查询
+  })
+  advancedSettings: AdvancedSettings;
+}
+
+---------------------------------------------------------
+
+// ✅ 适合：单向 eager，避免循环
+@Entity("users")
+export class User {
+  @OneToMany(() => Post, (post) => post.author, {
+    eager: true, // 用户总是需要显示其文章列表
+  })
+  posts: Post[];
+}
+
+// ❌ 循环加载，可能导致性能问题或堆栈溢出
+@Entity('posts')
+export class Post {
+  @ManyToOne(() => User, user => user.posts, {
+    eager: true
+  })
+  author: User;
+}
+
+---------------------------------------------------------
+
+// ✅ 适合：文章和分类（多对一，分类数据少且总是需要）
+@Entity('articles')
+export class Article {
+  @ManyToOne(() => Category, category => category.articles, {
+    eager: true  // 文章列表总是需要显示分类名
+  })
+  category: Category;
+}
+
+---------------------------------------------------------
+
+// ✅ 适合：一个订单总是需要显示商品信息
+@Entity("orders")
+export class Order {
+  @ManyToOne(() => Product, (product) => product.orders, {
+    eager: true, // 99% 的查询都需要商品信息
+  })
+  product: Product;
+}
+```
+
+##### JoinTable
+
+只需要在关系的一侧设置，通常设置在需要被查询更多的那一侧;
+
+```ts
+// 哪个实体是关系的"主体"？
+// 例如：文章和标签
+
+// ✅ 推荐：文章拥有标签
+@Entity('articles')
+export class Article {
+  @ManyToMany(() => Tag, tag => tag.articles)
+  @JoinTable()  // 文章是关系的主体
+  tags: Tag[];
+}
+
+@Entity('tags')
+export class Tag {
+  @ManyToMany(() => Article, article => article.tags)
+  articles: Article[];
+}
+```
+
 #### service
 
 原生查询、联合查询、聚合查询
