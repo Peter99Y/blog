@@ -1901,6 +1901,10 @@ export class Role {
 
 ##### cascade
 
+- cascade 控制应用层(service上)的行为，onDelete 在中间表的外键上生成数据库约束；
+
+- cascade 是允许在一个 save方法，进行保存 新增/修改/删除有**关联**的数据操作，不是说允许在一个service 某个方法中，调用不同的实体各自保存方法；
+
 - cascade 是在 '一' 侧，onDelete是在 '多' 侧；
 
 - cascade: [\'insert\']
@@ -2031,6 +2035,8 @@ await categoryRepository.remove(category);
 
 ##### onDelete
 
+- cascade 控制应用层(service上的)的行为，onDelete 在中间表的外键上生成数据库约束；
+
 - onDelete: 'CASCADE'
   categoryRepository.delete(1)；删除分类1，所有 categoryId = 1 的文章被自动删除；
 - onDelete: 'SET NULL'
@@ -2132,13 +2138,10 @@ export class Order {
 
 ##### JoinTable
 
-只需要在关系的一侧设置，通常设置在需要被查询更多的那一侧;
+通常在关系 '较少' 的那一侧设置，去查询多对多关系的数据;
 
 ```ts
-// 哪个实体是关系的"主体"？
-// 例如：文章和标签
-
-// ✅ 推荐：文章拥有标签
+// ✅ 一篇文章拥有更多标签
 @Entity('articles')
 export class Article {
   @ManyToMany(() => Tag, tag => tag.articles)
@@ -2150,6 +2153,43 @@ export class Article {
 export class Tag {
   @ManyToMany(() => Article, article => article.tags)
   articles: Article[];
+}
+
+
+---------------------------------------------------------
+
+// ✅ 一个用户有更个角色
+@Entity('users')
+export class User {
+  @ManyToMany(() => Role, role => role.users)
+  @JoinTable()  // 用户端更常查询
+  roles: Role[];
+}
+
+@Entity('roles')
+export class Role {
+  @ManyToMany(() => User, user => user.roles)
+  users: User[];
+}
+
+---------------------------------------------------------
+
+// ✅ 一个学生选修更多课程
+@Entity('students')
+export class Student {
+  @ManyToMany(() => Course, course => course.students)
+  @JoinTable({
+    name: 'student_courses',
+    joinColumn: { name: 'student_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'course_id', referencedColumnName: 'id' }
+  })
+  courses: Course[];
+}
+
+@Entity('courses')
+export class Course {
+  @ManyToMany(() => Student, student => student.courses)
+  students: Student[];
 }
 ```
 
