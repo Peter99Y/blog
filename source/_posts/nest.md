@@ -1907,9 +1907,10 @@ export class Role {
 
 - cascade 是在 '一' 侧，onDelete是在 '多' 侧；
 
-- cascade: [\'insert\']
+- 在多对多的关系中，不使用 cascade，可使用 onDelete 自动删除中间表关联数据；
 
-在父类中直接保存所有新建父类和子类对象；
+> cascade: [\'insert\']
+> 在父类中直接保存所有新建父类和子类对象；
 
 ```ts
 const category = new Category();
@@ -2138,7 +2139,7 @@ export class Order {
 
 ##### JoinTable
 
-通常在关系 '较少' 的那一侧设置，去查询多对多关系的数据;
+通常在关系 '较少' 的那一侧设置，去查询多对多关系中更多数据那一方;
 
 ```ts
 // ✅ 一篇文章拥有更多标签
@@ -2191,6 +2192,34 @@ export class Course {
   @ManyToMany(() => Student, student => student.courses)
   students: Student[];
 }
+
+```
+
+> 在多对多的关系中，不使用 cascade，可使用 onDelete；
+
+```ts
+// WordSheet.entity.ts
+
+// 多对多：一个单词表包含多个单词
+@ManyToMany(() => Word, (word) => word.wordSheets, {
+  onDelete: 'CASCADE', // 删除单词表时，自动删除中间表关联
+})
+@JoinTable({
+  name: 'md-sheets_words', // 中间表名
+  joinColumn: { name: 'sheet_id', referencedColumnName: 'id' },
+  inverseJoinColumn: { name: 'word_id', referencedColumnName: 'id' },
+})
+words: Word[];
+
+---------------------------------------------------------------
+
+// Word.entity.ts
+
+// 关联词表, 多对多：一个单词属于多个单词表
+@ManyToMany(() => WordSheet, (wordSheet) => wordSheet.words, {
+  onDelete: 'CASCADE', // 删除 Word 时，自动删除中间表关联
+})
+wordSheets: WordSheet[];
 ```
 
 #### service
