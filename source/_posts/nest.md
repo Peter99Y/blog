@@ -2650,6 +2650,10 @@ import {
 
 export class CreateUserDto {
   @IsString()
+  @IsOptional() // 🌟 IsOptional 是 NestJS 运行时，可不传字段跳过校验就不会报400错误，若传了会校验字符串类型；
+  groupName?: string; // 🌟 问号是 ts 编译时期，获取或赋值不会报不存在属性编辑错误；
+
+  @IsString()
   @IsNotEmpty({
     message: "用户名不能为空",
   })
