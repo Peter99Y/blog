@@ -2628,9 +2628,14 @@ export class UserModule {}
 
 #### dto
 
-- 输入参数过滤：pipe.whitelist 打开后，只会接收 DTO 中定义的字段 且 有校验装饰器修饰的字段，然后将校验通过的字段传递到 controller 中；(如 createUserDto 定义并校验 username 和 password，updateUserDto 仅定义并校验并只接收username);
+> 输入参数过滤：pipe.whitelist 打开后，只会接收 DTO 中定义的字段 且 有校验装饰器修饰的字段，然后将校验通过的字段传递到 controller 中；
+> (如 createUserDto 定义并校验 username 和 password，updateUserDto 仅定义并校验并只接收username);
 
-- 输出参数过滤：Entity中，使用@Exclude/@Expose() 修饰的字段 & Interceptor 拦截器搭配使用，过滤掉响应的字段;
+> 输出参数过滤：Entity中，使用@Exclude/@Expose() 修饰的字段 & Interceptor 拦截器搭配使用，过滤掉响应的字段;
+
+> IsOptional 与 字段的可选问号 是正相关关系
+> 只写 IsOptional，NestJS 运行时，接口不会报错，校验顺利通过。但 TS 编译阶段会报红线缺少属性；
+> 只写 问号，TS编辑阶段不会报错，但 NestJS 运行时接口参数校验报400错误；
 
 ```ts create-user.dto.ts
 import {
