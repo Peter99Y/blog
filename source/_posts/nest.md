@@ -2648,10 +2648,52 @@ import {
   IsInt,
 } from "class-validator";
 
-export class CreateUserDto {
+export interface ExampleItf {
+  example: string;
+  translation?: string;
+  active?: boolean;
+}
+
+export interface GroupItf {
+  groupName?: string;
+  exampleList?: ExampleItf[];
+}
+
+export class ExampleDto implements ExampleItf {
+  @IsString()
+  @IsNotEmpty({
+    message: "例句不能为空",
+  })
+  example: string;
+
+  @IsString()
+  @IsOptional()
+  translation?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  active?: boolean = false;
+}
+
+// 🌟 让 DTO 实现接口，确保两者的属性字段永远同步、100% 安全
+export class GroupDto implements GroupItf {
   @IsString()
   @IsOptional() // 🌟 IsOptional 是 NestJS 运行时，可不传字段跳过校验就不会报400错误，若传了会校验字符串类型；
   groupName?: string; // 🌟 问号是 ts 编译时期，获取或赋值不会报不存在属性编辑错误；
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ExampleDto) // 🌟 深度嵌套：例句也要加转换
+  exampleList?: ExampleDto[]; // 🌟 不传字段或传空数组不会报错，如果里面传了一个Example每个都会严格校验；
+}
+
+export class CreateUserDto {
+  @IsArray({ message: "例句分组必须是数组" })
+  @IsOptional()
+  @ValidateNested({ each: true }) // 🌟 告诉验证器深入数组内部验证每个成员
+  @Type(() => GroupDto) // 🌟 告诉转换器把每个数组成员实例化为 GroupDto 类
+  groupList?: GroupDto[]; // 🌟 不传字段或传空数组不会报错；
 
   @IsString()
   @IsNotEmpty({
