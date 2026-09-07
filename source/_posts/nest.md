@@ -2778,7 +2778,8 @@ export class transferMoneyDto {
   生成迁移文件 newCategory，里面有生成好的 up 与 down 语句的方法；
 
 - `npm run migration:run`
-  运行一下，执行migration下所有迁移文件，将数据库结构更新到最新版本；
+  运行一下，执行 migrations 目录下所有迁移文件，将数据库结构更新到最新版本；
+  需保留历史所有迁移文件，执行前 TypeOrm 会自动扫描并记录迁移文件，以及回滚所需要依赖迁移文件，都需要一套完整的迁移数据链；
 
 - `npm run migration:revert`
   回滚迁移文件，将数据库结构回滚到上一个版本；
