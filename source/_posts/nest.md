@@ -2750,6 +2750,7 @@ export class transferMoneyDto {
 > 维护一个有序的数据库版本，方便追踪数据库版本，并回滚；
 > 人为的手动导出再导入数据库，或对数据库进行一些操作可能会遗漏、报错等，在生产环境中使用 Cli 工具大大的提升效率和保证安全；
 > synchronize 正式环境不允许使用 synchronize，此时需要 migration 每个版本精细化操作 (开发环境可以开启，就能实时将对typeorm修改更新到数据库)；
+> dto 新增、减少、修改字段时，可以不用生成迁移文件，只有当 entity 改变时，才必须生成迁移文件；
 
 - 在script 添加命令 或使用 npx typeorm 命令
 
